@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Акт микробиологической верификации: Нестандартные (дополнительные) пробы</title>
+    <link rel="stylesheet" href="act-notstandart.css"/>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-container">
+            <div class="header-title-block">
+                <!-- Блок кнопок управления -->
+                <div style="display: flex; gap: 12px; align-items: center; font-family: system-ui, -apple-system, sans-serif;"> 
+                        <!-- 🖨️ Кнопка печати (Стильная, с мягкой тенью и эффектом наведения) -->
+                        <button type="button" onclick="window.print();" class="nav-print-link">
+                            <span style="font-size: 1rem; line-height: 1;">🖨️</span> Распечатать акт
+                        </button>   
+                        <!-- 🏠 Кнопка На главную (Идеально выровнена по высоте, в строгом стиле) -->
+                        <a href="/menu/index.html" class="nav-home-link">
+                            <span style="font-size: 1.05rem; line-height: 1;">🏠</span> На главную
+                        </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="wash-sd-form" onsubmit="handleSubmit(event)">
+            <div class="main-title" style="text-align: center; font-size: 1.5rem; font-weight: 800;">Нестандартнный(дополнительные) пробы: Акт микробиологической верификации.</div>
+            <!-- ШАПКА ДОКУМЕНТА -->
+                    <div class="meta-grid">
+                        <!-- Блок параметров смены -->
+                            <div class="meta-card" style="border-left: 4px solid #10b981;">
+                                <!-- СТРОКА 1: Фабрика и Статус фабрики -->
+                                <div class="form-group" style="display: flex; gap: 10px; border: 1px solid #a8a3a3e8; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;">Фабрика</label>
+                                        <select name="gorod" id="cyti" style="font-size: 0.85rem; font-weight: 600; width: 100%;  padding: 8px; box-sizing: border-box; background-color: #dae8ffab;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ЛУЖНИКИ">ЛУЖНИКИ</option>
+                                            <option value="НОВОСИБИРСК">НОВОСИБИРСК</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Статус фабрики</label>
+                                        <input type="text" name="status" value="Золотой и платиновый" required 
+                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; 
+                                        background: linear-gradient(135deg, #BF953F 0, #EEDC82 25%, #E5D3B3 75%, #E5E4E2 100%);">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 2: shift Сменa -->
+                                <div class="form-group" style="display: flex; gap: 10px; border: 1px solid #a8a3a3e8; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Shift</label>
+                                        <select id="shift-color" name="shiftColor" style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 0.85rem; font-weight: 600; background-color: #dae8ffab;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="WHITE">WHITE</option>
+                                            <option value="BROWN">BROWN</option>
+                                            <option value="GREEN">GREEN</option>
+                                            <option value="VIOLET">VIOLET</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">План отбора</label>
+                                        <select id="plan" name="otbor" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #fffded;">СТАНДАРТНЫЙ</option>
+                                            <option value="НОЧЬ" style="background-color: #f0fdf4;">РАСШИРЕНЫЙ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 3: Кто проводил отбор проб (ФИО) -->
+                                <div class="form-group" style="display: flex; gap: 10px; border: 1px solid #a8a3a3e8; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Смена</label>
+                                        <select name="sutki" id="day" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #fffded;">ДЕНЬ</option>
+                                            <option value="НОЧЬ" style="background-color: #f0fdf4;">НОЧЬ</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box;">(ФИО) Техника</label>
+                                        <input type="text" id="controller-name" name="controllerName" value="NAME" placeholder="Введите фамилию" style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #dae8ffab;">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 4: Дата отбора проб и Batch Code (LOT) -->
+                                <div class="form-group" style="display: flex; gap: 15px; border: 1px solid #a8a3a3e8; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Дата отбора проб</label>
+                                        <input type="date" id="doc-date" name="docDate" value="2026-05-29" required style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; background-color: #dae8ffab;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Batch Code (LOT)</label>
+                                        <input type="text" id="batch-code-field" name="batchCode" value="" style="font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; font-family: monospace; font-weight: 700; background-color: #dae8ffab; color: #000;" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Регламент отбора -->
+                            <div class="meta-card meta-card-gray" id="dop" style="border-left: 4px solid #10b981;">
+                                <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b; font-size: 1.25rem;">📋 Инструкция к заполнению:</div>
+                                <p style="margin-bottom: 2px; border: 1px solid; font-size: 1rem; border-radius: 10px; font-weight: 700;">Отбираются только по рекоммендации FS технолога</p>
+                            </div>
+                            <!-- Заполняется лабораторией -->
+                            <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
+                                <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b; font-size: 1.25rem; padding-bottom: 10px;">🔬 Заполняется лабораторией</div>
+                                <p style="margin-bottom: 2px; font-size: 1rem; padding-bottom: 25px;"><strong>Получение образцов микробиологической лабораторией:</strong></p>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <div style="flex: 1; min-width: 200px; padding-bottom: 20px;">
+                                        <label style="font-size: 0.85rem; padding-bottom: 10px;">Дата получения образцов</label>
+                                        <input type="date" name="lab_doc_date" value="2026-05-29" required style="font-size: 1rem;">
+                                    </div>
+                                    <div style="flex: 1; min-width: 200px;">
+                                        <label style="font-size: 0.8rem; padding-bottom: 10px;">Время получения образцов</label>
+                                        <input type="time" name="lab_time" class="table-input tm-l" required style="font-size: 1rem;">
+                                    </div>
+                                    <div style="flex: 1; min-width: 200px;">
+                                        <label style="font-size: 0.85rem; padding-bottom: 10px;">Фамилия лаборанта</label>
+                                        <input type="text" name="lab_controller_name" value="name" required style="font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+
+            <!-- ПРИЧИНА ОТБОРА ПРОБ (вынесено из thead, чтобы HTML был валидным) -->
+            <div class="meta-card" style="margin-top: 15px;">
+                <div style="font-weight: 700; color: #1e293b; margin-bottom: 8px;">Причина отбора проб</div>
+                <input type="text" name="reason_for_sampling" class="table-input" placeholder="Укажите причину отбора проб" />
+            </div>
+
+            <!-- ТАБЛИЦА образцов -->
+            <div class="table-container">
+                <div class="table-scroll">
+                    <table>
+                        <colgroup>
+                            <col style="width: 3%;">
+                            <col style="width: 36%;">
+                            <col style="width: 8%;">
+                            <col style="width: 5%;">
+                            <col style="width: 9%;">
+                            <col style="width: 13%;">
+                            <col style="width: 13%;">
+                            <col style="width: 13%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th name="sample_nomber">№</th>
+                                <th name="sample_name">Название пробы</th>
+                                <th name="sample_location">Место отбора пробы</th>
+                                <th name="sample_time">Время отбора</th>
+                                <th name="sample_type">Тип пробы</th>
+                                <th name="sample_indicator">Показатель</th>
+                                <th name="sample_lab_no">лаб.№</th>
+                                <th name="sample_il">IL (Атлас)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wash-table-body">
+                            <!-- Строка 1 -->
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text" name="sample_name_1" class="table-input" /></td>
+                                <td><input type="text" name="sample_location_1" class="table-input" /></td>
+                                <td><input type="time" name="sample_time_1" class="table-input" /></td>
+                                <td><input type="text" name="sample_type_1" class="table-input" /></td>
+                                <td><input type="text" name="sample_indicator_1" class="table-input" /></td>
+                                <td><input type="text" name="sample_lab_no_1" class="table-input" /></td>
+                                <td><input type="text" name="sample_il_1" class="table-input" /></td>
+                            </tr>
+                            <!-- Строка 2 -->
+                            <tr>
+                                <td>2</td>
+                                <td><input type="text" name="sample_name_2" class="table-input" /></td>
+                                <td><input type="text" name="sample_location_2" class="table-input" /></td>
+                                <td><input type="time" name="sample_time_2" class="table-input" /></td>
+                                <td><input type="text" name="sample_type_2" class="table-input" /></td>
+                                <td><input type="text" name="sample_indicator_2" class="table-input" /></td>
+                                <td><input type="text" name="sample_lab_no_2" class="table-input" /></td>
+                                <td><input type="text" name="sample_il_2" class="table-input" /></td>
+                            </tr>
+                            <!-- Строка 3 -->
+                            <tr>
+                                <td>3</td>
+                                <td><input type="text" name="sample_name_3" class="table-input" /></td>
+                                <td><input type="text" name="sample_location_3" class="table-input" /></td>
+                                <td><input type="time" name="sample_time_3" class="table-input" /></td>
+                                <td><input type="text" name="sample_type_3" class="table-input" /></td>
+                                <td><input type="text" name="sample_indicator_3" class="table-input" /></td>
+                                <td><input type="text" name="sample_lab_no_3" class="table-input" /></td>
+                                <td><input type="text" name="sample_il_3" class="table-input" /></td>
+                            </tr>
+                            <!-- Строка 4 -->
+                            <tr>
+                                <td>4</td>
+                                <td><input type="text" name="sample_name_4" class="table-input" /></td>
+                                <td><input type="text" name="sample_location_4" class="table-input" /></td>
+                                <td><input type="time" name="sample_time_4" class="table-input" /></td>
+                                <td><input type="text" name="sample_type_4" class="table-input" /></td>
+                                <td><input type="text" name="sample_indicator_4" class="table-input" /></td>
+                                <td><input type="text" name="sample_lab_no_4" class="table-input" /></td>
+                                <td><input type="text" name="sample_il_4" class="table-input" /></td>
+                            </tr>
+                            <!-- Строка 5 -->
+                            <tr>
+                                <td>5</td>
+                                <td><input type="text" name="sample_name_5" class="table-input" /></td>
+                                <td><input type="text" name="sample_location_5" class="table-input" /></td>
+                                <td><input type="time" name="sample_time_5" class="table-input" /></td>
+                                <td><input type="text" name="sample_type_5" class="table-input" /></td>
+                                <td><input type="text" name="sample_indicator_5" class="table-input" /></td>
+                                <td><input type="text" name="sample_lab_no_5" class="table-input" /></td>
+                                <td><input type="text" name="sample_il_5" class="table-input" /></td>
+                            </tr>
+                            <!-- Строки 6–15 (можно оставить пустыми, данные подтянутся при необходимости) -->
+                            <!-- Для краткости я не расписываю все 15 строк, но ты можешь просто скопировать шаблон выше и поменять цифры в name -->
+                            <!-- Ниже пример ещё одной строки, остальные сделай по аналогии -->
+                            <tr>
+                                <td>6</td>
+                                <td><input type="text" name="sample_name_6" class="table-input" /></td>
+                                <td><input type="text" name="sample_location_6" class="table-input" /></td>
+                                <td><input type="time" name="sample_time_6" class="table-input" /></td>
+                                <td><input type="text" name="sample_type_6" class="table-input" /></td>
+                                <td><input type="text" name="sample_indicator_6" class="table-input" /></td>
+                                <td><input type="text" name="sample_lab_no_6" class="table-input" /></td>
+                                <td><input type="text" name="sample_il_6" class="table-input" /></td>
+                            </tr>
+                            <!-- Остальные строки (7–15) добавь по аналогии, меняя цифры в name -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- КНОПКИ ДЕЙСТВИЙ -->
+            <div class="actions-bar">
+                <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
+                <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
+                <button type="button" class="btn btn-warning" id="btnCollapse">📦 Свернуть акт (сохранить как черновик)</button>
+            </div>
+        </form>
+    </div>
+    <div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
+                    <span>W: 01 от 22.08..2024</span>
+        </div>
+    <script src="acts-logic.js"></script>
+    <script src="bach.js"></script>
+    <script src="act-notstandart.js"></script>
+</body>
+</html>

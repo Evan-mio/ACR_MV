@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Конструктор баз данных (Презентация)</title>
+    <!-- Подключаем стили (можете вынести в style.css или оставить здесь) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="top-navbar">
+        <a href="/ACR 1/menu/index.html" class="nav-home-link">
+        <button class="btn-home" onclick="location.reload()">🏠 На главную</button>
+        </a>
+        <div class="page-title">Демонстрационная панель (Интерактивный прототип)</div>
+    </header>
+
+    <div class="workspace-wrapper">
+        <div class="main-layout">
+            <aside class="sidebar">
+                <button class="btn-create-db" onclick="mockCreateDatabaseFile()">➕ Создать базу (JS)</button>
+                <div class="active-db-info">
+                    <strong>Виртуальный файл:</strong>
+                    <div id="currentFileName" style="color: #2563eb; font-weight: 600; margin-top: 4px; margin-bottom: 8px;">База не выбрана</div>
+                    <button id="btnDeleteDb" class="btn-danger-sidebar" onclick="mockDeleteDatabaseFile()" disabled>🗑️ Удалить файл</button>
+                </div>
+                <div style="font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; margin-top: 5px;">Список созданных баз:</div>
+                <ul class="db-list" id="sidebarDbList"></ul>
+            </aside>
+
+            <main class="content-area">
+                <div class="top-action-bar">
+                    <button id="btnCol" class="btn-add-col" onclick="mockAddColumn()" disabled>➕</button>
+                    <button id="btnDelCol" class="btn-delete-col" onclick="mockDeleteColumn()" disabled>❌</button>
+                </div>
+
+                <div class="inputs-container-card">
+                    <h3>Заполнение новой строки данных</h3>
+                    <div class="interactive-row-layout">
+                        <div id="dynamicInputsForm" class="inputs-grid">
+                            <p style="color: #94a3b8; grid-column: 1/-1; font-size: 14px; margin-top: 15px;">Создайте базу данных и добавьте столбцы, чтобы начать ввод.</p>
+                        </div>
+                        <button id="btnRow" class="btn-add-row-aside" onclick="mockSubmitRowData()" disabled>➕</button>
+                        <button id="btnDelRow" class="btn-delete-row-aside" onclick="mockDeleteRow()" disabled title="Удалить последнюю строку">❌</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <section class="code-viewer-bottom">
+            <div class="code-header">
+                <span>🖥️ Монитор файла скрипта (Live в реальном времени)</span>
+                <!-- Блок кнопок управления файлом справа -->
+                <div style="display: flex; gap: 8px;">
+                    <button id="btnSaveDemo" class="btn-download-code" onclick="saveDatabaseDemo()" style="display: none; background-color: #3b82f6;">💾 Сохранить файл</button>
+                    <button id="btnDownload" class="btn-download-code" onclick="downloadRealJsFile()" style="display: none;">📥 Скачать JS-файл</button>
+                </div>
+            </div>
+            <div class="code-display" id="codeOutput">// Здесь будет отображаться сгенерированный JS-код вашего скрипта...</div>
+        </section>
+    </div>
+
+    <!-- ПОДКЛЮЧЕНИЕ СЦЕНАРНЫХ БЛОКОВ ПО ПОРЯДКУ -->
+    <script src="state.js"></script>
+    <script src="ui.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

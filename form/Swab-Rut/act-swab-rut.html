@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Акт микробиологической верификации: Смывы</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="act-swab-rut.css"/>
+</head>
+<body>
+    <!-- Шапка сайта с корректно закрытыми тегами -->
+    <div class="header">
+        <div class="header-container">
+            <div class="header-title-block">
+                <div style="display: flex; gap: 12px; align-items: center; font-family: system-ui, -apple-system, sans-serif;"> 
+                    <!-- 🖨️ Кнопка печати -->
+                    <button type="button" onclick="window.print();" class="nav-print-link">
+                        <span style="font-size: 1rem; line-height: 1;">🖨️</span> Распечатать акт
+                    </button>   
+                    <!-- 🏠 Кнопка На главную -->
+                    <a href="/menu/index.html" class="nav-home-link">
+                        <span style="font-size: 1.05rem; line-height: 1;">🏠</span> На главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="wash-sd-form" onsubmit="handleSubmit(event)">
+            <div class="main-title">СМЫВЫ: Акт микробиологической верификации.</div>
+            
+            <!-- ШАПКА АКТА -->
+            <div class="meta-grid">
+                <!-- Блок параметров смены -->
+                <div class="meta-card" style="border-left: 4px solid #10b981;">
+                    <!-- СТРОКА 1: Фабрика и Статус фабрики -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;">Фабрика</label>
+                                        <select name="gorod" id="cyti" style="font-size: 0.85rem; font-weight: 600; width: 100%;  padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ЛУЖНИКИ">ЛУЖНИКИ</option>
+                                            <option value="НОВОСИБИРСК">НОВОСИБИРСК</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Статус фабрики</label>
+                                        <input type="text" name="status" value="Золотой и платиновый" required 
+                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; 
+                                        background: #f1f5f9">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 2: shift Сменa -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Shift</label>
+                                        <select id="shift-color" name="shiftColor" style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 0.85rem; font-weight: 600; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="WHITE">WHITE</option>
+                                            <option value="BROWN">BROWN</option>
+                                            <option value="GREEN">GREEN</option>
+                                            <option value="VIOLET">VIOLET</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">План отбора</label>
+                                        <select id="plan" name="otbor" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">СТАНДАРТНЫЙ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">РАСШИРЕНЫЙ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 3: Кто проводил отбор проб (ФИО) -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Смена</label>
+                                        <select name="sutki" id="day" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">ДЕНЬ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">НОЧЬ</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box;">(ФИО) Техника</label>
+                                        <input type="text" id="controller-name" name="controllerName" value="NAME" placeholder="Введите фамилию" style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 4: Дата отбора проб и Batch Code (LOT) -->
+                                <div class="form-group" style="display: flex; gap: 15px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Дата отбора проб</label>
+                                        <input type="date" id="doc-date" name="docDate" value="2026-05-29" required style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Batch Code (LOT)</label>
+                                        <input type="text" id="batch-code-field" name="batchCode" value="" style="font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; font-family: monospace; font-weight: 700; background-color: #f1f5f9; color: #000;" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                <!-- Регламент отбора -->
+                <div class="meta-card meta-card-gray" id="dop" style="border-left: 4px solid #10b981; border-radius: 12px;">
+                    <div style="font-weight: 700; font-size: 1.5rem;padding-bottom: 10px; color: #000;">📋 Инструкция к заполнению:</div>
+                    <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">1. Смывы отбираются только в дневную смену во время производства ДНЕМ.</p>
+                    <p style="margin-bottom: 5px; font-size: 1rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">2. На каждый отобранный смыв приклеивается этикетка со штрихкодом.</p>
+                    <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">3. Если смыв не отобран, неиспользованная этикетка клеится на оборот чеклиста.</p>
+                    <p style="margin-bottom: 5px; font-size: 1rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">4. Все образцы собираются в отдельную емкость или пакетик-маечку.</p>
+                </div>
+                <!-- Информация по типам смывов с исправленной flex-сеткой и уникальными ID -->
+                <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
+                    <div style="font-weight: 700; font-size: 1.5rem; margin-bottom: 4px; color: #1e293b;">🔬 Спецификация Сальмонелла / Энтеро:</div>
+                    <p style="margin-bottom: 2px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Сальмонелла:</strong> Каждая дневная смена. 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    <p style="margin-bottom: 12px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Энтеро/Дрожжи/Плесень:</strong> Только в понедельник! 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    
+                    <!-- Корректный Flex-контейнер для полей лаборатории -->
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="form-group">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Фамилия лаборанта</label>
+                            <input type="text" name="lab-name" id="lab-controller-name" value="name" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                        </div>
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Дата получения</label>
+                                <input type="date" name="lab-doc-date" id="lab-doc-date" value="2026-05-29" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Время получения</label>
+                                <input type="time" name="lab-time" class="table-input tm-l" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ТАБЛИЦА СМЫВОВ (Двухблочная структура) -->
+            <div class="table-container">
+                <div class="table-scroll">
+                    <table>
+                        <colgroup>
+                            <col style="width: 4%">  <!--атла чтота -->
+                            <col style="width: 7%">  <!--атлас какта -->
+                            <col style="width: 4%">  <!--Указать номер с которого взяли смыв -->
+                            <col style="width: 23%">  <!--Место отбора (русское название) -->
+                            <col style="width: 4%">  <!--Время смыва -->
+                            <col style="width: 3%">  <!--№ смыва -->
+                            <col style="width: 10%">  <!--Лаб. № -->
+                            <col style="width: 10%">  <!--IL -->
+                            <col style="width: 3%">  <!--№ смыва -->
+                            <col style="width: 10%">  <!--Лаб. № -->
+                            <col style="width: 10%">  <!--IL -->
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>атла чтота</th>
+                                <th>атлас какта</th>
+                                <th>Указать номер с которого взяли смыв</th>
+                                <th>Место отбора (русское название)</th>
+                                <th>Время смыва</th>
+                                <th>№ смыва</th>
+                                <th>Лаб. №</th>
+                                <th>IL</th>
+                                <th>№ смыва</th>
+                                <th>Лаб. №</th>
+                                <th>IL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wash-table-body">
+                            
+                            <!-- СЕКЦИЯ: ЭКСТРУДЕР -->
+                            <tr><td class="section-row-header" colspan="12">Экструдер</td></tr>
+                            
+                            <tr data-row-group="1" name="row-1">
+                                <td class="text-static" name="atlass-1">атла чтота</td>
+                                <td class="text-static" name="atlass-name-1">атлас какта</td>
+                                <td class="text-static" style="background-color: silver;"></td>
+                                <td class="text-static" name="name-rus-1">Полы санпропускник на мельницу</td>
+                                <td><input type="time" name="time-proba-1" class="table-input tm-l"></td>
+                                <td class="text-center-bold" name="no-otbora-1">1</td>
+                                <td><input type="text" name="no-lab-1" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-1" class="table-input lb-2"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static" name="atlass-27">атла чтота</td>
+                                <td class="text-static" name="atlass-name-27">атлас какта</td>
+                                <td class="text-static" style="background-color: silver;"></td>
+                                <td class="text-static" name="name-rus-27">Полы санпропускник на мельницу</td>
+                                <td><input type="time" name="time-proba-27" class="table-input tm-l"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-center-bold" name="no-otbora-27">27</td>
+                                <td><input type="text" name="no-lab-27" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-27" class="table-input lb-2"></td>
+                            </tr>
+                            <tr data-row-group="9" name="row-9">
+                                <td class="text-static" name="atlass-9">атла чтота</td>
+                                <td class="text-static" name="atlass-name-9">атлас какта</td>
+                                <td class="text-static"><input type="text" name="number-9" class="table-input lb-l"></td>
+                                <td class="text-static" name="name-rus-9">ревочный бин</td>
+                                <td><input type="time" name="time-proba-9" class="table-input tm-l"></td>
+                                <td class="text-center-bold" name="no-otbora-9">9</td>
+                                <td><input type="text" name="no-lab-9" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-9" class="table-input lb-2"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static" name="atlass-35">атла чтота</td>
+                                <td class="text-static" name="atlass-name-35">атлас какта</td>
+                                <td class="text-static"><input type="text" name="number-35" class="table-input lb-l"></td>
+                                <td class="text-static" name="name-rus-35">ревочный бин</td>
+                                <td><input type="time" name="time-proba-35" class="table-input tm-l"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-center-bold" name="no-otbora-35">35</td>
+                                <td><input type="text" name="no-lab-35" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-35" class="table-input lb-2"></td>
+                            </tr>
+                            <!-- СЕКЦИЯ: Моечная комната -->
+                            <tr><td class="section-row-header" colspan="12">Моечная комната</td></tr>
+                            
+                            <tr data-row-group="12" name="row-12">
+                                <td class="text-static" name="atlass-12">атла чтота</td>
+                                <td class="text-static" name="atlass-name-12">атлас какта</td>
+                                <td class="text-static" style="background-color: silver;"></td>
+                                <td class="text-static" name="name-rus-12">Полы перед входом в моечную комнату</td>
+                                <td><input type="time"  name="time-proba-12"class="table-input tm-l"></td>
+                                <td class="text-center-bold" name="no-otbora-12">12</td>
+                                <td><input type="text" name="no-lab-12" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-12" class="table-input lb-2"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static" name="atlass-38">атла чтота</td>
+                                <td class="text-static" name="atlass-name-38">атлас какта</td>
+                                <td class="text-static" style="background-color: silver;"></td>
+                                <td class="text-static" name="name-rus-38">Полы перед входом в моечную комнату</td>
+                                <td><input type="time"  name="time-proba-38"class="table-input tm-l"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-center-bold" name="no-otbora-38">38</td>
+                                <td><input type="text" name="no-lab-38" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-38" class="table-input lb-2"></td>
+                            </tr>
+
+                            <!-- СЕКЦИЯ: Сушилка -->
+                            <tr><td class="section-row-header" colspan="12">Сушилка</td></tr>
+                            
+                            <tr data-row-group="13" name="row-13">
+                                <td class="text-static" name="atlass-13">атла чтота</td>
+                                <td class="text-static" name="atlass-name-13">атлас какта</td>
+                                <td class="text-static" style="background-color: silver;"></td>
+                                <td class="text-static" name="name-rus-13">Пол перед входом в санпропускник на экструдер</td>
+                                <td><input type="time"  name="time-proba-13"class="table-input tm-l"></td>
+                                <td class="text-center-bold" name="no-otbora-13">13</td>
+                                <td><input type="text" name="no-lab-13" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-13" class="table-input lb-2"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static" name="atlass-39">атла чтота</td>
+                                <td class="text-static" name="atlass-name-39">атлас какта</td>
+                                <td class="text-static" style="background-color: silver;"></td>
+                                <td class="text-static" name="name-rus-39">Пол перед входом в санпропускник на экструдер</td>
+                                <td><input type="time" name="time-proba-39" class="table-input tm-l"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-center-bold" name="no-otbora-39">39</td>
+                                <td><input type="text" name="no-lab-39" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-39" class="table-input lb-2"></td>
+                            </tr>
+                            <!-- СЕКЦИЯ: Упаковка, вентиляционная комната -->
+                            <tr><td class="section-row-header" colspan="12">Упаковка, вентиляционная комната</td></tr>
+                            
+                            <tr data-row-group="19" name="row-19">
+                                <td class="text-static" name="atlass-19">атла чтота</td>
+                                <td class="text-static" name="atlass-name-19">атлас какта</td>
+                                <td class="text-static" style="background-color: silver;"></td>
+                                <td class="text-static" name="name-rus-19">Лестница с упаковки в офис</td>
+                                <td><input type="time" name="time-proba-19" class="table-input tm-l"></td>
+                                <td class="text-center-bold" name="no-otbora-19">19</td>
+                                <td><input type="text" name="no-lab-19" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-19" class="table-input lb-2"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static" name="atlass-45">атла чтота</td>
+                                <td class="text-static" name="atlass-name-45">атлас какта</td>
+                                <td class="text-static" style="background-color: silver;"></td>
+                                <td class="text-static" name="name-rus-45">Лестница с упаковки в офис</td>
+                                <td><input type="time" name="time-proba-45" class="table-input tm-l"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-static"></td>
+                                <td class="text-center-bold" name="no-otbora-45">45</td>
+                                <td><input type="text" name="no-lab-45" class="table-input lb-l"></td>
+                                <td><input type="text" name="no-il-45" class="table-input lb-2"></td>
+                            </tr>
+                            <tr><td class="section-row-header" colspan="12"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- КНОПКИ ДЕЙСТВИЙ (ИСПРАВЛЕНО: Кнопка Сохранить теперь имеет тип submit) -->
+            <div class="actions-bar">
+                <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
+                <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
+                <button type="button" class="btn btn-warning" id="btnCollapse">📦 Свернуть акт (сохранить как черновик)</button>
+            </div>
+        </form>
+        <div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
+                    <span>W: 01 от 22.08..2024</span>
+        </div>
+    </div>
+    <script src="/form/global-yadro-JS/acts-bach.js"></script>
+    <script src="/form/global-yadro-JS/acts-core.js"></script>
+    <script src="/form/global-yadro-JS/acts-print.js"></script>
+    <script src="act-swab-rut.js"></script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Акт отбора образцов готового продукта с упаковочных линий</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="act-_B_B.css"/>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-container">
+            <div class="header-title-block">
+                <!-- Блок кнопок управления -->
+                    <div style="display: flex; gap: 12px; align-items: center; font-family: system-ui, -apple-system, sans-serif;"> 
+                        <!-- 🖨️ Кнопка печати (Стильная, с мягкой тенью и эффектом наведения) -->
+                        <button type="button" onclick="window.print();" class="nav-print-link">
+                            <span style="font-size: 1rem; line-height: 1;">🖨️</span> Распечатать акт
+                        </button>   
+                        <!-- 🏠 Кнопка На главную (Идеально выровнена по высоте, в строгом стиле) -->
+                        <a href="/menu/index.html" class="nav-home-link">
+                            <span style="font-size: 1.05rem; line-height: 1;">🏠</span> На главную
+                        </a>
+                    </div>
+            </div>
+        <div class="actions-bar">
+            <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
+            <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
+            <button type="button" class="btn btn-warning" id="btnCollapse">📦 Свернуть акт (сохранить как черновик)</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="wash-sd-form" onsubmit="handleSubmit(event)">
+            
+            <!-- ШАПКА ДОКУМЕНТА -->
+            <div class="main-title">ССЫПКА В МЕШКИ: Акт отбора образцов из мешков ссыпки</div>
+                <div class="meta-grid">
+                            <!-- Блок параметров смены -->
+                            <div class="meta-card">
+                                <!-- СТРОКА 1: Фабрика и Статус фабрики -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;">Фабрика</label>
+                                        <select name="gorod" id="cyti" style="font-size: 0.85rem; font-weight: 600; width: 100%;  padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ЛУЖНИКИ">ЛУЖНИКИ</option>
+                                            <option value="НОВОСИБИРСК">НОВОСИБИРСК</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Статус фабрики</label>
+                                        <input type="text" name="status" value="Золотой и платиновый" required 
+                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; 
+                                        background-color: #f1f5f9;">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 2: Цвет Смены и Время суток -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Цвет Смены</label>
+                                        <select id="shift-color" name="shiftColor" style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 0.85rem; font-weight: 600; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="WHITE">WHITE</option>
+                                            <option value="BROWN">BROWN</option>
+                                            <option value="GREEN">GREEN</option>
+                                            <option value="VIOLET">VIOLET</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Время суток</label>
+                                        <select name="sutki" id="day" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ">ДЕНЬ</option>
+                                            <option value="НОЧЬ">НОЧЬ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 3: Кто проводил отбор проб (ФИО) -->
+                                <div class="form-group" style="padding-bottom: 10px;">
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Кто проводил отбор проб (ФИО)</label>
+                                    <input type="text" id="controller-name" name="controllerName" value="NAME" placeholder="Введите фамилию" style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                </div>
+                                <!-- СТРОКА 4: Дата отбора проб и Batch Code (LOT) -->
+                                <div class="form-group" style="display: flex; gap: 15px; padding-bottom: 10px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Дата отбора проб</label>
+                                        <input type="date" id="doc-date" name="docDate" value="2026-05-29" required style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Batch Code (LOT)</label>
+                                        <input type="text" id="batch-code-field" name="batchCode" value="" style="font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; font-family: monospace; font-weight: 700; background-color: #f1f5f9; color: #000;" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Регламент отбора -->
+                            <div class="meta-card meta-card-gray" id="dop" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); font-family: system-ui, -apple-system, sans-serif;">
+                                <!-- Заголовок блока -->
+                                <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px; color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
+                                    <span>📋</span> График отбора проб
+                                </div>
+                                <!-- Контейнер для двух смен -->
+                                <div style="display: flex; flex-direction: column; gap: 16px;">
+                                    <!-- БЛОК: ДНЕВНАЯ СМЕНА -->
+                                        <div style="background: #fffded; border-left: 4px solid #ce8122; border-radius: 6px; padding: 12px 16px;">
+                                            <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #b45309; margin-bottom: 8px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                                ☀️ Дневная смена
+                                            </div>
+                                            <!-- Сетка с бейджами времени -->
+                                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                                <span class="time-badge-day">07:35</span>
+                                                <span class="time-badge-day">08:25</span>
+                                                <span class="time-badge-day">09:15</span>
+                                                <span class="time-badge-day">10:05</span>
+                                                <span class="time-badge-day">10:55</span>
+                                                <span class="time-badge-day">11:45</span>
+                                                <span class="time-badge-day">12:35</span>
+                                                <span class="time-badge-day">13:25</span>
+                                                <span class="time-badge-day">14:15</span>
+                                                <span class="time-badge-day">15:05</span>
+                                                <span class="time-badge-day">15:55</span>
+                                                <span class="time-badge-day">16:45</span>
+                                                <span class="time-badge-day">17:35</span>
+                                                <span class="time-badge-day">18:25</span>
+                                                <span class="time-badge-day">19:10</span>
+                                            </div>
+                                        </div>
+                                        <!-- БЛОК: НОЧНАЯ СМЕНА -->
+                                        <div style="background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 6px; padding: 12px 16px;">
+                                            <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #15803d; margin-bottom: 8px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                                🌙 Ночная смена
+                                            </div>
+                                            <!-- Сетка с бейджами времени -->
+                                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                                <span class="time-badge-night">19:35</span>
+                                                <span class="time-badge-night">20:25</span>
+                                                <span class="time-badge-night">21:15</span>
+                                                <span class="time-badge-night">22:05</span>
+                                                <span class="time-badge-night">22:55</span>
+                                                <span class="time-badge-night">23:45</span>
+                                                <span class="time-badge-night">00:35</span>
+                                                <span class="time-badge-night">01:25</span>
+                                                <span class="time-badge-night">02:15</span>
+                                                <span class="time-badge-night">03:05</span>
+                                                <span class="time-badge-night">03:55</span>
+                                                <span class="time-badge-night">04:45</span>
+                                                <span class="time-badge-night">05:35</span>
+                                                <span class="time-badge-night">06:25</span>
+                                                <span class="time-badge-night">07:25</span>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                            <!-- коменты -->
+                            <div class="meta-card meta-card-gray">
+                                <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px; color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
+                                    <span>📋</span> Коментарии:
+                                </div>
+                                <input type="text" name="global_comment" style="width: 100%; height: 100%;">
+                            </div>
+                        </div>
+                        <!-- Вкладки (листы как в Excel) -->
+                        <div class="tabs-container" style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div id="tab-list" style="display: flex; gap: 6px; flex: 1;"></div>
+                            <button type="button" class="btn btn-secondary" onclick="addNewSheet()">➕ Добавить лист</button>
+                            <button id="btnEditSheetName" class="btn btn-outline-secondary">Редактировать название листа</button>
+                        </div>
+<!-- ТАБЛИЦА -->
+<div class="act-table-wrapper">
+    <table class="act-table">
+        <colgroup>
+            <col style="width: 5%;">
+            <col style="width: 5%;">
+            <col style="width: 15%;">
+            <col style="width: 10%;">
+            <col style="width: 40%;">
+            <col style="width: 5%;">
+            <col style="width: 8%;">
+            <col style="width: 7%;">
+            <col style="width: 5%;">
+        </colgroup>
+        <thead>
+            <!-- СТРОКА С ПОЛЯМИ ЛИСТА (Nake, lab_lot) ПРЯМО В ТАБЛИЦЕ -->
+            <tr>
+    <th colspan="9" style="background-color: #dbe5c9; padding: 20px; border-radius: 8px 8px 0 0; text-align: left; font-weight: normal;">
+        <!-- Увеличен gap между блоками до 25px для простора -->
+        <div style="display: flex; gap: 25px; align-items: center; width: 100%;">
+            
+            <!-- 1. Блок: Номер Nake -->
+            <div style="flex: 1; max-width: 200px;">
+                <label style="font-weight: 600; display: block; color: #000; margin-bottom: 6px; font-size: 1rem;">Номер Nake</label>
+                <!-- Поле удлинено до 100% контейнера, увеличен шрифт до 1.1rem и padding -->
+                <input type="text" id="sheet-nake-1" name="nake_1" style="width: 100%; box-sizing: border-box; border: 1px solid #333; background-color: #f1f5f9; padding: 8px 12px; font-size: 1rem; font-weight: bold; text-align: center;">
+            </div>
+            
+            <!-- 2. Блок: Nake (доп.) — сделан самым длинным, так как туда пишется название продукта -->
+            <div style="flex: 2; max-width: 450px;">
+                <label style="font-weight: 600; display: block; color: #000; margin-bottom: 6px; font-size: 1rem;">Nake (доп.)</label>
+                <!-- Поле сделано длинным для вмещения полного текста (Kek Meat Feast Kibble Mix...) -->
+                <input type="text" id="sheet-nake-2" name="nake_2" style="width: 100%; box-sizing: border-box; border: 1px solid #333; background-color: #f1f5f9; padding: 8px 12px; font-size: 1rem; font-weight: 500;">
+            </div>
+            
+            <!-- 3. Блок: Номер лота для лаборатории -->
+            <div style="flex: 1; max-width: 380px;">
+                <label style="font-weight: 600; display: block; color: #000; margin-bottom: 6px; font-size: 1rem;">Номер лота* для лаборатории</label>
+                <input type="text" id="sheet-lab-lot" name="lab_lot" style="width: 100%; box-sizing: border-box; border: 1px solid #333; background-color: #f1f5f9; padding: 8px 12px; font-size: 1rem; text-align: center;">
+            </div>
+            
+        </div>
+    </th>
+</tr>
+
+            <tr>
+                <th colspan="9" style="background-color: #d1d5db; height: 2px; padding: 0;"></th>
+            </tr>
+            <tr>
+                <th style="background-color: #dbe5c9;">Тип продукта</th>
+                <th colspan="8" style="background-color: #dbe5c9; text-align: center; font-size: 1.5rem; font-weight: bold;">ВВ</th>
+            </tr>
+            <tr>
+                <th colspan="2" style="background-color: #dbe5c9; text-align: center; font-weight: bold;">Время отбора фактическое</th>
+                <th rowspan="2" style="background-color: #dbe5c9;">Номер линии</th>
+                <th rowspan="2" style="background-color: #dbe5c9;">GRD готового продукта</th>
+                <th rowspan="2" style="background-color: #dbe5c9;">Наименование продукта</th>
+                <th rowspan="2" style="background-color: #dbe5c9;">Номер упак.маш.</th>
+                <th rowspan="2" style="background-color: #dbe5c9;">Лот готового продукта</th>
+                <th rowspan="2" style="background-color: #dbe5c9;">Номер Мешка</th>
+                <th rowspan="2" style="background-color: #dbe5c9;">Номер точечной пробы</th>
+            </tr>
+            <tr>
+                <th style="background-color: #dbe5c9; text-align: center; font-size: 0.85rem;">час</th>
+                <th style="background-color: #dbe5c9; text-align: center; font-size: 0.85rem;">мин</th>
+                <th style="background-color: #dbe5c9;"></th>
+                <th style="background-color: #dbe5c9;"></th>
+                <th style="background-color: #dbe5c9;"></th>
+                <th style="background-color: #dbe5c9;"></th>
+                <th style="background-color: #dbe5c9;"></th>
+                <th style="background-color: #dbe5c9;"></th>
+                <th style="background-color: #dbe5c9;"></th>
+            </tr>
+            <tr>
+                <th colspan="8" style="background-color: #d1d5db; height: 2px; padding: 0;"></th>
+            </tr>
+        </thead>
+            <tbody id="table-body">
+    <tr>
+        <td><input type="text" name="cas_1" style="text-align: center; font-size: 0.85rem;"></td>
+        <td><input type="text" name="min_1" style="text-align: center; font-size: 0.85rem;"></td>
+        <td><input type="text" name="no_line_1" list="linesList" style="text-align: center; font-size: 0.85rem;"></td>
+        <td><input type="text" name="grd_1" list="grdList" style="text-align: center; font-size: 0.85rem;"></td>
+        <td><input type="text" name="name-prod_1" style="text-align: center; font-size: 0.85rem; background-color: #f1f5f9;"></td>
+        <td><input type="text" name="no_car_1" list="carsList" style="text-align: center; font-size: 0.85rem;"></td>
+        <td><input type="text" name="lot_fg_prod_1" style="text-align: center; font-size: 0.85rem; color: #000; background-color: #f1f5f9;" readonly></td>
+        <td><input type="text" name="no_mesh_1" style="text-align: center; font-size: 0.85rem; color: #000;"></td>
+        <td><input type="text" name="proba_1" style="text-align: center; font-size: 0.85rem; color: #000; background-color: #f1f5f9;" readonly></td>
+    </tr>
+</tbody>
+
+        </table>
+    </div>
+
+            <!-- КНОПКИ ДЛЯ ДОБАВЛЕНИЯ СТРОК (ВНИЗУ ТАБЛИЦЫ) -->
+            <div class="tabs-container" style="margin-top: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <div id="tab-strok" style="display: flex; gap: 6px; flex: 1;"></div>
+                <button id="btnAddRow" class="btn btn-primary">+1 строка</button>
+                <button id="btnAddRows5" class="btn btn-secondary">+5 строк</button>
+                <button id="btnAddRows15" class="btn btn-secondary">+15 строк</button>
+            </div>
+
+        </form>
+    </div>
+        <div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
+            <span>W: 01 от 22.08..2024</span>
+        </div>
+    <script src="/auth/menu/DataBaza/baza/database.js"></script>
+    <script src="act-_B_B.js"></script>
+
+    <datalist id="linesList"></datalist>
+    <datalist id="grdList"></datalist>
+    <datalist id="carsList"></datalist>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления ACR - Авторизация</title>
+    <link rel="stylesheet" href="stilno.css">
+    <link rel="icon" href="data:,">
+    <script src="/DataBaza/baza/users.js"></script>
+</head>
+<body>
+
+    <!-- ГЛАВНЫЙ 3D-КОНТЕЙНЕР -->
+    <div class="card-container">
+        <div class="card-flipper" id="flipper">
+            
+            <!-- СТОРОНА 1: ВХОД В СИСТЕМУ -->
+            <div class="login-card card-front">
+                <h2>Вход в систему</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="userId">Ваш ID</label>
+                        <input type="text" id="userId" required placeholder="Введите ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" required placeholder="••••••••">
+                    </div>
+                    
+                    <!-- Кнопка войти с бегущей дорожкой -->
+                    <div class="neon-wrapper">
+                        <button type="submit">Войти</button>
+                    </div>
+                    
+                    <div id="errorMessage" class="error">Неверный ID или пароль</div>
+                    
+                    <!-- Переключатель на смену пароля -->
+                    <div class="card-nav">
+                        <span id="to-reset">Забыли пароль?</span>
+                    </div>
+                </form>
+            </div>
+
+            <!-- СТОРОНА 2: СМЕНА ПАРОЛЯ -->
+            <div class="login-card card-back">
+                <h2>Смена пароля</h2>
+                <form id="resetForm" class="reset-form">
+                    <div class="form-group id-group">
+                        <label for="user-id">Ваш ID</label>
+                        <input type="text" id="user-id" value="" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="old-pass">Текущий пароль</label>
+                        <input type="password" id="old-pass" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-pass">Новый пароль</label>
+                        <input type="password" id="new-pass" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-pass">Повторите пароль</label>
+                        <input type="password" id="confirm-pass" placeholder="••••••••" required>
+                    </div>
+                    
+                    <!-- Кнопка обновить с бегущей дорожкой -->
+                    <div class="neon-wrapper">
+                        <button type="submit">Обновить</button>
+                    </div>
+                    
+                    <div id="resetMessage" class="error">Пароли не совпадают!</div>
+                    
+                    <!-- Переключатель обратно на вход -->
+                    <div class="card-nav">
+                        <span id="to-login">← Вернуться ко входу</span>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Логика самого экрана auth -->
+    <script src="auth-logic.js"></script>
+</body>
+</html>

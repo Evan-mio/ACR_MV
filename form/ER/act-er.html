@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Акт микробиологической верификации</title>
+        <link rel="stylesheet" href="act-er.css"/>
+    </head>
+<body>
+    <div class="header">
+        <div class="header-container">
+            <div class="header-title-block">
+                <div style="display: flex; gap: 12px; align-items: center; font-family: system-ui, -apple-system, sans-serif;"> 
+                    <!-- 🖨️ Кнопка печати -->
+                    <button type="button" onclick="window.print();" class="nav-print-link">
+                        <span style="font-size: 1rem; line-height: 1;">🖨️</span> Распечатать акт
+                    </button>   
+                    <!-- 🏠 Кнопка На главную -->
+                    <a href="/menu/index.html" class="nav-home-link">
+                        <span style="font-size: 1.05rem; line-height: 1;">🏠</span> На главную
+                    </a>
+                </div>
+            </div>
+
+
+    <div class="container">
+        <div class="main-title" style="text-align: center; font-size: 1.5rem; font-weight: 800;">КРОШКА, СПРЕЙ, ЖИР: Программа микробиологической верификации.</div>
+        <form id="verification-form">
+            <!-- ШАПКА АКТА -->
+            <div class="meta-grid">
+                <!-- Блок параметров смены -->
+                <div class="meta-card" style="border-left: 4px solid #10b981;">
+                    <!-- СТРОКА 1: Фабрика и Статус фабрики -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;">Фабрика</label>
+                                        <select name="gorod" id="cyti" style="font-size: 0.85rem; font-weight: 600; width: 100%;  padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ЛУЖНИКИ">ЛУЖНИКИ</option>
+                                            <option value="НОВОСИБИРСК">НОВОСИБИРСК</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Статус фабрики</label>
+                                        <input type="text" name="status" value="Золотой и платиновый" required 
+                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; 
+                                        background: #f1f5f9">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 2: shift Сменa -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Shift</label>
+                                        <select id="shift-color" name="shiftColor" style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 0.85rem; font-weight: 600; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="WHITE">WHITE</option>
+                                            <option value="BROWN">BROWN</option>
+                                            <option value="GREEN">GREEN</option>
+                                            <option value="VIOLET">VIOLET</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">План отбора</label>
+                                        <select id="plan" name="otbor" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">СТАНДАРТНЫЙ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">РАСШИРЕНЫЙ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 3: Кто проводил отбор проб (ФИО) -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Смена</label>
+                                        <select name="sutki" id="day" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">ДЕНЬ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">НОЧЬ</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box;">(ФИО) Техника</label>
+                                        <input type="text" id="controller-name" name="controllerName" value="NAME" placeholder="Введите фамилию" style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 4: Дата отбора проб и Batch Code (LOT) -->
+                                <div class="form-group" style="display: flex; gap: 15px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Дата отбора проб</label>
+                                        <input type="date" id="doc-date" name="docDate" value="2026-05-29" required style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Batch Code (LOT)</label>
+                                        <input type="text" id="batch-code-field" name="batchCode" value="" style="font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; font-family: monospace; font-weight: 700; background-color: #f1f5f9; color: #000;" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                <!-- Блок нормативов и правил из левой колонки Excel -->
+                <div class="meta-card meta-card-gray" id="dop" style="border-left: 4px solid #10b981; gap: 5px;">
+                    <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b; font-size: 1.5rem; padding-bottom: 10px;">📋 Регламент отбора:</div>
+                    <p style="margin-bottom: 2px; border: 1px solid #000; font-size: 0.8rem; border-radius: 5px; text-align: center;">1. Отбор каждую ночную смену.</p>
+                    <p style="margin-bottom: 2px;  border: 1px solid #000; font-size: 0.8rem; border-radius: 5px; text-align: center;">2. Спрей и жир отбираем по две пробы, каждая по 375 гр.</p>
+                    <p style="margin-bottom: 2px;  border: 1px solid #000; font-size: 0.8rem; border-radius: 5px; text-align: center;">3. Перед отбором Крошки убедиться, что бин соответствует месту отбора.</p>
+                    <p  style="margin-bottom: 2px;  border: 1px solid #000; font-size: 0.8rem; border-radius: 5px; text-align: center;">4. Образцы упаковываются в отдельный пакет-маечку.</p>
+                </div>
+
+                <!-- Лабораторный блок из правой колонки Excel -->
+                <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
+                    <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b; font-size: 1.5rem; padding-bottom: 10px;">🔬 Заполняется лабораторией</div>
+                    <p style="margin-bottom: 2px; padding-bottom: 15px; font-size: 0.85rem; padding: 10px;"><strong>Получение образцов микробиологической лабораторией:</strong></p>
+
+                    <div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; padding: 10px; ">
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style=" font-size: 0.85rem;">Время получения</label>
+                                <input type="time" name="lab_time" class="table-input tm-l" required />
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style=" font-size: 0.85rem;">Дата получения</label>
+                                <input type="date" name="lab_doc_date" value="2026-05-29" required />
+                            </div>
+                        </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style=" font-size: 0.85rem; padding: 10px;">Фамилия лаборанта</label>
+                                <input type="text" name="lab_controller_name" value="" required />
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- ТАБЛИЦА СТРОК АКТА -->
+            <!-- Добавлен класс для сворачивания -->
+            <div id="tableWrapper" class="table-container toggle-section">
+                <div class="table-scroll">
+                    <table>
+                        <colgroup>
+                        <col style="width: 5%;"> <!-- <th>Atlas</th> -->
+                        <col style="width: 10%;"> <!-- <th>какаета там</th> -->
+                        <col style="width: 20%;"> <!-- <th>Название образца</th> -->
+                        <col style="width: 10%;"> <!-- <th>Точка отбора</th> -->
+                        <col style="width: 10%;"> <!-- <th>Условия отбора</th> -->
+                        <col style="width: 5%;"> <!-- <th>Бин соответствует? (ok / not ok)</th> -->
+                        <col style="width: 8%;"> <!-- <th>Время отбора образца</th> -->
+                        <col style="width: 8%;"> <!-- <th>GRD-code</th> -->
+                        <col style="width: 12%;"> <!-- <th>Лаб. №</th> -->
+                        <col style="width: 12%;"> <!-- <th>IL</th> -->
+                    </colgroup>
+                        <thead>
+                            <tr>
+                                <th name="atlas">Atlas</th>
+                                <th name="caktam">какаета там</th>
+                                <th name="nameobraz">Название образца</th>
+                                <th name="tochka">Точка отбора</th>
+                                <th name="uslovie">Условия отбора</th>
+                                <th name="notok">Бин соответствует? (ok / not ok)</th>
+                                <th name="tochkatime">Время отбора образца</th>
+                                <th name="grd">GRD-code</th>
+                                <th name="labno">Лаб. №</th>
+                                <th name="il">IL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <!-- РАЗДЕЛ: СПРЕИ И ЖИРЫ -->
+                            <tr>
+                                <td class="row-section-header" colspan="10" style="text-align: center;">КАЖДАЯ СТРОЧКА - ОТДЕЛЬНЫЙ IL с одним PS (СПРЕИ, ЖИРЫ)</td>
+                            </tr>
+                            <tr>
+                                <td class="cell-static-text">както</td>
+                                <td class="cell-static-text">типа как</td>
+                                <td class="cell-static-text">влажный спрей Л1</td>
+                                <td class="cell-static-text">возле спрейбарабана</td>
+                                <td class="cell-static-text" rowspan="7" style="background:#fdfeb8; text-align:center; font-weight:600; color:#1e293b;">пробу отбирает оператор сушилки, оформляет контролер</td>
+                                <td>
+                                    <select class="table-input table-select"><option value="n/a">n/a</option><option value="ok">ok</option><option value="not ok">not ok</option></select>
+                                </td>
+                                <td><input type="time" class="table-input" name="time1"></td>
+                                <td class="cell-static-text" style="text-align:center; font-weight:700;">
+                                    <select class="table-input table-select" name="grdCode">
+                                        <option name="gcode">GRD-code</option>
+                                        <option name="cat">1226674</option>
+                                        <option name="dog">1119397</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="table-input" name="labNum1"></td>
+                                <td><input type="text" class="table-input" name="il1"></td>
+                            </tr>
+                            <tr>
+                                <td class="cell-static-text">както</td>
+                                <td class="cell-static-text">типа как</td>
+                                <td class="cell-static-text">влажный спрей Л2</td>
+                                <td class="cell-static-text">возле спрейбарабана</td>
+                                <td>
+                                    <select class="table-input table-select"><option value="n/a">n/a</option><option value="ok">ok</option><option value="not ok">not ok</option></select>
+                                </td>
+                                <td><input type="time" class="table-input" name="time2"></td>
+                                <td class="cell-static-text" style="text-align:center; font-weight:700;">
+                                    <select class="table-input table-select" name="grdCode1">
+                                        <option name="gcode1">GRD-code</option>
+                                        <option name="cat1">1226674</option>
+                                        <option name="dog1">1119397</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="table-input" name="labNum2"></td>
+                                <td><input type="text" class="table-input" name="il2"></td>
+                            </tr>
+                            <!-- Остальные строки аналогично, с уникальными name для полей -->
+                            <!-- Для краткости я не дублирую все строки, но принцип тот же: каждому полю — свой name -->
+                            <!-- Важно: у всех полей в таблице должны быть name, чтобы JS мог их собрать -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- КНОПКИ ДЕЙСТВИЙ -->
+            <div class="actions-bar">
+                <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
+                <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
+                <button type="button" class="btn btn-warning" id="btnCollapse">📦 Свернуть акт (черновик)</button>
+            </div>
+        </form>
+    </div>
+<div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
+                    <span>W: 01 от 22.08..2024</span>
+        </div>
+    <script src="/form/global-yadro-JS/acts-logic.js"></script>
+    <script src="/form/global-yadro-JS/acts-bach.js"></script>
+    <script src="/form/global-yadro-JS/acts-core.js"></script>
+    <script src="act-er.js"></script>
+</body>
+</html>

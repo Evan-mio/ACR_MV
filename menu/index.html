@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+    <title>Dust Monitoring Dry</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="icon" href="data:,">
+    
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Верхняя панель -->
+        <header class="top-bar">
+            <div class="header">
+                <div class="header-container">
+                <!-- Левая часть: логотип и длинный текст в одну строку -->
+                    <div class="logo-group">
+                        <div class="logo-title">
+                            <img src="images/randd.jpg" alt="логотип отдела" width="140px" height="140px" style="border-radius: 50%;">
+                        </div>
+                        <div class="logo-subtitle">
+                            <input type="text" value="Система" style="color: white; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;"><br>
+                            <input type="text" value="цифрового" style="color: white; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;"><br>
+                            <input type="text" value="документооборота" style="color: white; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;"><br>
+                            <input type="text" value="микробиологической" style="color: white; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;"><br>
+                            <input type="text" value="верификации" style="color: white; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">
+                        </div>
+                    </div>
+                    <div class="user-display-block">
+                        <button class="logout-link neon-sign" id="logoutBtn" title="Выйти" aria-label="Выйти">
+                            <span class="neon-text">E<br>X<br>I<br>T</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Боковая панель -->
+        <aside class="sidebar">
+            <img class="logo" src="images/acr.jpg" alt="автомотический выпуск продукта с микро холда" style="border-radius: 50%; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5))">
+            <div class="logo-subtitle" style="padding-bottom: 40px;">
+                    <input type="text" value="АВТОМОТИЧЕСКИЙ" style="color: white; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;"><br>
+                    <input type="text" value="ВЫПУСК" style="color: white; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;"><br>
+                    <input type="text" value="СУХОВО" style="color: white; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;"><br>
+                    <input type="text" value="ПРОДУКТА" style="color: white; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
+            </div>
+            <nav class="menu">
+                <button class="menu-item active" data-view="home" style="display: flex;  gap: 10px; font-weight: 600; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));">
+                    <img src="images/news.jpg" width="55" style="border-radius: 50%;">Новости</button>
+                <button class="menu-item" data-view="products" style="display: flex; align-items: center; gap: 10px; font-weight: 600; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));">
+                    <img src="images/_F_G_B_B_.jpg" width="55" style="border-radius: 50%;">Готовая продукция</button>
+                <button class="menu-item" data-view="swabs" style="display: flex; align-items: center; gap: 10px; font-weight: 600; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));">
+                    <img src="images/swab.jpg" width="55" style="border-radius: 50%;">Смывы</button>
+                <button class="menu-item" data-view="crumbs" style="display: flex; align-items: center; gap: 10px; font-weight: 600; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));">
+                    <img src="images/fat.jpg" width="55" style="border-radius: 50%;">Крошка спрей жир</button>
+                <button class="menu-item" data-view="NotACT" style="display: flex; align-items: center; gap: 10px; font-weight: 600; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));">
+                    <img src="images/notstandart.jpg" width="55" style="border-radius: 50%;">Нестандартные пробы.</button>
+                <button class="menu-item" data-view="archive" style="display: flex; align-items: center; gap: 10px; font-weight: 600; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));">
+                    <img src="images/arhiv.jpg" width="55" style="border-radius: 50%;">Архив</button>
+                <button class="menu-item" data-view="db" style="display: flex; align-items: center; gap: 10px; font-weight: 600; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));">
+                    <img src="images/baza.jpg" width="55" style="border-radius: 50%;">База данных</button>
+                    <button class="menu-item" data-view="liberti" style="display: flex; align-items: center; gap: 10px; font-weight: 600; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));">
+                    <img src="images/libertis.jpg" width="55" style="border-radius: 50%;">Библиотека</button>
+            </nav>
+
+            <!-- ПАНЕЛЬ ЧЕРНОВИКОВ (АКТОВ) -->
+            <div class="drafts-panel">
+                <div class="drafts-header">
+                    <h4>💼 Активные акты / Черновики</h4>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="drafts-list" id="activeActsList">
+                <!-- Сюда JS будет вставлять карточки -->
+                <p style="font-size:12px; color:#94a3b8; margin: 4px 0;">Нет активных черновиков</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="content" style="padding-top: 150px;">
+            <!-- Главная: новости -->
+            <section id="home" class="view active">
+                <h2>Новости</h2>
+                <div id="news-container" class="cards-grid"></div>
+                <button type="button" id="add-news-btn" class="btn btn-content" onclick="openAddModal()" style="transition: background 0.2s;">➕ Добавить</button>
+                <!-- Модальное окно (полностью изолировано через fixed) -->
+                <div id="add-news-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 9999; align-items: center; justify-content: center;">
+                    <div style="background: #fff; padding: 25px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); box-sizing: border-box;">
+                        <h3 style="margin-top: 0; font-size: 20px; color: #333; margin-bottom: 20px;">➕ Добавить новую новость</h3>
+                        <form id="news-form" onsubmit="handleNewsSubmit(event)">
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #555;">Заголовок новости:</label>
+                                <input type="text" id="form-title" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: #fff; color: #333;">
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #555;">Описание новости:</label>
+                                <input type="text" id="form-desc" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: #fff; color: #333;">
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #555;">Подробности новости:</label>
+                                <textarea id="form-details" required rows="5" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; resize: vertical; font-family: inherit; background: #fff; color: #333;"></textarea>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #333;">Запланировать публикацию (оставьте пустым для немедленной):</label>
+                                <input type="datetime-local" id="form-publish-time" style="width:100%; padding:8px; border-radius:4px; border:1px solid #ccc; box-sizing: border-box; background: #fff; color: #333;">
+                            </div>
+                            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                <button type="button" id="form-cancel-btn" onclick="closeAddModal()" style="padding: 8px 16px; border: 1px solid #ccc; background: #fff; color: #333; border-radius: 4px; cursor: pointer;">Отмена</button>
+                                <button type="submit" style="padding: 8px 16px; border: none; background: #007bff; color: #fff; border-radius: 4px; cursor: pointer;">Сохранить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Готовая продукция: карточки чеклистов/актов -->
+            <section id="products" class="view">
+                <a href="/form/F_G/act-_F_G.html" class="act-card">
+                    <div>
+                        <div class="card-name">Чек-лист на готовую продукцию</div>
+                        <div class="card-desc">Проверка органолептики, упаковки и маркировки готовых изделий перед отгрузкой.</div>
+                    </div>
+                    <div class="card-btn">Заполнить форму &rarr;</div>
+                </a>
+                <a href="/form/B_B/act-_B_B.html" class="act-card">
+                    <div>
+                        <div class="card-name">Ссылка в мешках</div>
+                        <div class="card-desc">Контроль процесса фасовки, веса упаковок, качества швов и целостности тары.</div>
+                    </div>
+                    <div class="card-btn">Заполнить форму &rarr;</div>
+                </a>
+            </section>
+
+            <!-- Смывы -->
+            <section id="swabs" class="view">
+                <a href="/form/Swab-Rut/act-swab-rut.html" class="act-card">
+                    <div>
+                        <div class="card-name">Акт на рутинные смывы</div>
+                        <div class="card-desc">учет чистоты.</div>
+                    </div>
+                    <div class="card-btn">Заполнить акт &rarr;</div>
+                </a>
+                <a href="/form/Swab-FatProba/act-swab-fatproba.html" class="act-card">
+                    <div>
+                        <div class="card-name">Акт на примые поставки жира</div>
+                        <div class="card-desc">учет чистоты.</div>
+                    </div>
+                    <div class="card-btn">Заполнить акт &rarr;</div>
+                </a>
+                <a href="/form/Swab-Cremper/act-swab-cremper.html" class="act-card">
+                    <div>
+                        <div class="card-name">Акт на кремпер</div>
+                        <div class="card-desc">учет чистоты.</div>
+                    </div>
+                    <div class="card-btn">Заполнить акт &rarr;</div>
+                </a>
+            </section>
+
+            <!-- Крошка спрей жир -->
+            <section id="crumbs" class="view">
+                <a href="/form/ER/act-er.html" class="act-card">
+                    <div>
+                        <div class="card-name">Акт на крошку и жир</div>
+                        <div class="card-desc">учет качества</div>
+                    </div>
+                    <div class="card-btn">Заполнить акт &rarr;</div>
+                </a>
+            </section>
+
+            <!-- Нестандартный акт -->
+            <section id="NotACT" class="view">
+                <a href="/form/NotStandart/act-notstandart.html" class="act-card">
+                    <div>
+                        <div class="card-name">Акт Нестандартных проб</div>
+                        <div class="card-desc">учет качества чистоты</div>
+                    </div>
+                    <div class="card-btn">Заполнить акт &rarr;</div>
+                </a>
+            </section>
+
+            <!-- Архив -->
+            <section id="archive" class="view">
+                <a href="/arhiv/archive.html" class="act-card">
+                    <div>
+                        <div class="card-name">автомотическая генерация кода</div>
+                        <div class="card-desc">код генерируется JS коде</div>
+                    </div>
+                    <div class="card-btn">Заполнить акт &rarr;</div>
+                </a>
+            </section>
+
+            <!-- База -->
+            <section id="db" class="view">
+                <a href="/DataBaza/index.html" class="act-card">
+                    <div>
+                        <div class="card-name"></div>
+                        <div class="card-desc"></div>
+                    </div>
+                    <div class="card-btn">Заполнить акт &rarr;</div>
+                </a>
+            </section>
+
+            <!-- Библиотека -->
+            <section id="liberti" class="view">
+                <a href="/Liberti/" class="act-card">
+                    <div>
+                        <div class="card-name"></div>
+                        <div class="card-desc"></div>
+                    </div>
+                    <div class="card-btn">Заполнить акт &rarr;</div>
+                </a>
+            </section>
+    </main>
+    </div>
+    <div class="fixed-clock-widget">
+    <div class="data-text">
+        <span id="time">00:00:00</span>
+        <span id="date">01 Января 2026</span>
+    </div>
+</div>
+<!-- Кастомное модальное окно подробностей -->
+<div id="details-news-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+    <div style="background: #ffffff; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; color: #333;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 id="modal-details-title" style="margin: 0;"></h3>
+            <button id="details-close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+        </div>
+        <p id="modal-details-text" style="line-height: 1.5; color: #4a5568;"></p>
+        <div style="text-align: right; margin-top: 20px;">
+            <button id="details-ok-btn" style="background: #3182ce; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Понятно</button>
+        </div>
+    </div>
+</div>
+
+<div class="global-neon-glow"></div>
+
+    <script src="/DataBaza/baza/users.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

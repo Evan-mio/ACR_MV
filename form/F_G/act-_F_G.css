@@ -1,0 +1,399 @@
+/* Базовые стили и шрифты */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 3px;
+}
+
+body {
+    background-color: #f4f6f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #333;
+    line-height: 1.4;
+    padding-bottom: 60px; /* исправлено: было adding-bottom */
+}
+
+/* Навигационный хедер */
+.header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title-block {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #64748b;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background-color: #f1f5f9;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.main-title {
+    font-size: 25px;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+}
+
+/* Базовые стили кнопки */
+.nav-print-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Эффект при наведении (вместо onmouseover и onmouseout) */
+.nav-print-link:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Эффект при клике (вместо onmousedown и onmouseup) */
+.nav-print-link:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Базовый вид ссылки-кнопки */
+.nav-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #334155;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Эффект при наведении курсора */
+.nav-home-link:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #1e293b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Эффект в момент клика */
+.nav-home-link:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+
+.nav-home-link {
+    font-size: 14px;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Контейнер формы */
+.container {
+    max-width: 98%;
+    margin: 0 auto;
+    padding: 15px 10px;
+}
+
+/* Сетка шапки бланка */
+.meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.meta-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-card-gray {
+    background-color: #f8fafc;
+    font-size: 13px;
+    color: #475569;
+}
+
+.form-group {
+    margin-bottom: 8px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #7b7d80;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #334155; 
+}
+
+input[readonly] {
+    background-color: #f1f5f9;
+    color: #000;
+    font-weight: 600;
+}
+
+/* Таблица */
+.table-container {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.act-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 1px solid #868b91a9;
+}
+
+.act-table {
+    width: 100%;
+    table-layout: fixed; /* критично для colgroup */
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 900px;
+}
+
+.act-table th,
+.act-table td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+.act-table input {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid;
+    text-align: center;
+    background: transparent;
+    padding: 2px;
+}
+
+.act-table input:focus {
+    background-color: #eff6ff;
+    outline: 1px solid #3b82f6;
+}
+
+/* Заголовки технологических зон */
+.section-row-header {
+    background-color: #e2e8f0;
+    font-weight: 800;
+    text-align: center;
+    color: #1e293b;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.text-static {
+    color: #475569;
+    font-weight: 500;
+}
+
+.text-center-bold {
+    text-align: center;
+    font-weight: 700;
+    color: #1e293b;
+    background-color: #f8fafc;
+}
+
+/* Кнопки подвала */
+.actions-bar {
+    display: flex;
+    gap: 12px;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-warning {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.btn-success {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+}
+
+    .btn:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+    color: #1e293b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Стили для временных бейджей */
+.time-badge-day, .time-badge-night {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: monospace;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Стилизация дня (Теплые янтарные тона) */
+.time-badge-day {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+/* Стилизация ночи (Спокойные зеленые тона) */
+.time-badge-night {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+
+@media print {
+    /* 1. Намертво скрываем кнопки навигации, печати, вкладок и управления листами */
+    .tabs-container,
+    .btn btn-secondary,
+    .nav-home-link, 
+    .nav-print-link, 
+    .header-container,
+    #dop,
+    #tab-list,
+    #btnEditSheetName,
+    #btnAddNewSheet,
+    #btnCollapse,
+    #btnSaveArchive,
+    #btnCancel,
+    #btnAddRow,
+    #btnAddRows5,
+    #btnAddRows15 {
+        display: none !important;
+    }
+
+    /* 2. Настройки печатной страницы (убираем лишние поля и серый фон) */
+    body {
+        background-color: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* 3. Растягиваем таблицу на весь печатный лист */
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    /* 4. Превращаем текстовые поля ввода в аккуратный печатный текст */
+    input[type="text"] {
+        border: none !important;
+        background: transparent !important;
+        padding: 4px !important;
+        box-shadow: none !important;
+    }
+}
+

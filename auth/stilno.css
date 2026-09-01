@@ -1,0 +1,285 @@
+/* ==========================================================================
+   1. БАЗОВЫЕ НАСТРОЙКИ И ФОН СИСТЕМЫ
+   ========================================================================== */
+:root {
+    --neon-blue: #00f2fe;
+    --neon-purple: #7928ca;
+    --neon-cyan: rgba(20, 240, 240, 0.9);
+}
+
+body {
+    background-color: #040b14;
+    background-image: url('fonz.jpg');
+    background-position: center center; 
+    background-repeat: no-repeat; 
+    background-attachment: fixed; 
+    /* background-size: cover;  */
+    min-height: 100vh; 
+    margin: 0; 
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+    padding: 20px; 
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. 3D-КОНТЕЙНЕР И ЛОГИКА ПЕРЕВОРОТА (FLIP)
+   ========================================================================== */
+.card-container {
+    perspective: 1000px; /* Глубина сцены, чтобы поворот выглядел объемно, а не плоско */
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.card-flipper {
+    position: relative;
+    width: 100%;
+    height: 540px; /* Фиксированная высота с запасом под форму смены пароля */
+    transform-style: preserve-3d; 
+    -webkit-transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+/* Класс активации поворота карточки через JavaScript */
+.card-flipper.flipped {
+    transform: rotateY(180deg);
+}
+
+/* ==========================================================================
+   3. СТИЛИЗАЦИЯ КАРТОЧЕК (МАТОВОЕ СТЕКЛО И ЗАЩИТА ОТ ПРОСВЕЧИВАНИЯ)
+   ========================================================================== */
+.login-card { 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Скрытие изнанки карточки при перевороте для всех браузеров */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden; 
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    
+    /* Эффект легкого футуристичного стекла */
+    background: rgba(255, 255, 255, 0.18); 
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); 
+    border: 1px solid rgba(255, 255, 255, 0.25); 
+    padding: 30px; 
+    border-radius: 12px; 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
+    box-sizing: border-box; 
+    display: flex;
+    flex-direction: column;
+    
+    /* Плавное исчезновение неактивной стороны, чтобы стекло не конфликтовало в Chrome */
+    transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+/* Начальное состояние сторон (Лицо видимое, Изнанка скрыта) */
+.card-front {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* Защита от случайных кликов по скрытой форме */
+    z-index: 1;
+}
+
+/* Переключение видимости сторон при активном классе flipped */
+.card-flipper.flipped .card-front {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.card-flipper.flipped .card-back {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ==========================================================================
+   4. ТЕКСТОВЫЕ ЭЛЕМЕНТЫ (МАССИВНЫЕ, ПЛОТНЫЕ И КОНТРАСТНЫЕ)
+   ========================================================================== */
+h2 { 
+    font-size: 1.8rem;
+    font-weight: 800; /* Максимальная плотность и толщина букв */
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px; 
+    color: #ffffff; /* Белое ядро текста, чтобы он не казался тусклым на стекле */
+    
+    /* Исправлено синтаксис: добавлены запятые между тенями, неон теперь горит */
+    filter: drop-shadow(0 0 2px var(--neon-blue))                    
+            drop-shadow(0 0 10px var(--neon-blue))
+            drop-shadow(0 0 25px rgba(0, 242, 254, 0.8));
+    letter-spacing: 0.5px;
+}
+
+.form-group { 
+    margin-bottom: 50px; 
+}
+
+label { 
+    display: block; 
+    margin-bottom: 6px; 
+    color: #ffffff; /* Плотный белый цвет заголовков полей */
+    font-size: 0.85rem;
+    font-weight: 700; /* Жирное начертание */
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    filter: drop-shadow(0 0 3px var(--neon-cyan))
+            drop-shadow(0 0 8px rgba(20, 240, 240, 0.6));
+}
+
+/* ==========================================================================
+   5. ПОЛЯ ВВОДА (INPUT) С НЕОНОВЫМ ФОКУСОМ
+   ========================================================================== */
+input { 
+    width: 100%; 
+    padding: 12px;
+    font-size: 15px; 
+    font-weight: 700; /* Вводимые символы будут плотными и четкими */
+    background: rgba(0, 0, 0, 0.25); /* Темная подложка для идеального контраста с белым текстом */
+    color: white;
+    border: 1px solid rgba(0, 242, 254, 0.3); 
+    border-radius: 6px;
+    cursor: text;
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.3s ease; 
+}
+
+input:hover {
+    border-color: rgba(0, 242, 254, 0.6);
+}
+
+input:focus {
+    background: rgba(0, 0, 0, 0.45);
+    border-color: var(--neon-blue); 
+    /* Внутреннее и внешнее сочное неоновое свечение активного поля */
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.6), 
+                inset 0 0 5px rgba(0, 242, 254, 0.4);
+}
+
+/* Особый стиль для заблокированного поля ID на второй стороне */
+input[readonly] {
+    background: rgba(20, 240, 240, 0.1);
+    border-color: rgba(20, 240, 240, 0.45);
+    color: var(--neon-blue);
+    font-family: 'Courier New', monospace; /* Технологичный моноширинный шрифт */
+    font-weight: 700;
+    cursor: default;
+}
+
+/* ==========================================================================
+   6. ЭФФЕКТ: БЕГУЩАЯ НЕОНОВАЯ ДОРОЖКА ПО КОНТУРУ КНОПКИ
+   ========================================================================== */
+.neon-wrapper {
+    position: relative;
+    width: 100%;
+    height: 46px;
+    border-radius: 6px;
+    overflow: hidden; /* Обрезает вращающийся градиент, оставляя только рамку */
+    margin-top: 15px;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+}
+
+/* Вращающийся диск под кнопкой */
+.neon-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 160%;
+    height: 300%; 
+    top: -100%;
+    left: -30%;
+    background: conic-gradient(
+        transparent 70%, 
+        var(--neon-blue) 90%, 
+        var(--neon-purple) 98%, 
+        transparent 100%
+    );
+    animation: rotateNeon 2.5s linear infinite;
+}
+
+/* Сама кнопка, которая перекрывает диск и создает зазор для дорожки толщиной в 2px */
+.neon-wrapper button {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: #15181f; /* Глубокий темный цвет тела кнопки */
+    color: var(--neon-blue);
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+/* Эффект полного включения лампы при наведении */
+.neon-wrapper button:hover {
+    background: var(--neon-blue);
+    color: #000000; /* Черный текст на бирюзовом фоне для читаемости */
+    box-shadow: 0 0 20px var(--neon-blue);
+}
+
+.neon-wrapper button:active {
+    transform: scale(0.98);
+}
+
+@keyframes rotateNeon {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   7. ССЫЛКИ НАВИГАЦИИ И ОШИБКИ
+   ========================================================================== */
+.card-nav {
+    margin-top: auto; /* Жестко прижимает блок ссылок к низу карточки */
+    text-align: center;
+    padding-top: 20px;
+}
+
+.card-nav span {
+    color: rgba(0, 242, 254, 0.5); /* Белая плотная ссылка */
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    filter: drop-shadow(0 0 5px var(--neon-blue));
+    border-bottom: 1px dashed rgba(0, 242, 254, 0.5); /* Пунктирное подчеркивание */
+}
+
+.card-nav span:hover {
+    color: var(--neon-blue);
+    border-bottom-color: var(--neon-blue);
+    filter: drop-shadow(0 0 5px var(--neon-blue));
+}
+
+/* Красный неоновый блок ошибки */
+.error { 
+    color: #ff3838; 
+    font-size: 1ren; 
+    margin-top: 12px; 
+    text-align: center; 
+    display: none; 
+    font-weight: 700;
+    filter: drop-shadow(0 0 5px rgba(255, 56, 56, 0.6));
+}

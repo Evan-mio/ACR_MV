@@ -1,0 +1,738 @@
+/* ==========================================================================
+    БЛОК 1. БАЗОВЫЕ НАСТРОЙКИ, ПЕРЕМЕННЫЕ И РАЗМЫТИЕ
+========================================================================== */
+:root {
+    --bg-main: radial-gradient(circle at center, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --neon-blue: #00f2fe;
+    --neon-purple: #e900fe;
+    --neon-green: #27e030;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: #020a13;
+    background-image: url('images/fonz.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Эффект матового стекла (Glassmorphism) */
+.top-bar, .sidebar, .card, .drafts-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px); /* Размытие фона */
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border); /* Тонкая светлая граница */
+}
+
+/* ==========================================================================
+    БЛОК 2. МАКЕТ СЕТКИ ЭКРАНА И СКРЫВАЕМОЕ ВЕРХНЕЕ МЕНЮ
+========================================================================== */
+.app-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-areas: "sidebar content"; /* сетки, чтобы не ломать верстку при скрытии */
+    height: 100vh;
+}
+
+/* Скрытая верхняя панель */
+.top-bar {
+    position: fixed;
+    top: -220px; /* прячем за верхний край с запасом */
+    left: 0;
+    width: 100%;
+    height: 200px; /* фиксируем аккуратную высоту */
+    padding: 0 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* скольжение */
+}
+
+/* вех меню при наведении на саму панель или через вспомогательные JS-классы */
+.top-bar:hover,
+.top-bar.forced-active,
+.top-bar.mouse-top-active {
+    top: 0; /* выдвигаем меню */
+}
+
+/* бок панель: выдвигается при наведении на саму себя или по классам от JS */
+.sidebar:hover,
+.sidebar.forced-active,
+.sidebar.mouse-left-active {
+    left: 0 !important;
+}
+
+/* ==========================================================================
+    БЛОК 3. ВНУТРЕННИЕ ЭЛЕМЕНТЫ ШАПКИ, ПРОФИЛЬ И БОКОВАЯ ПАНЕЛЬ
+========================================================================== */
+.header {
+    width: 100%;
+}
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 50px;
+    box-sizing: border-box;
+}
+.logo-group {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+.logo-subtitle input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 300px;
+}
+.logo-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));
+    line-height: 1.1;
+}
+.logo-subtitle { 
+    color: var(--text-secondary); 
+    font-size: 0.85rem; 
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+}
+
+.logo-subtitle-1 { 
+    color: var(--text-secondary); 
+    font-size: 0.85rem; 
+    text-transform: uppercase; 
+    letter-spacing: 5px; 
+}
+
+/* кнопки авторизации и профиля */
+.auth-block { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    width: 150px; 
+    height: 50px; 
+}
+
+.auth-btn { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; width: 200px; 
+    height: 60px; 
+    background-color: #1de2f0a4; 
+    color: #ffffff; 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    transition: all 0.2s ease, transform 0.1s ease; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); 
+}
+
+.auth-btn:hover { 
+    background-color: #1d4ed8; 
+}
+
+.auth-btn:active { 
+    transform: scale(0.98); 
+}
+
+.user-btn:hover { 
+    background-color: #1d4ed8; 
+    transform: translateY(-1px); 
+    box-shadow: 0 4px 6px rgba(59, 214, 235, 0.25); 
+}
+
+.user-btn:active { 
+    transform: translateY(1px); 
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); 
+}
+
+#mainPageUserField { 
+    font-size: 1.25rem; 
+    color: #fff; 
+    text-align: center; 
+    display: inline-block; 
+}
+
+.user-display-block { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    line-height: 1.4; 
+}
+
+.neon-sign {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+
+.neon-text {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 14px;
+    color: #ff0055;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 
+        0 0 5px rgba(255, 0, 85, 0.6),
+        0 0 10px rgba(255, 0, 85, 0.4),
+        0 0 20px rgba(255, 0, 85, 0.3);
+    display: block;
+}
+
+.neon-sign:hover .neon-text {
+    color: #ffffff;
+    text-shadow: 
+        0 0 10px rgba(255, 0, 85, 0.9),
+        0 0 25px rgba(255, 0, 85, 0.7),
+        0 0 40px rgba(255, 0, 85, 0.5);
+}
+
+/* дата и временя */
+.header-info { 
+    text-align: right; 
+    margin-left: auto; 
+}
+
+.data-text { 
+    background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5)); 
+    line-height: 1.1; 
+}
+
+#time, #date { 
+    font-weight: 800; 
+    display: block; 
+    font-family: 'Courier New', monospace; 
+}
+
+/* левая боковая панель */
+.sidebar { 
+    grid-area: sidebar; 
+    padding: 30px 15px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 30px; 
+    overflow-y: auto; 
+}
+
+.sidebar .logo { 
+    margin-bottom: 20px; 
+}
+
+.menu { 
+    display: flex; 
+    flex-direction: column;
+    gap: 15px; 
+}
+
+.menu-item { 
+    background: transparent; 
+    border: none; 
+    color: var(--text-secondary); 
+    padding: 14px 20px; 
+    text-align: left; 
+    border-radius: 12px; 
+    cursor: pointer; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    font-size: 1rem; 
+}
+
+.menu-item:hover { 
+    background: rgba(255, 255, 255, 0.1); 
+    color: #fff; 
+    transform: translateX(5px); 
+}
+
+.menu-item.active { 
+    background: linear-gradient(45deg, #23c3d8, #1e618d); 
+    color: #fff; 
+    box-shadow: 0 0 15px rgba(30, 211, 243, 0.7); 
+}
+
+.drafts-panel { 
+    margin-top: auto; 
+    border-radius: 15px; 
+    padding: 15px; 
+}
+
+.drafts-header h4 { 
+    font-size: 0.9rem; 
+    color: var(--text-primary); 
+    text-transform: uppercase; 
+}
+
+/* ==========================================================================
+    БЛОК 4. ОБЛАСТЬ ОСНОВНОГО КОНТЕНТА И СЕТКА GRID
+========================================================================== */
+.content {
+    grid-area: content;
+    padding: 70px;
+    padding-top: 80px;
+    overflow-y: auto;
+    background: transparent;
+    z-index: 1;
+    position: relative;
+}
+
+.view {
+    display: none;
+    padding-left: 270px;
+    padding-top: 50px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.view.active,
+#news-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+    gap: 25px !important;
+    align-items: stretch !important;
+}
+
+.view h2, 
+.view > p {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+}
+.view h2 { 
+    font-size: 2.2rem; 
+    font-weight: 800; 
+    letter-spacing: -0.5px; 
+    margin-bottom: 15px; 
+    background: linear-gradient(135deg, #ffffff 40%, var(--neon-blue) 100%); 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.2)); 
+}
+
+.view > p { 
+    color: var(--text-secondary); 
+    font-size: 1rem; 
+    margin-bottom: 20px; 
+}
+
+
+.content::-webkit-scrollbar { 
+    width: 6px; 
+}
+
+.content::-webkit-scrollbar-track { 
+    background: transparent; 
+}
+
+.content::-webkit-scrollbar-thumb { 
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px; 
+}
+
+.content::-webkit-scrollbar-thumb:hover { 
+    background: rgba(255, 255, 255, 0.2); 
+}
+
+.view { animation: slideUp 0.5s ease forwards; }
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+    БЛОК 5. УНИКАЛЬНЫЙ ДИЗАЙН КАРТОЧЕК И НЕОНОВЫЕ ФИШКИ
+========================================================================== */
+.act-card, .card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 22px;
+    padding: 30px;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 240px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25);
+}
+
+.act-card > div, .card > div { 
+    display: flex; 
+    flex-direction: column; 
+    flex-grow: 1; 
+    position: relative; 
+    z-index: 2; 
+}
+
+.card-name { 
+    font-size: 1.35rem; 
+    font-weight: 700; 
+    color: #ffffff; 
+    line-height: 1.3; 
+    margin-bottom: 12px; 
+}
+
+.card-desc { 
+    font-size: 0.95rem; 
+    color: #0df5e9; 
+    line-height: 1.6; 
+    margin-bottom: 25px; 
+    flex-grow: 1; 
+}
+
+.card-btn { 
+    font-size: 0.85rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 1.5px; 
+    text-align: right; 
+    color: rgba(255, 255, 255, 0.4); 
+    margin-top: auto; 
+    transition: all 0.3s ease; 
+    position: relative; 
+    z-index: 2; 
+}
+
+.act-card:hover, .card:hover { 
+    transform: translateY(-6px); 
+    border-top-color: rgba(255, 255, 255, 0.2); 
+    border-right-color: rgba(255, 255, 255, 0.2); 
+}
+
+/* ФИШКА: Интерактивный неоновый трекинг курсора мыши (Свечение под курсором) */
+.act-card::before, .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(250px circle at var(--mouse-x, 0px) 
+                                                var(--mouse-y, 0px), rgba(0, 242, 254, 0.15), 
+                                                transparent 80%);
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.act-card:hover::before, .card:hover::before { opacity: 1; }
+
+/* Цветовое подцветка рамок */
+#products .act-card { 
+    border-left: 4px solid #10b981; 
+}
+
+#products .act-card:hover { 
+    border-color: #10b981; 
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.25); 
+    background: rgba(16, 185, 129, 0.03); 
+}
+
+#products .act-card:hover .card-btn { 
+    color: #10b981; 
+    text-shadow: 0 0 8px #10b981; 
+}
+
+#swabs .act-card { 
+    border-left: 4px solid #00f2fe; 
+}
+
+#swabs .act-card:hover { 
+    border-color: #00f2fe; 
+    box-shadow: 0 0 30px rgba(0, 242, 254, 0.25); 
+    background: rgba(0, 242, 254, 0.03); 
+}
+
+#swabs .act-card:hover .card-btn { 
+    color: #00f2fe; 
+    text-shadow: 0 0 8px #00f2fe; 
+}
+
+#crumbs .act-card { 
+    border-left: 4px solid #f59e0b; 
+}
+
+#crumbs .act-card:hover { 
+    border-color: #f59e0b; 
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.25); 
+    background: rgba(245, 158, 11, 0.03); 
+}
+#crumbs .act-card:hover .card-btn { 
+    color: #f59e0b; 
+    text-shadow: 0 0 8px #f59e0b; 
+}
+
+#NotACT .act-card { 
+    border-left: 4px solid #ef4444; 
+}
+
+#NotACT .act-card:hover { 
+    border-color: #ef4444; 
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.25); 
+    background: rgba(239, 68, 68, 0.03); 
+}
+
+#NotACT .act-card:hover .card-btn { 
+    color: #ef4444; 
+    text-shadow: 0 0 8px #ef4444; 
+}
+
+#db .act-card {
+    border-left: 4px solid #00edfe; 
+    padding-bottom: 40px; 
+}
+
+#db .act-card h2 { 
+    background: #fff; 
+    -webkit-background-clip: unset; 
+    background-clip: unset; 
+    -webkit-text-fill-color: initial; 
+    color: #fff; 
+    font-size: 1.5rem; 
+}
+
+#db .act-card:hover { 
+    border-color: #0de8f8; 
+    box-shadow: 0 0 30px rgba(0, 237, 254, 0.445); 
+    background: rgba(233, 0, 254, 0.03); 
+}
+
+#news-container .card, 
+#news-container .act-card { 
+    border-left: 4px solid #00f2fe; 
+}
+
+#news-container .card:hover, 
+#news-container .act-card:hover { 
+    border-color: #00f2fe; 
+    box-shadow: 0 0 30px rgba(0, 242, 254, 0.25); 
+    background: rgba(0, 242, 254, 0.03); 
+}
+
+#news-container .card:hover .card-btn, 
+#news-container .act-card:hover .card-btn { 
+    color: #00f2fe; 
+    text-shadow: 0 0 8px #00f2fe; 
+}
+
+/* ФИШКА: Оформление карточки и фиолетового таймера отложенной публикации новостей */
+.card.scheduled-card { 
+    border-left-color: var(--neon-purple) !important; 
+    opacity: 0.7; 
+    background: rgba(233, 0, 254, 0.02) !important; 
+}
+
+.card.scheduled-card:hover { 
+    opacity: 1; 
+    box-shadow: 0 0 25px rgba(233, 0, 254, 0.25) !important; 
+}
+
+.schedule-badge { 
+    position: absolute; 
+    top: 15px; 
+    right: 15px; 
+    background: rgba(233, 0, 254, 0.2); 
+    border: 1px solid var(--neon-purple); 
+    color: #fff; 
+    font-size: 11px; 
+    padding: 3px 8px; 
+    border-radius: 20px; 
+    text-shadow: 0 0 5px var(--neon-purple); 
+    font-weight: bold; 
+    z-index: 3; 
+}
+
+/* Общие интерфейсные кнопки */
+.btn-content { 
+    position: fixed; 
+    bottom: 30px; 
+    right: 40px; 
+    z-index: 9999; 
+    display: flex; 
+    justify-content: flex-end; 
+}
+
+.btn { 
+    padding: 8px 16px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-size: 13px; 
+    font-weight: 600; 
+    background-color: #98aeeb; 
+    color: #ffffff; 
+    border: 1px solid transparent; 
+    transition: 
+        background-color 0.2s, 
+        border-color 0.2s, 
+        transform 0.2s, 
+        box-shadow 0.2s; 
+}
+
+.btn:hover { 
+    background-color: #f8fafc; 
+    border-color: #94a3b8; 
+    color: #1e293b; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08); 
+}
+
+.btn:active { 
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
+}
+
+/* ==========================================================================
+    ФИШКА: ПОЛНОСТЬЮ СКРЫТОЕ БОКОВОЕ МЕНЮ С ОТКРЫТИЕМ ПРИ НАВЕДЕНИИ
+========================================================================== */
+
+/* Корректировка сетки: контент теперь всегда занимает 100% экрана, меню над ним */
+.app-layout {
+    grid-template-columns: 1fr !important;
+    grid-template-areas: "content" !important;
+}
+
+/* Боковое меню уводим за левый край экрана по умолчанию */
+.sidebar {
+    position: fixed !important;
+    top: 0;
+    left: -350px; /* Спрятано */
+    width: 330px;
+    height: 100vh;
+    z-index: 9999; /* Поверх контента */
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4);
+}
+
+/*  Настройка отступов контента, чтобы он занимал весь экран */
+.content {
+    grid-area: content;
+    padding-left: 50px !important;
+    padding-right: 50px !important;
+}
+
+
+/* ==========================================================================
+    ФИШКА: ФИКСИРОВАННОЕ ОКОШКО ЧАСОВ В ВЕРХНЕМ ПРАВОМ УГЛУ ЭКРАНА
+========================================================================== */
+.fixed-clock-widget {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 10006;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 8px 18px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Эффект легкого неонового свечения текста внутри окошка */
+.fixed-clock-widget .data-text {
+    text-align: right;
+    background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
+}
+
+.fixed-clock-widget #time {
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+.fixed-clock-widget #date {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    -webkit-text-fill-color: var(--text-secondary);
+    filter: none;
+    margin-top: 2px;
+}
+
+/* Кнопка удаления новости на карточке */
+.btn-delete-card {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+}
+.btn-delete-card:hover {
+    background: #ef4444;
+    color: #fff;
+    box-shadow: 0 0 10px #ef4444;
+}
+
+/* Выравнивание кнопок внизу карточки */
+.card-actions-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: auto;
+}
+
+.logout-link, img {
+    border-color: #020a13;
+}
+
+/* Фоновый слой для неонового блика */
+.global-neon-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 400px;  
+    height: 400px; 
+    transform: translate(calc(var(--screen-mouse-x, -999px) - 50%), calc(var(--screen-mouse-y, -999px) - 50%));
+    background: radial-gradient(circle, rgba(0, 242, 254, 0.15) 0%, rgba(79, 172, 254, 0) 70%);
+    pointer-events: none;
+    z-index: 1;          
+    will-change: transform;
+}
+
+/* чтобы на мобильных устройствах без мыши слой не зависал в углу */
+@media (pointer: coarse) {
+    .global-neon-glow {
+        display: none;
+    }
+}

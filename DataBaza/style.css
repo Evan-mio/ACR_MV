@@ -1,0 +1,66 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+body { display: flex; flex-direction: column; height: 100vh; background-color: #f4f6f9; overflow: hidden; }
+
+/* Верхняя панель */
+.top-navbar { height: 60px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 20px; }
+.btn-home { background: #2563eb; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+.page-title { margin-left: 20px; font-size: 18px; font-weight: 600; }
+
+/* Основной рабочий макет */
+.workspace-wrapper { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 60px); }
+.main-layout { display: flex; flex: 1; overflow: hidden; }
+
+/* Боковое меню */
+.sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+.btn-create-db { background: #10b981; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; }
+.btn-create-db:hover { background: #059669; }
+.active-db-info { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px dashed #cbd5e1; font-size: 13px; }
+
+/* Кнопки удаления в сайдбаре */
+.btn-danger-sidebar { background: #ef4444; color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; font-size: 12px; transition: background 0.2s; }
+.btn-danger-sidebar:hover:not(:disabled) { background: #dc2626; }
+.btn-danger-sidebar:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+/* Кнопки добавления/удаления строки */
+.btn-add-row-aside { background: #f97316; color: #fff; border: none; height: 42px; padding: 0 20px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.2s; display: flex; align-items: center; justify-content: center; }
+.btn-add-row-aside:hover:not(:disabled) { background: #ea580c; }
+.btn-add-row-aside:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+.btn-delete-row-aside { background: #dc2626; color: #fff; border: none; height: 42px; padding: 0 15px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.2s; display: flex; align-items: center; justify-content: center; }
+.btn-delete-row-aside:hover:not(:disabled) { background: #b91c1c; }
+.btn-delete-row-aside:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+/* Список баз */
+.db-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+.db-item { padding: 8px 12px; background: #f1f5f9; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 500; }
+.db-item.active { background: #e0f2fe; color: #0369a1; font-weight: 600; }
+
+/* Центральная зона */
+.content-area { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+
+/* Верхняя панель действий (Столбцы) */
+.top-action-bar { display: flex; gap: 10px; background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
+.btn-add-col { background: #3b82f6; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-add-col:hover:not(:disabled) { background: #1d4ed8; }
+.btn-add-col:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+.btn-delete-col { background: #ef4444; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-delete-col:hover:not(:disabled) { background: #dc2626; }
+.btn-delete-col:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+/* Контейнер ввода */
+.inputs-container-card { background: #fff; border-radius: 12px; padding: 25px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+.interactive-row-layout { display: flex; gap: 15px; align-items: flex-end; margin-top: 15px; }
+
+.inputs-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+.input-field-group { display: flex; flex-direction: column; gap: 6px; }
+.input-field-group label { font-size: 13px; font-weight: 600; color: #4a5568; }
+.input-field-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+
+/* Нижнее окно мониторинга кода */
+.code-viewer-bottom { height: 250px; background: #1e1e1e; border-top: 1px solid #333; display: flex; flex-direction: column; color: #d4d4d4; position: relative; }
+.code-header { background: #2d2d2d; padding: 8px 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; color: #9cdcfe; border-bottom: 1px solid #3c3c3c; display: flex; justify-content: space-between; align-items: center; }
+.code-display { flex: 1; padding: 15px 20px; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; line-height: 1.5; overflow: auto; white-space: pre; color: #a9ffb4; }
+
+.btn-download-code { background: #10b981; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+.btn-download-code:hover { background: #059669; }
