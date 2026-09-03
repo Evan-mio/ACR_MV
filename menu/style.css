@@ -625,7 +625,7 @@ a {
 .sidebar {
     position: fixed !important;
     top: 0;
-    left: -350px; /* Спрятано */
+    left: -295px; /* Спрятано */
     width: 330px;
     height: 100vh;
     z-index: 9999; /* Поверх контента */
