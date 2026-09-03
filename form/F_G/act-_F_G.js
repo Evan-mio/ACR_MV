@@ -1228,13 +1228,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const FINAL_ARCHIVE_PREFIX = 'qaArchive_';
     const BLANK_VERSION = '1.1.0'; 
 
-    // Функция генерации стандартизированного ID архива (только для новых документов)
+    // 🔥 ИСПРАВЛЕНО: Функция теперь генерирует чистый ID без привязки к батч-коду
     function generateArchiveStandardId() {
-        
         const operatorId = localStorage.getItem('userId') || '000';
         const cleanOperator = operatorId.trim().replace(/\s+/g, ''); 
 
-        return `${BLANK_VERSION}-${cleanOperator};
+        // Итоговый ID файла будет иметь строгий вид: "1.1.0-04"
+        return `${BLANK_VERSION}-${cleanOperator}`;
     }
 
     // Изолированная функция сохранения теневой копии
@@ -1296,7 +1296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const shadowObj = JSON.parse(shadowDataRaw);
                 const now = new Date();
 
-                // 🔥 ГЛАВНАЯ ПРОМЫШЛЕННАЯ ЛОГИКА:
+                // ГЛАВНАЯ ПРОМЫШЛЕННАЯ ЛОГИКА ОПРЕДЕЛЕНИЯ ID:
                 let archiveFinalId = currentDraftId;
                 const isAlreadyArchived = currentDraftId.includes('-');
 
@@ -1320,22 +1320,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 const savedFirstName = localStorage.getItem('userFirstName') || '';
                 const controllerName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : "Не указан";
                 
-                // 🔥 МОЩНЫЙ ФИКС: Вытаскиваем живое значение из DOM-дерева прямо сейчас!
+                // Вытаскиваем живое значение батча со страницы для колонки в таблице
                 const targetInput = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
                 let finalBatchVal = 'БЕЗ БАТЧА';
                 if (targetInput && targetInput.value.trim() !== '') {
                     finalBatchVal = targetInput.value.trim();
                 }
                 
-                // Настраиваем ваш путь к папке архив -> хранилище
+                // Относительный путь к подпапке хранилища
                 const thisBlankPath = '../архив/хранилище/index.html';
 
                 const archiveRegistryEntry = {
-                    id: archiveFinalId, 
+                    id: archiveFinalId, // Сюда пойдет чистый короткий ID (например, 1.1.0-04)
                     date: now.toISOString().split('T')[0],
-                    number:  `АКТ-${now.getTime().toString().slice(-6)}`,
+                    number: "W1.1.8", 
                     controller: controllerName,
                     actType: cleanTitle,
+                    batch: finalBatchVal, // В таблице архива батч по-прежнему будет отображаться!
                     blankPath: thisBlankPath
                 };
 
