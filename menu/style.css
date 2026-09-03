@@ -112,17 +112,13 @@ body {
     line-height: 1.1;
 }
 .logo-subtitle { 
-    color: var(--text-secondary); 
+    background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-size: 0.85rem; 
     text-transform: uppercase; 
     letter-spacing: 1px;
-}
-
-.logo-subtitle-1 { 
-    color: var(--text-secondary); 
-    font-size: 0.85rem; 
-    text-transform: uppercase; 
-    letter-spacing: 5px; 
 }
 
 /* кнопки авторизации и профиля */
