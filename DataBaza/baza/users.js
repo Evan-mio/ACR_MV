@@ -35,6 +35,6 @@ const mockUserBase = {
         position: "Admin",
         plot: "Office",
         company: "OOO Mars",
-        shift: "Green"
+        shift: ""
     }
 };
