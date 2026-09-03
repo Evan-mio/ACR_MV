@@ -1323,7 +1323,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const savedLastName = localStorage.getItem('userLastName') || '';
                 const savedFirstName = localStorage.getItem('userFirstName') || '';
                 const controllerName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : "Не указан";
-                const finalBatchVal = shadowObj.meta['batchCode'] || shadowObj.meta['batch_code'] || 'БЕЗ БАТЧА';
+                const batchInputEl = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
+                const finalBatchVal = (batchInputEl && batchInputEl.value.trim()) ? batchInputEl.value.trim() : 'БЕЗ БАТЧА';
                 
                 // Жестко привязываем этот бланк к его реальной папке в вашей архитектуре form/_S_B_
                 const thisBlankPath = '../form/_S_B_/index.html';
