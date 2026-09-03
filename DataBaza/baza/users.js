@@ -1,7 +1,7 @@
 // /ACR 1/authUser/users.js
 
 const mockUserBase = {
-    "101": {
+    "10010010": {
         password: "vfvf5555",
         firstName: "Иван",
         lastName: "Макаров",
@@ -10,7 +10,7 @@ const mockUserBase = {
         company: "OOO Gradus",
         shift: "White"
     },
-    "102": {
+    "10010020": {
         password: "Bkmz!10257606",
         firstName: "Жамиля",
         lastName: "Олейникова",
@@ -19,7 +19,7 @@ const mockUserBase = {
         company: "OOO Mars",
         shift: "Brown"
     },
-    "103": {
+    "10010030": {
         password: "Mars1234",
         firstName: "Анна",
         lastName: "Филимонова",
@@ -28,4 +28,13 @@ const mockUserBase = {
         company: "OOO Mars",
         shift: "Green"
     },
+    {
+        password: "Mars123456",
+        firstName: "Наталья",
+        lastName: "Вирищагина",
+        position: "User",
+        plot: "Office",
+        company: "OOO Mars",
+        shift: "Green"
+    }
 };
