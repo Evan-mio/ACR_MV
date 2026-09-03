@@ -28,7 +28,7 @@ const mockUserBase = {
         company: "OOO Mars",
         shift: "Green"
     },
-    {
+    "10010040":{
         password: "Mars123456",
         firstName: "Наталья",
         lastName: "Вирищагина",
