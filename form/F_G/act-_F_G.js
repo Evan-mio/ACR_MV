@@ -1230,14 +1230,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Функция генерации стандартизированного ID архива (только для новых документов)
     function generateArchiveStandardId() {
-        // 🔥 ИСПРАВЛЕНО: Берем батч напрямую с экрана по ID элемента, игнорируя FormData
-        const batchInput = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
-        const batchVal = batchInput && batchInput.value.trim() ? batchInput.value.trim() : 'БЕЗБАТЧА';
-
+        
         const operatorId = localStorage.getItem('userId') || '000';
         const cleanOperator = operatorId.trim().replace(/\s+/g, ''); 
 
-        return `${BLANK_VERSION}-${cleanOperator}-${batchVal}`;
+        return `${BLANK_VERSION}-${cleanOperator};
     }
 
     // Изолированная функция сохранения теневой копии
@@ -1339,7 +1336,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     number:  `АКТ-${now.getTime().toString().slice(-6)}`,
                     controller: controllerName,
                     actType: cleanTitle,
-                    batch: finalBatchVal, // Вставили гарантированно живой батч (622E)
                     blankPath: thisBlankPath
                 };
 
