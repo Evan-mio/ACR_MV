@@ -1323,21 +1323,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 const savedLastName = localStorage.getItem('userLastName') || '';
                 const savedFirstName = localStorage.getItem('userFirstName') || '';
                 const controllerName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : "Не указан";
-                const batchInputEl = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
-                const finalBatchVal = (batchInputEl && batchInputEl.value.trim()) ? batchInputEl.value.trim() : 'БЕЗ БАТЧА';
+                const liveBatchInput = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
+                const finalBatchVal = (liveBatchInput && liveBatchInput.value.trim()) ? liveBatchInput.value.trim() : 'БЕЗ БАТЧА';
                 
                 // Жестко привязываем этот бланк к его реальной папке в вашей архитектуре form/_S_B_
                 const thisBlankPath = '../form/_S_B_/index.html';
 
                 const archiveRegistryEntry = {
                     id: archiveFinalId, 
-                    date: now.toISOString().split('T')[0],
-                    number: `АКТ-${now.getTime().toString().slice(-6)}`, // Заменили BLANK_VERSION на автономер
+                    date: now.toISOString().split('T')[0], // Корректная дата без ошибок
+                    number: "W1.1.8", 
                     controller: controllerName,
                     actType: cleanTitle,
-                    batch: finalBatchVal,
+                    batch: finalBatchVal, // <-- Теперь здесь всегда будет то, что написано на экране (например, 622E)
                     blankPath: thisBlankPath
-                };
+                    };
 
                 // Если мы редактировали старый архивный файл — обновляем его строку в таблице реестра,
                 // если это новый файл — добавляем строку на самый верх.
