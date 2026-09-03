@@ -1230,7 +1230,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Функция генерации стандартизированного ID архива (только для новых документов)
     function generateArchiveStandardId() {
-        const batchInput = document.getElementById('batch-code-field');
+        // 🔥 ИСПРАВЛЕНО: Берем батч напрямую с экрана по ID элемента, игнорируя FormData
+        const batchInput = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
         const batchVal = batchInput && batchInput.value.trim() ? batchInput.value.trim() : 'БЕЗБАТЧА';
 
         const operatorId = localStorage.getItem('userId') || '000';
@@ -1299,8 +1300,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const now = new Date();
 
                 // 🔥 ГЛАВНАЯ ПРОМЫШЛЕННАЯ ЛОГИКА:
-                // Если документ пришел из архива (в ID уже есть дефисы), сохраняем его под СТАРЫМ ID.
-                // Если документ совершенно новый — генерируем ему новый ID.
                 let archiveFinalId = currentDraftId;
                 const isAlreadyArchived = currentDraftId.includes('-');
 
@@ -1323,29 +1322,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 const savedLastName = localStorage.getItem('userLastName') || '';
                 const savedFirstName = localStorage.getItem('userFirstName') || '';
                 const controllerName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : "Не указан";
-                const liveBatchInput = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
-                const finalBatchVal = (liveBatchInput && liveBatchInput.value.trim()) ? liveBatchInput.value.trim() : 'БЕЗ БАТЧА';
                 
-                // Жестко привязываем этот бланк к его реальной папке в вашей архитектуре form/_S_B_
-                const thisBlankPath = '../form/_S_B_/index.html';
+                // 🔥 МОЩНЫЙ ФИКС: Вытаскиваем живое значение из DOM-дерева прямо сейчас!
+                const targetInput = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
+                let finalBatchVal = 'БЕЗ БАТЧА';
+                if (targetInput && targetInput.value.trim() !== '') {
+                    finalBatchVal = targetInput.value.trim();
+                }
+                
+                // Настраиваем ваш путь к папке архив -> хранилище
+                const thisBlankPath = '../архив/хранилище/index.html';
 
                 const archiveRegistryEntry = {
                     id: archiveFinalId, 
-                    date: now.toISOString().split('T')[0], // Корректная дата без ошибок
-                    number: "W1.1.8", 
+                    date: now.toISOString().split('T')[0],
+                    number:  `АКТ-${now.getTime().toString().slice(-6)}`,
                     controller: controllerName,
                     actType: cleanTitle,
-                    batch: finalBatchVal, // <-- Теперь здесь всегда будет то, что написано на экране (например, 622E)
+                    batch: finalBatchVal, // Вставили гарантированно живой батч (622E)
                     blankPath: thisBlankPath
-                    };
+                };
 
-                // Если мы редактировали старый архивный файл — обновляем его строку в таблице реестра,
-                // если это новый файл — добавляем строку на самый верх.
                 const existingIndex = archiveActs.findIndex(act => act.id === archiveFinalId);
                 if (existingIndex !== -1) {
-                    archiveActs[existingIndex] = archiveRegistryEntry; // Перезаписываем данные лаборанта
+                    archiveActs[existingIndex] = archiveRegistryEntry; 
                 } else {
-                    archiveActs.unshift(archiveRegistryEntry); // Добавляем новую запись оператора
+                    archiveActs.unshift(archiveRegistryEntry); 
                 }
                 
                 localStorage.setItem('archiveActs', JSON.stringify(archiveActs));
@@ -1353,7 +1355,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 3. ОЧИСТКА ВРЕМЕННОЙ ПАМЯТИ СМЕНЫ
                 localStorage.removeItem(`${SHADOW_PREFIX}${currentDraftId}`);
 
-                // Вычищаем из оперативных черновиков, если файл там числился
                 let registry = JSON.parse(localStorage.getItem('global_active_acts_list')) || [];
                 registry = registry.filter(a => a.id !== currentDraftId);
                 localStorage.setItem('global_active_acts_list', JSON.stringify(registry));
@@ -1363,7 +1364,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('qa_all_drafts_data', JSON.stringify(allDrafts));
 
                 alert(`Документ успешно сохранен в архив!\nПаспорт ID: ${archiveFinalId}`);
-                window.location.href = '/menu/index.html'; // Уходим в главное меню
+                window.location.href = '/menu/index.html'; 
             });
         }
     });
