@@ -1117,86 +1117,21 @@ function updateLotValue() {
 // 16. БЕЗОПАСНАЯ ИНТЕГРАЦИЯ С АРХИВОМ БЕЗ НАРУШЕНИЯ CSP
 // ====================================================
 
-function handleSaveArchive() {
-    if (typeof validateForm === 'function' && !validateForm()) return;
-
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentDraftId = urlParams.get('draftId');
-
-    const fullStructure = collectFormData();
-    const now = new Date();
-    const archiveId = 'arch_' + now.getTime();
-
-    // 1. Сохранение полной структуры (твой оригинальный код)
-    localStorage.setItem(`${ARCHIVE_PREFIX}${archiveId}`, JSON.stringify({
-        data: fullStructure,
-        savedAt: now.toISOString()
-    }));
-
-    // 2. Интеграция с общей базой архива актов (archive-logic.js)
-    let archiveActs = JSON.parse(localStorage.getItem('archiveActs')) || [];
-
-    // Безопасно извлекаем Batch из структуры meta
-    const batchVal = (fullStructure && fullStructure.meta) 
-        ? (fullStructure.meta['batchCode'] || fullStructure.meta['batch_code'] || 'B-0000') 
-        : 'B-0000';
-
-    // Извлекаем Тип акта из заголовка страницы
-    const titleEl = document.querySelector('.main-title');
-    let cleanTitle = titleEl ? titleEl.textContent.trim() : 'Акт верификации';
-    if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
-
-    // Генерируем короткий номер акта
-    const generatedActNumber = `АКТ-${now.getTime().toString().slice(-6)}`;
-
-    // Достаем ФИО авторизованного контролёра из localStorage
-    const savedLastName = localStorage.getItem('userLastName') || '';
-    const savedFirstName = localStorage.getItem('userFirstName') || '';
-    const controllerName = savedLastName && savedFirstName 
-        ? `${savedLastName} ${savedFirstName.charAt(0)}.` 
-        : "Не указан";
-
-    // Собираем плоский объект акта для таблицы arhiv/archive.html
-    const newArchiveAct = {
-        id: archiveId,
-        date: now.toISOString().split('T')[0], // Корректный формат даты ГГГГ-ММ-ДД
-        number: generatedActNumber,
-        controller: controllerName,
-        actType: cleanTitle,
-        batch: batchVal
-    };
-
-    // Добавляем акт в начало массива
-    archiveActs.unshift(newArchiveAct);
-    localStorage.setItem('archiveActs', JSON.stringify(archiveActs));
-
-    // 3. Вычищаем завершенный черновик (твой оригинальный код)
-    if (currentDraftId) {
-        let registry = JSON.parse(localStorage.getItem(ACTIVE_ACTS_KEY)) || [];
-        registry = registry.filter(a => a.id !== currentDraftId);
-        localStorage.setItem(ACTIVE_ACTS_KEY, JSON.stringify(registry));
-
-        let allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
-        delete allDrafts[currentDraftId];
-        localStorage.setItem(DRAFT_DATA_KEY, JSON.stringify(allDrafts));
-    }
-
-    alert('Данные успешно отправлены в архив!');
-    
-    if (typeof mainForm !== 'undefined' && mainForm) mainForm.reset();
-    window.location.href = '/menu/index.html'; 
-}
-
-// НАЗНАЧЕНИЕ СЛУШАТЕЛЕЙ ПОСЛЕ ЗАГРУЗКИ СТРАНИЦЫ (ЗАМЕНА ONCLICK)
+// НАЗНАЧЕНИЕ СЛУШАТЕЛЕЙ ПОСЛЕ ЗАГРУЗКИ СТРАНИЦЫ (БЕЗОПАСНЫЙ ПЕРЕХВАТ ДЛЯ CSP)
 document.addEventListener('DOMContentLoaded', function() {
-    const saveBtn = document.getElementById('saveArchiveBtn');
-    if (saveBtn) {
-        saveBtn.addEventListener('click', function(e) {
+    // Находим альтернативную кнопку сохранения
+    const saveBtnAlt = document.getElementById('saveArchiveBtn');
+    if (saveBtnAlt) {
+        saveBtnAlt.addEventListener('click', function(e) {
             e.preventDefault();
-            handleSaveArchive();
+            // Вызываем правильную единую функцию из Блока 18
+            if (typeof handleSaveArchive === 'function') {
+                handleSaveArchive();
+            }
         });
     }
 
+    // Сохраняем логику сворачивания в черновик (кнопка "Свернуть")
     const collapseBtn = document.getElementById('collapseBtn');
     if (collapseBtn) {
         collapseBtn.addEventListener('click', function(e) {
@@ -1396,7 +1331,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const archiveRegistryEntry = {
                     id: archiveFinalId, 
                     date: now.toISOString().split('T')[0],
-                    number: BLANK_VERSION, 
+                    number: `АКТ-${now.getTime().toString().slice(-6)}`, // Заменили BLANK_VERSION на автономер
                     controller: controllerName,
                     actType: cleanTitle,
                     batch: finalBatchVal,
