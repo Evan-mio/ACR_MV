@@ -15,7 +15,6 @@ let mainForm = null;
 // Стандартизированные ключи хранилища проекта ACR
 const ACTIVE_ACTS_KEY = 'global_active_acts_list'; 
 const DRAFT_DATA_KEY = 'qa_all_drafts_data';
-const ARCHIVE_PREFIX = 'qaArchive_';
 
 
 // ====================================================
@@ -480,15 +479,15 @@ function loadSheetData(sheetId) {
             const tr = document.createElement('tr');
             
             tr.innerHTML = `
-                <td><input type="text" name="cas_${nextIndex}" value="${row.cas || ''}" style="text-align: center; font-size: 0.85rem;"></td>
-                <td><input type="text" name="min_${nextIndex}" value="${row.min || ''}" style="text-align: center; font-size: 0.85rem;"></td>
-                <td><input type="text" name="no_line_${nextIndex}" value="${row.no_line || ''}" list="linesList" style="text-align: center; font-size: 0.85rem;"></td>
-                <td><input type="text" name="grd_${nextIndex}" value="${row.grd || ''}" list="grdList" style="text-align: center; font-size: 0.85rem;"></td>
-                <td><input type="text" name="name-prod_${nextIndex}" value="${row.name_prod || ''}" style="text-align: center; font-size: 0.85rem;"></td>
-                <td><input type="text" name="no_car_${nextIndex}" value="${row.no_car || ''}" list="carsList" style="text-align: center; font-size: 0.85rem;"></td>
-                <td><input type="text" name="lot_fg_prod_${nextIndex}" value="${row.lot_fg || ''}" style="text-align: center; font-size: 0.85rem; color: #000;" readonly></td>
+                <td><input type="text" name="cas_${nextIndex}" value="${row.cas || ''}" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
+                <td><input type="text" name="min_${nextIndex}" value="${row.min || ''}" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
+                <td><input type="text" name="no_line_${nextIndex}" value="${row.no_line || ''}" list="linesList" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
+                <td><input type="text" name="grd_${nextIndex}" value="${row.grd || ''}" list="grdList" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
+                <td><input type="text" name="name-prod_${nextIndex}" value="${row.name_prod || ''}" style="text-align: center; font-size: 0.85rem; background-color: #f1f5f9;" readonly></td>
+                <td><input type="text" name="no_car_${nextIndex}" value="${row.no_car || ''}" list="carsList" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
+                <td><input type="text" name="lot_fg_prod_${nextIndex}" value="${row.lot_fg || ''}" style="text-align: center; font-size: 0.85rem; color: #000; background-color: #f1f5f9;" readonly></td>
                 <td><input type="text" name="no_mesh_${nextIndex}" value="${row.no_mesh || ''}" style="text-align: center; font-size: 0.85rem; color: #000;"></td>
-                <td><input type="text" name="proba_${nextIndex}" value="${row.proba || ''}" style="text-align: center; font-size: 0.85rem; color: #000;" readonly></td>
+                <td><input type="text" name="proba_${nextIndex}" value="${row.proba || ''}" style="text-align: center; font-size: 0.85rem; color: #000; background-color: #f1f5f9;" readonly></td>
             `;
 
             tableBody.appendChild(tr);
@@ -578,12 +577,12 @@ function addTableRows(count) {
         const tr = document.createElement('tr');
         // Чистая 8-колоночная структура без лишнего поля no_mesh
         tr.innerHTML = `
-            <td><input type="text" name="cas_${nextIndex}" style="text-align: center; font-size: 0.85rem;"></td>
-            <td><input type="text" name="min_${nextIndex}" style="text-align: center; font-size: 0.85rem;"></td>
-            <td><input type="text" name="no_line_${nextIndex}" list="linesList" style="text-align: center; font-size: 0.85rem;"></td>
-            <td><input type="text" name="grd_${nextIndex}" list="grdList" style="text-align: center; font-size: 0.85rem;"></td>
+            <td><input type="text" name="cas_${nextIndex}" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
+            <td><input type="text" name="min_${nextIndex}" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
+            <td><input type="text" name="no_line_${nextIndex}" list="linesList" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
+            <td><input type="text" name="grd_${nextIndex}" list="grdList" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
             <td><input type="text" name="name-prod_${nextIndex}" style="text-align: center; font-size: 0.85rem; background-color: #f1f5f9;"></td>
-            <td><input type="text" name="no_car_${nextIndex}" list="carsList" style="text-align: center; font-size: 0.85rem;"></td>
+            <td><input type="text" name="no_car_${nextIndex}" list="carsList" style="text-align: center; font-size: 0.85rem;background-color: #fff;" readonly></td>
             <td><input type="text" name="lot_fg_prod_${nextIndex}" style="text-align: center; font-size: 0.85rem; color: #000; background-color: #f1f5f9;" readonly></td>
             <td><input type="text" name="no_mesh_${nextIndex}" style="text-align: center; font-size: 0.85rem; color: #000;"></td>
             <td><input type="text" name="proba_${nextIndex}" style="text-align: center; font-size: 0.85rem; color: #000; background-color: #f1f5f9;" readonly></td>
@@ -616,7 +615,7 @@ function collectFormData() {
 
     //  Регулярное выражение железно вычищает строки таблицы Акта ссыпки из шапки
     Object.keys(metaData).forEach(key => {
-        if (/^(cas|min|no_line|grd|name[-_]prod|no_car|lot_fg_prod|no_mash|proba)_/i.test(key)) {
+        if (/^(cas|min|no_line|grd|name[-_]prod|no_car|lot_fg_prod|no_mesh|proba)_/i.test(key)) {
             delete metaData[key];
         }
     });
@@ -637,20 +636,19 @@ function handleCollapse() {
     const fullStructure = collectFormData();
     const now = Date.now();
 
-    // Если ID документа не было в URL (новый акт), генерируем уникальный ключ
     if (!currentDraftId) {
         currentDraftId = 'draft_' + now;
     }
 
-    // 1. Формируем красивое название карточки для реестра на главной странице
+    // Формируем имя карточки черновика
     const batchVal = fullStructure.meta['batchCode'] || fullStructure.meta['batch_code'] || '';
     const titleEl = document.querySelector('.main-title');
     let cleanTitle = titleEl ? titleEl.textContent.trim() : 'Акт верификации';
     if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
 
-    const displayTitle = `💼 ${cleanTitle} ${batchVal ? '[' + batchVal + ']' : ''}`;
+    const displayTitle = `💼 ${cleanTitle} ${batchVal ? '['+batchVal+']' : ''}`;
 
-    // 2. ЗАПИСЬ ДАННЫХ: Сохраняем контент всех листов в общую базу черновиков смены
+    // А) Записываем начинку всех вкладок в общую базу черновиков
     let allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
     allDrafts[currentDraftId] = {
         timestamp: now,
@@ -658,7 +656,7 @@ function handleCollapse() {
     };
     localStorage.setItem(DRAFT_DATA_KEY, JSON.stringify(allDrafts));
 
-    // 3. РЕЕСТР: Добавляем или обновляем карточку в списке активных актов для главной
+    // Б) Добавляем карточку в реестр для главной страницы
     let registry = JSON.parse(localStorage.getItem(ACTIVE_ACTS_KEY)) || [];
     const existsIndex = registry.findIndex(a => a.id === currentDraftId);
     
@@ -673,8 +671,56 @@ function handleCollapse() {
     else registry.push(meta);
     localStorage.setItem(ACTIVE_ACTS_KEY, JSON.stringify(registry));
 
-    // 4. ФИНАЛ: Уведомляем пользователя и перенаправляем его обратно в меню
-    alert('Акт успешно свернут в черновик!');
+    // В) СБРОС И ОБНУЛЕНИЕ ОРИГИНАЛА
+    if (mainForm) mainForm.reset();
+    sheetsData = {};
+    if (tabList) tabList.innerHTML = '';
+    if (tableBody) tableBody.innerHTML = '';
+    sheetCounter = 1;
+    
+    // 🔥 Безопасный сброс параметров в URL-строке браузера
+    if (window.history.pushState) {
+        const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.pushState({ path: cleanURL }, '', cleanURL);
+    }
+    currentDraftId = null;
+
+    // 🔥 Инициализируем стартовый чистый бланк, чтобы DOM не оставался пустым
+    if (typeof addNewSheet === 'function') addNewSheet();
+
+    alert('Акт успешно свернут в черновик. Оригинал обнулен!');
+    window.location.href = '/menu/index.html'; 
+}
+
+function handleSaveArchive() {
+    if (typeof validateForm === 'function' && !validateForm()) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentDraftId = urlParams.get('draftId');
+
+    const fullStructure = collectFormData();
+    const archiveId = 'arch_' + Date.now();
+
+    // 1. Отправляем полный пакет документов в архив
+    localStorage.setItem(`${ARCHIVE_PREFIX}${archiveId}`, JSON.stringify({
+        data: fullStructure,
+        savedAt: new Date().toISOString()
+    }));
+
+    // 2. Вычищаем завершенный черновик из активной базы смены
+    if (currentDraftId) {
+        let registry = JSON.parse(localStorage.getItem(ACTIVE_ACTS_KEY)) || [];
+        registry = registry.filter(a => a.id !== currentDraftId);
+        localStorage.setItem(ACTIVE_ACTS_KEY, JSON.stringify(registry));
+
+        let allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
+        delete allDrafts[currentDraftId];
+        localStorage.setItem(DRAFT_DATA_KEY, JSON.stringify(allDrafts));
+    }
+
+    alert('Данные успешно отправлены в архив!');
+    
+    if (mainForm) mainForm.reset();
     window.location.href = '/menu/index.html'; 
 }
 
@@ -821,10 +867,10 @@ function updateLotValue() {
         const tBody = document.getElementById('table-body');
         if (!tBody) return;
 
-        const handleLiveChanges = (event) => {
-            const target = event.target;
-            if (!target || !target.name || !target.name.startsWith('grd_')) return;
-
+        tBody.addEventListener('change', (event) => {
+            // Передаем event внутрь стрелочной функции
+        setTimeout(() => handleLiveChanges(event), 50); 
+        });
             const grdValue = parseInt(target.value.trim());
             if (isNaN(grdValue)) return;
 
@@ -844,7 +890,7 @@ function updateLotValue() {
             }
             // Вызываем единый валидатор строк
             validateTableNakeConsistency();
-        };
+        })
 
         // Ловим ввод и выбор из datalist
         tBody.addEventListener('input', handleLiveChanges);
@@ -852,7 +898,7 @@ function updateLotValue() {
             setTimeout(handleLiveChanges, 50);
         });
     });
-})();
+
 
 // ====================================================
 // 12. АВТОМАТИЧЕСКИЙ ВЫВОД NAKENAME В ПОЛЕ NAKE (ДОП.)
@@ -1075,86 +1121,24 @@ function updateLotValue() {
 // 16. БЕЗОПАСНАЯ ИНТЕГРАЦИЯ С АРХИВОМ БЕЗ НАРУШЕНИЯ CSP
 // ====================================================
 
-function handleSaveArchive() {
-    if (typeof validateForm === 'function' && !validateForm()) return;
+// 🔥 СТАРАЯ КОНФЛИКТНАЯ ФУНКЦИЯ handleSaveArchive УДАЛЕНА.
+// Вся промышленная логика теперь выполняется централизованно в Блоке 18.
 
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentDraftId = urlParams.get('draftId');
-
-    const fullStructure = collectFormData();
-    const now = new Date();
-    const archiveId = 'arch_' + now.getTime();
-
-    // 1. Сохранение полной структуры (твой оригинальный код)
-    localStorage.setItem(`${ARCHIVE_PREFIX}${archiveId}`, JSON.stringify({
-        data: fullStructure,
-        savedAt: now.toISOString()
-    }));
-
-    // 2. Интеграция с общей базой архива актов (archive-logic.js)
-    let archiveActs = JSON.parse(localStorage.getItem('archiveActs')) || [];
-
-    // Безопасно извлекаем Batch из структуры meta
-    const batchVal = (fullStructure && fullStructure.meta) 
-        ? (fullStructure.meta['batchCode'] || fullStructure.meta['batch_code'] || 'B-0000') 
-        : 'B-0000';
-
-    // Извлекаем Тип акта из заголовка страницы
-    const titleEl = document.querySelector('.main-title');
-    let cleanTitle = titleEl ? titleEl.textContent.trim() : 'Акт верификации';
-    if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
-
-    // Генерируем короткий номер акта
-    const generatedActNumber = `АКТ-${now.getTime().toString().slice(-6)}`;
-
-    // Достаем ФИО авторизованного контролёра из localStorage
-    const savedLastName = localStorage.getItem('userLastName') || '';
-    const savedFirstName = localStorage.getItem('userFirstName') || '';
-    const controllerName = savedLastName && savedFirstName 
-        ? `${savedLastName} ${savedFirstName.charAt(0)}.` 
-        : "Не указан";
-
-    // Собираем плоский объект акта для таблицы arhiv/archive.html
-    const newArchiveAct = {
-        id: archiveId,
-        date: now.toISOString().split('T')[0], // Корректный формат даты ГГГГ-ММ-ДД
-        number: generatedActNumber,
-        controller: controllerName,
-        actType: cleanTitle,
-        batch: batchVal
-    };
-
-    // Добавляем акт в начало массива
-    archiveActs.unshift(newArchiveAct);
-    localStorage.setItem('archiveActs', JSON.stringify(archiveActs));
-
-    // 3. Вычищаем завершенный черновик (твой оригинальный код)
-    if (currentDraftId) {
-        let registry = JSON.parse(localStorage.getItem(ACTIVE_ACTS_KEY)) || [];
-        registry = registry.filter(a => a.id !== currentDraftId);
-        localStorage.setItem(ACTIVE_ACTS_KEY, JSON.stringify(registry));
-
-        let allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
-        delete allDrafts[currentDraftId];
-        localStorage.setItem(DRAFT_DATA_KEY, JSON.stringify(allDrafts));
-    }
-
-    alert('Данные успешно отправлены в архив!');
-    
-    if (typeof mainForm !== 'undefined' && mainForm) mainForm.reset();
-    window.location.href = '/menu/index.html'; 
-}
-
-// НАЗНАЧЕНИЕ СЛУШАТЕЛЕЙ ПОСЛЕ ЗАГРУЗКИ СТРАНИЦЫ (ЗАМЕНА ONCLICK)
+// НАЗНАЧЕНИЕ СЛУШАТЕЛЕЙ ПОСЛЕ ЗАГРУЗКИ СТРАНИЦЫ (БЕЗОПАСНЫЙ ПЕРЕХВАТ ДЛЯ CSP)
 document.addEventListener('DOMContentLoaded', function() {
-    const saveBtn = document.getElementById('saveArchiveBtn');
-    if (saveBtn) {
-        saveBtn.addEventListener('click', function(e) {
+    // Находим альтернативную кнопку сохранения
+    const saveBtnAlt = document.getElementById('saveArchiveBtn');
+    if (saveBtnAlt) {
+        saveBtnAlt.addEventListener('click', function(e) {
             e.preventDefault();
-            handleSaveArchive();
+            // Вызываем правильную единую функцию из Блока 18
+            if (typeof handleSaveArchive === 'function') {
+                handleSaveArchive();
+            }
         });
     }
 
+    // Сохраняем логику сворачивания в черновик (кнопка "Свернуть")
     const collapseBtn = document.getElementById('collapseBtn');
     if (collapseBtn) {
         collapseBtn.addEventListener('click', function(e) {
@@ -1165,6 +1149,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
 
 // =========================================================================
 // 17. СИСТЕМА ПРАВ ДОСТУПА ДЛЯ БЛАНКА (RBAC - РЕЖИМ ЛАБОРАТОРИЯ)
@@ -1251,15 +1236,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const FINAL_ARCHIVE_PREFIX = 'qaArchive_';
     const BLANK_VERSION = '1.2.0'; 
 
-    // Функция генерации стандартизированного ID архива (только для новых документов)
+    // 🔥 ИСПРАВЛЕНО: Функция теперь генерирует чистый ID без привязки к батч-коду
     function generateArchiveStandardId() {
-        const batchInput = document.getElementById('batch-code-field');
-        const batchVal = batchInput && batchInput.value.trim() ? batchInput.value.trim() : 'БЕЗБАТЧА';
-
         const operatorId = localStorage.getItem('userId') || '000';
         const cleanOperator = operatorId.trim().replace(/\s+/g, ''); 
 
-        return `${BLANK_VERSION}-${cleanOperator}-${batchVal}`;
+        // Итоговый ID файла будет иметь строгий вид: "1.1.0-04"
+        return `${BLANK_VERSION}-${cleanOperator}`;
     }
 
     // Изолированная функция сохранения теневой копии
@@ -1321,9 +1304,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const shadowObj = JSON.parse(shadowDataRaw);
                 const now = new Date();
 
-                // 🔥 ГЛАВНАЯ ПРОМЫШЛЕННАЯ ЛОГИКА:
-                // Если документ пришел из архива (в ID уже есть дефисы), сохраняем его под СТАРЫМ ID.
-                // Если документ совершенно новый — генерируем ему новый ID.
+                // ГЛАВНАЯ ПРОМЫШЛЕННАЯ ЛОГИКА ОПРЕДЕЛЕНИЯ ID:
                 let archiveFinalId = currentDraftId;
                 const isAlreadyArchived = currentDraftId.includes('-');
 
@@ -1346,28 +1327,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 const savedLastName = localStorage.getItem('userLastName') || '';
                 const savedFirstName = localStorage.getItem('userFirstName') || '';
                 const controllerName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : "Не указан";
-                const finalBatchVal = shadowObj.meta['batchCode'] || shadowObj.meta['batch_code'] || 'БЕЗ БАТЧА';
                 
-                // Жестко привязываем этот бланк к его реальной папке в вашей архитектуре form/_S_B_
-                const thisBlankPath = '../form/_S_B_/index.html';
+                // Вытаскиваем живое значение батча со страницы для колонки в таблице
+                const targetInput = document.getElementById('batch-code-field') || document.querySelector('input[name="batchCode"]') || document.querySelector('input[name="batch_code"]');
+                let finalBatchVal = 'БЕЗ БАТЧА';
+                if (targetInput && targetInput.value.trim() !== '') {
+                    finalBatchVal = targetInput.value.trim();
+                }
+                
+                // Относительный путь к подпапке хранилища
+                const thisBlankPath = '../архив/хранилище/index.html';
 
                 const archiveRegistryEntry = {
-                    id: archiveFinalId, 
+                    id: archiveFinalId, // Сюда пойдет чистый короткий ID (например, 1.1.0-04)
                     date: now.toISOString().split('T')[0],
-                    number: BLANK_VERSION, 
+                    number: `АКТ-${now.getTime().toString().slice(-6)}`, 
                     controller: controllerName,
                     actType: cleanTitle,
-                    batch: finalBatchVal,
+                    batch: finalBatchVal, // В таблице архива батч по-прежнему будет отображаться!
                     blankPath: thisBlankPath
                 };
 
-                // Если мы редактировали старый архивный файл — обновляем его строку в таблице реестра,
-                // если это новый файл — добавляем строку на самый верх.
                 const existingIndex = archiveActs.findIndex(act => act.id === archiveFinalId);
                 if (existingIndex !== -1) {
-                    archiveActs[existingIndex] = archiveRegistryEntry; // Перезаписываем данные лаборанта
+                    archiveActs[existingIndex] = archiveRegistryEntry; 
                 } else {
-                    archiveActs.unshift(archiveRegistryEntry); // Добавляем новую запись оператора
+                    archiveActs.unshift(archiveRegistryEntry); 
                 }
                 
                 localStorage.setItem('archiveActs', JSON.stringify(archiveActs));
@@ -1375,7 +1360,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 3. ОЧИСТКА ВРЕМЕННОЙ ПАМЯТИ СМЕНЫ
                 localStorage.removeItem(`${SHADOW_PREFIX}${currentDraftId}`);
 
-                // Вычищаем из оперативных черновиков, если файл там числился
                 let registry = JSON.parse(localStorage.getItem('global_active_acts_list')) || [];
                 registry = registry.filter(a => a.id !== currentDraftId);
                 localStorage.setItem('global_active_acts_list', JSON.stringify(registry));
@@ -1385,7 +1369,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('qa_all_drafts_data', JSON.stringify(allDrafts));
 
                 alert(`Документ успешно сохранен в архив!\nПаспорт ID: ${archiveFinalId}`);
-                window.location.href = '/menu/index.html'; // адресс главное меню
+                window.location.href = '/menu/index.html'; 
             });
         }
     });
