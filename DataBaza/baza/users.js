@@ -32,7 +32,7 @@ const mockUserBase = {
         password: "Mars123456",
         firstName: "Наталья",
         lastName: "Вирищагина",
-        position: "User",
+        position: "Admin",
         plot: "Office",
         company: "OOO Mars",
         shift: "Green"
