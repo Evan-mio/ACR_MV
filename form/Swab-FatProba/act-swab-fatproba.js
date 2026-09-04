@@ -348,6 +348,7 @@ function handleSaveArchive() {
         <tr class="dynamic-supplier-row">
             <td class="section-row-header" colspan="7">
                 <select name="supplier_select_${idx1}" class="supplier-selector" required>
+                    <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
                     <option value="поставщик1">поставщик №1</option>
                     <option value="поставщик2">поставщик №2</option>
                     <option value="поставщик3">поставщик №3</option>
