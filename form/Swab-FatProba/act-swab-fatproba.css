@@ -1,81 +1,65 @@
 /* ==========================================================================
-   1. БАЗОВЫЕ СТИЛИ И ШРИФТЫ
+    1. БАЗОВЫЕ СТИЛИ, СБРОС И ШРИФТЫ
    ========================================================================== */
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 3px; 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-body { 
-    background-color: #f4f6f9; 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-    color: #333; 
-    line-height: 1.4; 
-    padding-bottom: 60px; 
+body {
+    background-color: #f4f6f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #333;
+    line-height: 1.4;
+    padding-bottom: 60px; /* Исправлено: теперь отступ подвала работает штатно */
 }
 
-/* Контейнер формы на 98% ширины */
-.container { 
-    max-width: 98% !important; 
-    margin: 0 auto; 
-    padding: 15px 10px; 
+/* Главный рабочий контейнер бланка */
+.container {
+    max-width: 100% !important;
+    margin: 0 auto;
+    padding: 15px 10px;
 }
 
-.main-title { 
-    font-size: 25px; 
-    font-weight: 700; 
+.main-title {
+    font-size: 25px;
+    font-weight: 700;
     color: #0f172a;
     text-align: center;
     margin-bottom: 20px;
 }
 
 /* ==========================================================================
-   2. НАВИГАЦИОННЫЙ ХЕДЕР И КНОПКИ
+    2. НАВИГАЦИОННЫЙ ХЕДЕР И АНИМАЦИЯ КНОПОК (ФИКС ОШИБКИ TRANSFORM)
    ========================================================================== */
-.header { 
-    background-color: #ffffff; 
-    border-bottom: 1px solid #e2e8f0; 
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
-    position: sticky; 
-    top: 0; 
-    z-index: 100; 
+.header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.header-container { 
-    max-width: 1600px; 
-    margin: 0 auto; 
-    padding: 12px 20px; 
+.header-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 12px 20px;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.header-title-block { 
-    display: flex; 
-    flex-direction: row-reverse; 
-    align-items: center; 
-    gap: 15px; 
+.header-title-block {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.back-btn { 
-    text-decoration: none; 
-    color: #64748b; 
-    font-size: 20px; 
-    font-weight: bold; 
-    padding: 4px 10px; 
-    border-radius: 8px; 
-    background-color: #f1f5f9; 
-    transition: all 0.2s; 
-}
-
-.back-btn:hover { 
-    background-color: #e2e8f0; 
-    color: #1e293b; 
-}
-
-/* Базовые стили кнопки Печати */
+/* Кнопка "Распечатать акт" */
 .nav-print-link {
-    display: inline-flex;
+    display: inline-flex !important; /* Исправлено: блокирует ошибку парсинга transform */
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
@@ -87,151 +71,204 @@ body {
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease-in-out;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    transition: background-color 0.2s, -webkit-transform 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .nav-print-link:hover {
     background-color: #2563eb;
+    -webkit-transform: translateY(-1px);
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
 .nav-print-link:active {
+    -webkit-transform: translateY(0);
     transform: translateY(0);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Базовый вид ссылки На Главную */
+/* Ссылка-кнопка "На Главную" */
 .nav-home-link {
-    display: inline-flex;
+    display: inline-flex !important; /* Исправлено: блокирует ошибку парсинга transform */
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
-    color: #334155;
+    color: #2563eb;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease-in-out;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, -webkit-transform 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .nav-home-link:hover {
     background-color: #f8fafc;
     border-color: #94a3b8;
     color: #1e293b;
+    -webkit-transform: translateY(-1px);
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
 .nav-home-link:active {
+    -webkit-transform: translateY(0);
     transform: translateY(0);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* ==========================================================================
-   3. ФОРМЫ И МЕТА-КАРТОЧКИ (ШАПКА БЛАНКА)
-   ========================================================================== */
-.meta-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 15px; 
-    margin-bottom: 15px; 
+.back-btn {
+    text-decoration: none;
+    color: #64748b;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background-color: #f1f5f9;
+    transition: all 0.2s;
 }
 
-.meta-card { 
-    background: #ffffff; 
-    border: 1px solid #e2e8f0; 
-    border-radius: 12px; 
-    padding: 15px; 
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02); 
-    display: flex; 
-    flex-direction: column; 
-}
-
-.meta-card-gray { 
-    background-color: #f8fafc; 
-    font-size: 11px; 
-    color: #475569; 
-}
-
-.form-group { 
-    margin-bottom: 8px; 
-}
-
-.form-group:last-child { 
-    margin-bottom: 0; 
-}
-
-label { 
-    display: block; 
-    font-size: 11px; 
-    font-weight: 700; 
-    color: #64748b; 
-    text-transform: uppercase; 
-    margin-bottom: 3px; 
-}
-
-input[type="text"], 
-input[type="date"], 
-input[type="time"], 
-select { 
-    width: 100%; 
-    padding: 6px 10px; 
-    border: 1px solid #cbd5e1; 
-    border-radius: 6px; 
-    font-size: 13px; 
-    color: #334155; 
-}
-
-input[readonly] { 
-    background-color: #f1f5f9; 
-    color: #475569; 
-    font-weight: 600; 
+.back-btn:hover {
+    background-color: #e2e8f0;
+    color: #1e293b;
 }
 
 /* ==========================================================================
-   4. ТАБЛИЦА И ЭЛЕМЕНТЫ ЯЧЕЕК
-   ========================================================================== */
-.table-container { 
-    background-color: #ffffff; 
-    border: 1px solid #e2e8f0; 
-    border-radius: 12px; 
-    overflow: hidden; 
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
-    margin-bottom: 15px; 
+    3. СЕТКА ШАПКИ БЛАНКА (МЕТА-КАРТОЧКИ)
+   ========================================================================= */
+.meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
 }
 
-.table-scroll { 
-    overflow-x: auto; 
+.meta-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
 }
 
-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    min-width: 1500px; 
+.meta-card-gray {
+    background-color: #f8fafc;
+    font-size: 13px;
+    color: #475569;
 }
 
-th { 
-    background-color: #f1f5f9; 
-    color: #475569; 
+.form-group {
+    margin-bottom: 8px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    font-size: 11px;
     font-weight: 700;
-    border: 1px solid #e2e8f0;
-    text-align: center;
-    font-size: 11px; 
-    padding: 6px 4px; 
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 3px;
 }
 
-td { 
-    padding: 3px 4px !important; 
-    border: 1px solid #e2e8f0;
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #000;
+    background-color: #ffffff;
+}
+
+input[readonly] {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+    4. ПРОМЫШЛЕННАЯ ТАБЛИЦА СМЫВОВ И ВЕРИФИКАЦИИ
+   ========================================================================== */
+.table-container,
+.act-table-wrapper {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+}
+
+.table-scroll {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid silver;
+}
+
+table,
+.act-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 700;
+    border: 1px solid #cbd5e1;
+    text-align: center;
+    font-size: 11px;
+    padding: 6px 4px;
+}
+
+td {
+    padding: 4px !important;
+    border: 1px solid #cbd5e1;
     font-size: 12px;
     vertical-align: middle;
+    box-sizing: border-box;
 }
 
+/* Поля ввода внутри таблицы */
+.table-input,
+.act-table input {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid transparent;
+    text-align: center;
+    background: transparent;
+    padding: 4px 2px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #000;
+}
+
+.table-input:focus,
+.act-table input:focus {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+    outline: none;
+}
+
+/* Заголовки технологических участков производства */
 .section-row-header {
     background-color: #e2e8f0;
     font-weight: 800;
@@ -242,36 +279,20 @@ td {
     letter-spacing: 0.05em;
 }
 
-.text-static { 
-    color: #475569; 
-    font-weight: 500; 
+.text-static {
+    color: #475569;
+    font-weight: 500;
 }
 
-.text-center-bold { 
-    text-align: center; 
-    font-weight: 700; 
-    color: #1e293b; 
-    background-color: #f8fafc; 
-}
-
-.table-input { 
-    border: 1px solid transparent;
-    background: transparent;
+.text-center-bold {
     text-align: center;
-    border-radius: 4px;
-    width: 100%;
-    font-size: 12px; 
-    padding: 3px 2px; 
-}
-
-.table-input:focus { 
-    background: #ffffff; 
-    border-color: #3b82f6; 
-    outline: none; 
+    font-weight: 700;
+    color: #1e293b;
+    background-color: #f8fafc;
 }
 
 /* ==========================================================================
-   5. ПОДВАЛ И КНОПКИ ДЕЙСТВИЙ
+    5. ПАНЕЛЬ ДЕЙСТВИЙ (ПОДВАЛ ФОРМЫ)
    ========================================================================== */
 .actions-bar {
     margin-top: 24px;
@@ -281,81 +302,115 @@ td {
     flex-wrap: wrap;
 }
 
-.btn { 
-    padding: 8px 16px; 
-    border-radius: 8px; 
-    font-size: 13px; 
-    font-weight: 600; 
-    cursor: pointer; 
-    border: 1px solid transparent; 
-    transition: opacity 0.2s;
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease-in-out;
 }
 
-.btn:hover { 
-    opacity: 0.9; 
+.btn-secondary {
+    background-color: #e5e7eb;
+    border-color: #cbd5e1;
+    color: #374151;
 }
 
-.btn-secondary { 
-    background-color: #e5e7eb; 
-    border-color: #cbd5e1; 
-    color: #374151; 
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
 }
 
-.btn-primary { 
-    background-color: #2563eb; 
-    color: #ffffff; 
+.btn-warning {
+    background-color: #f59e0b;
+    color: white;
 }
 
-.btn-primary:hover { 
-    background-color: #1d4ed8; 
+.btn-success {
+    background-color: #10b981;
+    color: white;
 }
 
-.btn-warning { 
-    background-color: #f59e0b; 
-    color: white; 
+/* Общий аккуратный ховер для кнопок подвала */
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    opacity: 0.95;
 }
 
+/* ==========================================================================
+    6. ИДЕАЛЬНАЯ ПЕЧАТНАЯ ВЕРСИЯ БЛАНКОВ (БЕЗ ИНТЕРФЕЙСНОГО МУСОРА)
+   ========================================================================== */
 @media print {
-    /* 1. Намертво скрываем кнопки навигации, печати, вкладок и управления листами */
-    #btnCollapse,
-    #btnSaveArchive,
-    #btnCancel,
+    /* 1. Намертво прячем инструкции, шапки сайтов, панели черновиков и кнопки */
+    #dop,
+    #tab-list,
+    .header,
+    .header-container,
+    .back-btn,
     .nav-print-link,
     .nav-home-link,
-    .tab-list,
-    #btnEditSheetName,
-    #btnAddNewSheet,
-    #btnCollapse,
-    #btnSaveArchive,
-    #btnCancel,
-    #btnAddRow,
-    #btnAddRows5,
-    #dop,
-    #btnAddRows15,
-    option,
-    #btnAddSupply {
+    .actions-bar,
+    .tabs-container,
+    button,
+    .btn,
+    h3, 
+    ul,
+    ol,
+    .container > p,
+    div[style*="font-weight: bold"] {
         display: none !important;
     }
-
-    /* 2. Настройки печатной страницы (убираем лишние поля и серый фон) */
+    
+    /* 2. Сброс серого фона и отступов под формат листа бумаги А4 */
     body {
-        background-color: #fff !important;
-        color: #000 !important;
+        background-color: #ffffff !important;
+        color: #000000 !important;
         padding: 0 !important;
         margin: 0 !important;
     }
     
-    /* 3. Растягиваем таблицу на весь печатный лист */
-    table {
+    .container {
+        max-width: 100% !important;
         width: 100% !important;
-        border-collapse: collapse !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+    }
+    
+    /* 3. Растягиваем таблицы на всю ширину листа */
+    .table-container,
+    .act-table-wrapper {
+        border: 1px solid #000000 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
     }
 
-    /* 4. Превращаем текстовые поля ввода в аккуратный печатный текст */
-    input[type="text"] {
+    table,
+    .act-table {
+        width: 100% !important;
+        min-width: 100% !important;
+        table-layout: auto !important;
+    }
+
+    th, td {
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+    }
+
+    /* 4. Превращаем поля ввода в чистый печатный текст без серых рамок */
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="number"],
+    select,
+    .table-input,
+    .act-table input {
         border: none !important;
         background: transparent !important;
-        padding: 4px !important;
         box-shadow: none !important;
+        padding: 4px !important;
+        color: #000000 !important;
     }
 }
