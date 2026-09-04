@@ -1,237 +1,349 @@
 // =========================================================================
-// 1. ИНИЦИАЛИЗАЦИЯ ФОРМЫ СМЫВОВ КРЕМПЕРА И АВТОПОДСТАНОВКА СЕССИИ
+// 1. БЕЗОПАСНЫЕ ПРЕФИКСЫ (ФИКС ОШИБКИ RE-DECLARATION CONST)
+// =========================================================================
+if (typeof ARCHIVE_PREFIX === 'undefined') { var ARCHIVE_PREFIX = 'qaArchive_'; }
+if (typeof ACTIVE_ACTS_KEY === 'undefined') { var ACTIVE_ACTS_KEY = 'global_active_acts_list'; }
+if (typeof DRAFT_DATA_KEY === 'undefined') { var DRAFT_DATA_KEY = 'qa_all_drafts_data'; }
+if (typeof SHADOW_PREFIX === 'undefined') { var SHADOW_PREFIX = 'shadow_arch_'; }
+if (typeof FINAL_ARCHIVE_PREFIX === 'undefined') { var FINAL_ARCHIVE_PREFIX = 'qaArchive_'; }
+
+var BLANK_VERSION = '2.3.0'; 
+var mainForm = null;
+
+// =========================================================================
+// 2. ОБРАБОТЧИК ЗАГРУЗКИ СТРАНИЦЫ И РАЗВОРАЧИВАНИЕ ИЗ ХРАНИЛИЩА
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Находим форму по её ID или тегу
-    const form = document.getElementById('wash-sd-form') || document.querySelector('form');
-    if (!form) {
-        console.error("Критическая ошибка: Форма не найдена в HTML-разметке!");
+    mainForm = document.getElementById('wash-sd-form') || document.querySelector('form');
+    if (!mainForm) {
+        console.error("Критическая ошибка: Форма wash-sd-form не найдена в HTML!");
         return;
     }
 
-    const btnCancel = document.getElementById('btnCancel');
-    const btnSaveArchive = document.getElementById('btnSaveArchive');
-    const btnCollapse = document.getElementById('btnCollapse');
+    // Привязываем авторасчет Батча к реальным элементам чеклиста смывов
+    const citySelect = document.getElementById('cyti') || mainForm.querySelector('[name*="fabrika" i]');
+    const daySelect = mainForm.querySelector('[name*="smena" i]') || document.getElementById('day');
+    const dateInput = mainForm.querySelector('input[type="date"]');
 
-    // Автоматический сбор данных авторизованного сотрудника из текущей сессии
+    if (citySelect) citySelect.addEventListener('change', updateLotValue);
+    if (daySelect) daySelect.addEventListener('change', updateLotValue);
+    if (dateInput) dateInput.addEventListener('change', updateLotValue);
+
+    updateLotValue(); // Запуск первичного расчета кода
+
+    // Автоматическая подстановка ФИО сотрудника в оба поля разметки смывов
     const savedFirstName = localStorage.getItem('userFirstName') || '';
     const savedLastName = localStorage.getItem('userLastName') || '';
     const fullUserName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : '';
 
-    // Подставляем ФИО в поля лаборанта/техника, если они еще не заполнены
-    const techField = form.querySelector('[name*="tech" i]') || form.querySelector('[name*="name" i]');
-    if (techField && !techField.value) {
-        techField.value = fullUserName;
-    }
+    // Ищем верхнее поле Техника и нижнее поле Лаборанта
+    const techFieldUpper = mainForm.querySelector('[name*="tech" i]') || mainForm.querySelector('[id*="tech" i]');
+    const nameFieldLower = mainForm.querySelector('[name*="lab" i]') || mainForm.querySelector('[name="name" i]');
+    
+    if (techFieldUpper && !techFieldUpper.value) techFieldUpper.value = fullUserName;
+    if (nameFieldLower && !nameFieldLower.value) nameFieldLower.value = fullUserName;
 
-    // Извлекаем ID черновика из параметров URL (если зашли через боковую панель)
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentDraftId = urlParams.get('draftId');
+    // Кнопки управления чеклистом микробиологии
+    const btnCancel = document.getElementById('btnCancel');
+    const btnSaveArchive = document.getElementById('btnSaveArchive') || document.getElementById('saveArchiveBtn');
+    const btnCollapse = document.getElementById('btnCollapse') || document.getElementById('collapseBtn');
 
-    // Восстанавливаем данные черновика, если открыли сохраненный бланк кремпера
-    if (currentDraftId && window.QA_Core) {
-        window.QA_Core.restoreData(form, currentDraftId);
-        console.log(`✅ Черновик кремпера ${currentDraftId} успешно восстановлен в форме`);
-    }
-
-    // Навешиваем клавиатурную навигацию на ввод внутри всей формы
-    form.addEventListener('keydown', handleTableNavigation);
-
-        // =========================================================================
-    // 2. КНОПКА «СВЕРНУТЬ АКТ» (СОХРАНЕНИЕ КОПИИ В ЧЕРНОВИКИ)
-    // =========================================================================
-    if (btnCollapse) {
-        btnCollapse.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (!window.QA_Core) return;
-
-            // Собираем все заполненные инпуты формы
-            const formData = window.QA_Core.collectData(form);
-            const now = Date.now();
-
-            if (!currentDraftId) {
-                currentDraftId = 'draft_' + now;
-            }
-
-            // Извлекаем маркеры смены и батча для красивого названия карточки
-            const shiftColor = formData['shiftColor'] || formData['shift'] || 'ВЫБОР';
-            const shiftTime = formData['sutki'] || formData['smena'] || 'ВЫБОР';
-            const batchVal = formData['batchCode'] || formData['batch'] || ''; 
-            
-            const titleEl = document.querySelector('.main-title');
-            let cleanTitle = titleEl ? titleEl.innerText.trim() : 'Акт смывов с кремпера';
-            if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
-
-            // Формируем заголовок карточки
-            let displayTitle = `💼 ${cleanTitle}`;
-            if (shiftColor !== 'ВЫБОР' || shiftTime !== 'ВЫБОР') {
-                displayTitle += ` [${shiftColor}/${shiftTime}]`;
-            }
-            if (batchVal.trim() !== '') {
-                displayTitle += ` [Лот: ${batchVal}]`;
-            }
-
-            // Сохраняем состояние в оперативную память черновиков через ядро
-            window.QA_Core.saveDraftState(currentDraftId, window.location.pathname, displayTitle, formData);
-
-            form.reset();
-            currentDraftId = null;
-
-            // Безопасный переход назад в меню (3 уровня вверх из папки form/Swab/Swab_Cremper)
-            window.location.href = '../../../menu/index.html';
-        });
-    }
-
-    // =========================================================================
-    // 3. КНОПКА «СОХРАНИТЬ В АРХИВ» (ПРОМЫШЛЕННАЯ ВАЛИДАЦИЯ И ОТПРАВКА)
-    // =========================================================================
-    if (btnSaveArchive) {
-        btnSaveArchive.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (!window.QA_Core) return;
-
-            // 🔥 ЗАЩИТА ФАБРИКИ: Проверяем, заполнены ли все поля с атрибутом required в HTML
-            if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
-                form.reportValidity(); // Подсвечивает первое незаполненное обязательное поле лаборанту
-                return;
-            }
-
-            const formData = window.QA_Core.collectData(form);
-            const archiveId = 'arch_' + Date.now();
-
-            // Безопасное обращение к ключу префикса
-            localStorage.setItem(`${window.QA_Core.KEYS.ARCHIVE_PREFIX}${archiveId}`, JSON.stringify({
-                data: formData,
-                savedAt: new Date().toISOString(),
-                status: 'published'
-            }));
-
-            // Интегрируем паспорт записи в общую таблицу архива (archive.html)
-            let archiveActs = JSON.parse(localStorage.getItem('archiveActs')) || [];
-            const titleEl = document.querySelector('.main-title');
-            let cleanTitle = titleEl ? titleEl.innerText.trim() : 'Акт смывов с кремпера';
-            if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
-
-            const finalBatchVal = formData['batchCode'] || formData['batch'] || 'БЕЗ БАТЧА';
-
-            archiveActs.unshift({
-                id: archiveId,
-                date: new Date().toISOString().split('T')[0], 
-                number: "1.1.0",
-                controller: fullUserName || "Не указан",
-                actType: cleanTitle,
-                batch: finalBatchVal,
-                blankPath: window.location.pathname
-            });
-            localStorage.setItem('archiveActs', JSON.stringify(archiveActs));
-
-            // Очищаем черновик, если документ был открыт из папки временных файлов смены
-            if (currentDraftId) {
-                window.QA_Core.clearDraft(currentDraftId);
-            }
-
-            alert('Акт смывов с кремпера успешно заархивирован и внесен в журнал!');
-            form.reset();
-            window.location.href = '../../../menu/index.html'; 
-        });
-    }
-
-    // =========================================================================
-    // 4. КНОПКА «ОТМЕНА» И ВЫХОД ИЗ СЛУШАТЕЛЯ DOM
-    // =========================================================================
     if (btnCancel) {
         btnCancel.addEventListener('click', (e) => {
             e.preventDefault();
-            if (confirm('Выйти в меню? Все несохраненные изменения в таблице кремпера будут потеряны.')) {
-                window.location.href = '../../../menu/index.html';
+            if (confirm('Вы уверены, что хотите выйти? Все несохраненные изменения в чеклисте смывов будут потеряны.')) {
+                window.location.href = '/menu/index.html';
             }
         });
     }
-});
 
-// =========================================================================
-// 5. АВТОНОМНОЕ ГЛОБАЛЬНОЕ ЯДРО СБОРА ДАННЫХ БЛАНКОВ (QA_CORE)
-// =========================================================================
-window.QA_Core = {
-    KEYS: {
-        ACTIVE_ACTS: 'global_active_acts_list',
-        ARCHIVE_PREFIX: 'qaArchive_',
-        DRAFT_DATA: 'qa_all_drafts_data'
-    },
-    collectData(formElement) {
-        const data = {};
-        const fields = formElement.querySelectorAll('input, select, textarea');
-        fields.forEach((field, index) => {
-            const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
-            if (field.type === 'checkbox') {
-                data[name] = field.checked;
-            } else if (field.type === 'radio') {
-                if (field.checked) data[name] = field.value;
-            } else {
-                data[name] = field.value;
-            }
+    if (btnCollapse) {
+        btnCollapse.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleCollapse(); // Запуск логики черновика
         });
-        return data;
-    },
-    restoreData(formElement, draftId) {
-        if (!draftId) return;
-        const allDrafts = JSON.parse(localStorage.getItem(this.KEYS.DRAFT_DATA)) || {};
-        const savedDraft = allDrafts[draftId];
-        if (!savedDraft || !savedDraft.fields) return;
-        const fields = formElement.querySelectorAll('input, select, textarea');
-        fields.forEach((field, index) => {
-            const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
-            const savedValue = savedDraft.fields[name];
-            if (savedValue !== undefined) {
-                if (field.type === 'checkbox') {
-                    field.checked = savedValue;
-                } else if (field.type === 'radio') {
-                    if (field.value === savedValue) field.checked = true;
-                } else {
-                    field.value = savedValue;
+    }
+
+    if (btnSaveArchive) {
+        btnSaveArchive.removeAttribute('onclick'); // Зачистка инлайн-атрибутов
+        btnSaveArchive.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleSaveArchive(); // Запуск логики публикации в архив
+        });
+    }
+
+    // Чтение параметров URL для разворачивания документа из памяти
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentDraftId = urlParams.get('draftId'); 
+    let currentMode = urlParams.get('mode'); 
+
+    if (currentDraftId) {
+        try {
+            const allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
+            let foundData = allDrafts[currentDraftId]?.fields;
+
+            if (!foundData) {
+                const archivedDocRaw = localStorage.getItem(`${ARCHIVE_PREFIX}${currentDraftId}`);
+                if (archivedDocRaw) {
+                    const parsedObj = JSON.parse(archivedDocRaw);
+                    foundData = parsedObj.data ? parsedObj.data : parsedObj;
                 }
             }
-        });
-    },
-    saveDraftState(draftId, fileUrl, title, fieldsData) {
-        const now = Date.now();
-        let allDrafts = JSON.parse(localStorage.getItem(this.KEYS.DRAFT_DATA)) || {};
-        allDrafts[draftId] = { timestamp: now, fields: fieldsData };
-        localStorage.setItem(this.KEYS.DRAFT_DATA, JSON.stringify(allDrafts));
 
-        let acts = JSON.parse(localStorage.getItem(this.KEYS.ACTIVE_ACTS)) || [];
-        const existingIndex = acts.findIndex(act => act.id === draftId);
-        const actMeta = { id: draftId, url: fileUrl, title: title, updated: now };
-        if (existingIndex !== -1) acts[existingIndex] = actMeta;
-        else acts.push(actMeta);
-        
-        localStorage.setItem(this.KEYS.ACTIVE_ACTS, JSON.stringify(acts));
-    },
-    clearDraft(draftId) {
-        if (!draftId) return;
-        let acts = JSON.parse(localStorage.getItem(this.KEYS.ACTIVE_ACTS)) || [];
-        acts = acts.filter(act => act.id !== draftId);
-        localStorage.setItem(this.KEYS.ACTIVE_ACTS, JSON.stringify(acts));
+            // Пошагово заполняем чеклист сохраненными значениями
+            if (foundData) {
+                const targetData = foundData.meta ? foundData.meta : foundData;
+                
+                mainForm.querySelectorAll('input, select, textarea').forEach((field, index) => {
+                    const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
+                    const savedValue = targetData[name];
+                    
+                    if (savedValue !== undefined) {
+                        if (field.type === 'checkbox') {
+                            field.checked = savedValue;
+                        } else {
+                            field.value = savedValue;
+                        }
+                    }
 
-        let allDrafts = JSON.parse(localStorage.getItem(this.KEYS.DRAFT_DATA)) || {};
-        delete allDrafts[draftId];
-        localStorage.setItem(this.KEYS.DRAFT_DATA, JSON.stringify(allDrafts));
+                    // 🔥 АВТОМАТИЧЕСКАЯ ЗАЩИТА РЕЖИМА "ПРОСМОТР" (MODE = VIEW)
+                    if (currentMode === 'view') {
+                        field.readOnly = true;
+                        field.disabled = true;
+                        field.style.backgroundColor = '#f1f5f9'; 
+                        field.style.color = '#475569';
+                        field.style.cursor = 'not-allowed';
+                    }
+                });
+                updateLotValue();
+            }
+        } catch (error) {
+            console.error('Ошибка восстановления чеклиста смывов из JSON:', error);
+        }
     }
-};
 
-// =========================================================================
-// 6. НАВИГАЦИЯ ПО ТАБЛИЦЕ КЛАВИШАМИ (ЗАЩИЩЕННАЯ ВЕРСИЯ)
-// =========================================================================
+    // Полное скрытие кнопок управления при режиме просмотра view
+    if (currentMode === 'view') {
+        const elementsToHide = ['#btnCollapse', '#collapseBtn', '#btnSaveArchive', '#saveArchiveBtn'];
+        elementsToHide.forEach(selector => {
+            const el = document.getElementById(selector) || document.querySelector(selector);
+            if (el) el.style.setProperty('display', 'none', 'important');
+        });
+    }
+
+    // Запуск фонового резервного копирования
+    setTimeout(updateShadowArchiveCopy, 600);
+    mainForm.addEventListener('input', updateShadowArchiveCopy);
+    mainForm.addEventListener('change', updateShadowArchiveCopy);
+});
+
+// ====================================================
+// 3. СБОР И СВЕРТЫВАНИЕ В ЧЕРНОВИК (ПОД СТРУКТУРУ QA_CORE)
+// ====================================================
+function collectFormData() {
+    if (!mainForm) return {};
+    const data = {};
+    mainForm.querySelectorAll('input, select, textarea').forEach((field, index) => {
+        const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
+        data[name] = field.type === 'checkbox' ? field.checked : field.value;
+    });
+    return data;
+}
+
+function handleCollapse() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentDraftId = urlParams.get('draftId') || 'draft_' + Date.now();
+    
+    const formData = collectFormData();
+    const now = Date.now();
+
+    // Съем живого значения Батча с экрана для карточки черновика в главном меню
+    const targetInput = document.getElementById('batch-code-field') || mainForm.querySelector('input[name*="batch" i]');
+    const batchVal = targetInput && targetInput.value.trim() ? targetInput.value.trim() : '';
+
+    const titleEl = document.querySelector('.main-title');
+    let cleanTitle = titleEl ? titleEl.textContent.trim() : 'Акт верификации смывов';
+    if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
+
+    const displayTitle = `💼 ${cleanTitle} ${batchVal ? '['+batchVal+']' : ''}`;
+
+    let allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
+    allDrafts[currentDraftId] = { timestamp: now, fields: formData };
+    localStorage.setItem(DRAFT_DATA_KEY, JSON.stringify(allDrafts));
+
+    let registry = JSON.parse(localStorage.getItem(ACTIVE_ACTS_KEY)) || [];
+    const existsIndex = registry.findIndex(a => a.id === currentDraftId);
+    
+    const meta = { id: currentDraftId, url: window.location.pathname, title: displayTitle, updated: now };
+
+    if (existsIndex !== -1) registry[existsIndex] = meta;
+    else registry.push(meta);
+    localStorage.setItem(ACTIVE_ACTS_KEY, JSON.stringify(registry));
+
+    if (mainForm) mainForm.reset();
+    alert('Акт успешно свернут в черновик. Оригинал обнулен!');
+    window.location.href = '/menu/index.html'; 
+}
+
+// ====================================================
+// 4. СИСТЕМА ПРОМЫШЛЕННОЙ АРХИВАЦИИ И ТЕНЕВОГО КОПИРОВАНИЯ
+// ====================================================
+function generateArchiveStandardId() {
+    const operatorId = localStorage.getItem('userId') || '000';
+    const cleanOperator = operatorId.trim().replace(/\s+/g, ''); 
+    return `${BLANK_VERSION}-${cleanOperator}`;
+}
+
+function updateShadowArchiveCopy() {
+    if (!mainForm) return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentDraftId = urlParams.get('draftId') || 'temp';
+    const formData = collectFormData();
+
+    localStorage.setItem(`${SHADOW_PREFIX}${currentDraftId}`, JSON.stringify({
+        meta: formData, shadowSavedAt: new Date().toISOString(), status: 'shadow'
+    }));
+}
+
+function handleSaveArchive() {
+    if (typeof validateForm === 'function' && !validateForm()) return;
+    updateShadowArchiveCopy();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentDraftId = urlParams.get('draftId') || 'temp';
+    
+    const shadowDataRaw = localStorage.getItem(`${SHADOW_PREFIX}${currentDraftId}`);
+    if (!shadowDataRaw) { alert('Ошибка: Данные документа пусты.'); return; }
+
+    const shadowObj = JSON.parse(shadowDataRaw);
+    const now = new Date();
+
+    let archiveFinalId = (currentDraftId && currentDraftId.includes('-')) ? currentDraftId : generateArchiveStandardId();
+
+    // 1. ПУБЛИКАЦИЯ / ОБНОВЛЕНИЕ ТЕЛА ФАЙЛА ДАННЫХ
+    shadowObj.status = 'published';
+    shadowObj.savedAt = now.toISOString();
+    localStorage.setItem(`${FINAL_ARCHIVE_PREFIX}${archiveFinalId}`, JSON.stringify(shadowObj));
+
+    // 2. ИНТЕГРАЦИЯ В ОБЩУЮ ТАБЛИЦУ ЖУРНАЛА АРХИВА (archive.html)
+    let archiveActs = JSON.parse(localStorage.getItem('archiveActs')) || [];
+    
+    const titleEl = document.querySelector('.main-title');
+    let cleanTitle = titleEl ? titleEl.textContent.trim() : 'Акт верификации смывов';
+    if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
+
+    const savedLastName = localStorage.getItem('userLastName') || '';
+    const savedFirstName = localStorage.getItem('userFirstName') || '';
+    const controllerName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : "Не указан";
+    
+    // ЖЕСТКИЙ СЪЕМ БАТЧ-КОДА С ЭКРАНА СИЛОЙ (ОБХОД ОЧИСТКИ FORM-DATA)
+    const targetInput = document.getElementById('batch-code-field') || mainForm.querySelector('input[name*="batch" i]');
+    let finalBatchVal = 'БЕЗ БАТЧА';
+    if (targetInput && targetInput.value.trim() !== '') {
+        finalBatchVal = targetInput.value.trim();
+    }
+    
+    const thisBlankPath = '../архив/хранилище/index.html';
+
+    const archiveRegistryEntry = {
+        id: archiveFinalId, 
+        date: now.toISOString().split('T')[0], // Чистый текстовый формат ГГГГ-ММ-ДД
+        number: `АКТ-${now.getTime().toString().slice(-6)}`, 
+        controller: controllerName,
+        actType: cleanTitle,
+        batch: finalBatchVal, // В таблице архива будет точный лот (например, 622E)
+        blankPath: thisBlankPath
+    };
+
+    const existingIndex = archiveActs.findIndex(act => act.id === archiveFinalId);
+    if (existingIndex !== -1) archiveActs[existingIndex] = archiveRegistryEntry; 
+    else archiveActs.unshift(archiveRegistryEntry); 
+    
+    localStorage.setItem('archiveActs', JSON.stringify(archiveActs));
+
+    // 3. ПОЛНАЯ ОЧИСТКА ПАМЯТИ ЧЕРНОВИКОВ СМЕНЫ
+    localStorage.removeItem(`${SHADOW_PREFIX}${currentDraftId}`);
+
+    let registry = JSON.parse(localStorage.getItem('global_active_acts_list')) || [];
+    registry = registry.filter(a => a.id !== currentDraftId);
+    localStorage.setItem('global_active_acts_list', JSON.stringify(registry));
+
+    let allDrafts = JSON.parse(localStorage.getItem('qa_all_drafts_data')) || {};
+    delete allDrafts[currentDraftId];
+    localStorage.setItem('qa_all_drafts_data', JSON.stringify(allDrafts));
+
+    alert(`Документ смывов успешно сохранен в архив!\nПаспорт ID: ${archiveFinalId}`);
+    window.location.href = '/menu/index.html'; 
+}
+
+// ====================================================
+// 5. АВТОМАТИЧЕСКИЙ РАСЧЕТ BATCH CODE (LOT) ДЛЯ СМЫВОВ
+// ====================================================
+// Базовые элементы шапки
+    const citySelect = document.getElementById('cyti');
+    const daySelect = document.getElementById('day');
+    const dateInput = document.getElementById('doc-date');
+    const targetInput = document.querySelector('input[name="batchCode"]');
+    const shiftColorSelect = document.getElementById('shift-color');
+
+    // --- БЛОК 1: АВТОМАТИЧЕСКИЙ РАСЧЕТ BATCH CODE (LOT) ---
+    function updateLotValue() {
+        if (!dateInput || !dateInput.value || !targetInput) return;
+
+        const date = new Date(dateInput.value);
+        if (isNaN(date.getTime())) return;
+
+        // 1. Логика года и недели (ISO-8601)
+        const lastYearDigit = date.getFullYear().toString().slice(-1);
+        const target = new Date(date.valueOf());
+        const dayNr = (date.getDay() + 6) % 7;
+        target.setDate(target.getDate() - dayNr + 3);
+        const firstThursday = target.valueOf();
+        target.setMonth(0, 1);
+        if (target.getDay() !== 4) {
+            target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
+        }
+        const weekNumber = 1 + Math.ceil((firstThursday - target) / 604800000);
+        const formattedWeek = weekNumber.toString().padStart(2, '0');
+
+        // Буква дня недели (Пн = A ... Вс = G)
+        const daysLetters = ['G', 'A', 'B', 'C', 'D', 'E', 'F']; 
+        const dayLetter = daysLetters[date.getDay()];
+        const datePart = lastYearDigit + formattedWeek + dayLetter;
+
+        // 2. Логика времени суток (Смена)
+        let dayPart = "";
+        if (daySelect && daySelect.value === "ДЕНЬ") dayPart = "1";
+        if (daySelect && daySelect.value === "НОЧЬ") dayPart = "2";
+
+        // 3. Логика города
+        let cityPart = "";
+        if (citySelect && citySelect.value === "ЛУЖНИКИ") cityPart = "LUZ";
+        if (citySelect && citySelect.value === "НОВОСИБИРСК") cityPart = "NOV";
+
+        // Запись результирующей строки
+        targetInput.value = datePart + dayPart + cityPart;
+    }
+
+    // Слушатели генерации LOT кода
+    if (citySelect) citySelect.addEventListener('change', updateLotValue);
+    if (daySelect) daySelect.addEventListener('change', updateLotValue);
+    if (dateInput) dateInput.addEventListener('change', updateLotValue);
+    if (shiftColorSelect) shiftColorSelect.addEventListener('change', updateLotValue);
+
+    // Первичный запуск расчета LOT
+    updateLotValue();
+
+
+// ====================================================
+// 6. НАВИГАЦИЯ ПО ТАБЛИЦЕ КЛАВИШАМИ (ENTER / СТРЕЛКИ)
+// ====================================================
 function handleTableNavigation(e) {
-    const validKeys = ['Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+    const validKeys = ['Enter', 'ArrowUp', 'ArrowDown'];
     if (!validKeys.includes(e.key)) return;
 
     const currentInput = e.target;
     if (currentInput.tagName !== 'INPUT' && currentInput.tagName !== 'SELECT') return;
-
-    if (currentInput.hasAttribute('list') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
-        return; 
-    }
 
     const currentTd = currentInput.closest('td');
     const currentTr = currentInput.closest('tr');
@@ -249,39 +361,13 @@ function handleTableNavigation(e) {
     if (e.key === 'Enter' || e.key === 'ArrowDown') {
         e.preventDefault(); 
         if (rowIndex < allRows.length - 1) {
-            targetInput = allRows[rowIndex + 1].children[colIndex]?.querySelector('input, select');
+            targetInput = allRows[rowIndex + 1].children[colIndex].querySelector('input, select');
         }
     } 
     else if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (rowIndex > 0) {
-            targetInput = allRows[rowIndex - 1].children[colIndex]?.querySelector('input, select');
-        }
-    } 
-    else if (e.key === 'ArrowRight') {
-        if (currentInput.selectionStart === currentInput.value.length || currentInput.type === 'select-one') {
-            let nextTd = currentTd.nextElementSibling;
-            while (nextTd) {
-                const input = nextTd.querySelector('input, select');
-                if (input && !input.hasAttribute('readonly')) {
-                    targetInput = input;
-                    break;
-                }
-                nextTd = nextTd.nextElementSibling;
-            }
-        }
-    } 
-    else if (e.key === 'ArrowLeft') {
-        if (currentInput.selectionStart === 0 || currentInput.type === 'select-one') {
-            let prevTd = currentTd.previousElementSibling;
-            while (prevTd) {
-                const input = prevTd.querySelector('input, select');
-                if (input && !input.hasAttribute('readonly')) {
-                    targetInput = input;
-                    break;
-                }
-                prevTd = prevTd.previousElementSibling;
-            }
+            targetInput = allRows[rowIndex - 1].children[colIndex].querySelector('input, select');
         }
     }
 
