@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Акт микробиологической верификации: кремпер</title>
+    <title>Акт микробиологической верификации: Смывы</title>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="act-swab-cremper.css"/>
 </head>
 <body>
-
+    <!-- Шапка сайта с корректно закрытыми тегами -->
     <div class="header">
         <div class="header-container">
             <div class="header-title-block">
@@ -22,16 +23,18 @@
                     </a>
                 </div>
             </div>
+        </div>
+    </div>
 
     <div class="container">
         <form id="wash-sd-form" onsubmit="handleSubmit(event)">
-            <!-- ШАПКА ДОКУМЕНТА -->
-            <div class="main-title">СМЫВЫ С КРЕМПЕРА: Акт микробиологической верификации авто рег ил 17693.</div>
-                        <!-- ШАПКА АКТА -->
-                        <div class="meta-grid">
-                        <!-- Блок параметров смены -->
-                            <div class="meta-card" style="border-left: 4px solid #10b981;">
-                                <!-- СТРОКА 1: Фабрика и Статус фабрики -->
+            <div class="main-title">СМЫВЫ: Акт микробиологической верификации.</div>
+            
+            <!-- ШАПКА АКТА -->
+            <div class="meta-grid">
+                <!-- Блок параметров смены -->
+                <div class="meta-card" style="border-left: 4px solid #10b981;">
+                    <!-- СТРОКА 1: Фабрика и Статус фабрики -->
                                 <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
                                     <div style="flex: 1;">
                                         <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;">Фабрика</label>
@@ -44,7 +47,8 @@
                                     <div style="flex: 1;">
                                         <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Статус фабрики</label>
                                         <input type="text" name="status" value="Золотой и платиновый" required 
-                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; 
+                                        background: #f1f5f9">
                                     </div>
                                 </div>
                                 <!-- СТРОКА 2: shift Сменa -->
@@ -95,35 +99,42 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Регламент отбора -->
-                            <div class="meta-card meta-card-gray" id="dop" style="border-left: 4px solid #10b981;">
-                                <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b; font-size: 1.25rem;">📋 Инструкция к заполнению:</div>
-                                <p style="margin-bottom: 2px; border: 1px solid; font-size: 1rem; border-radius: 10px; font-weight: 700;">Смывы отбираются непосредственно перед перед стартом линии</p>
+                <!-- Регламент отбора -->
+                <div class="meta-card meta-card-gray" id="dop" style="border-left: 4px solid #10b981; border-radius: 12px;">
+                    <div style="font-weight: 700; font-size: 1.5rem;padding-bottom: 10px; color: #000;">📋 Инструкция к заполнению:</div>
+                    <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">1. Смывы отбираются только в дневную смену во время производства ДНЕМ.</p>
+                    <p style="margin-bottom: 5px; font-size: 1rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">2. На каждый отобранный смыв приклеивается этикетка со штрихкодом.</p>
+                    <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">3. Если смыв не отобран, неиспользованная этикетка клеится на оборот чеклиста.</p>
+                    <p style="margin-bottom: 5px; font-size: 1rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">4. Все образцы собираются в отдельную емкость или пакетик-маечку.</p>
+                </div>
+                <!-- Информация по типам смывов с исправленной flex-сеткой и уникальными ID -->
+                <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
+                    <div style="font-weight: 700; font-size: 1.5rem; margin-bottom: 4px; color: #1e293b;">🔬 Спецификация Сальмонелла / Энтеро:</div>
+                    <p style="margin-bottom: 2px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Сальмонелла:</strong> Каждая дневная смена. 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    <p style="margin-bottom: 12px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Энтеро/Дрожжи/Плесень:</strong> Только в понедельник! 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    
+                    <!-- Корректный Flex-контейнер для полей лаборатории -->
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="form-group">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Фамилия лаборанта</label>
+                            <input type="text" name="lab-name" id="lab-controller-name" value="name" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                        </div>
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Дата получения</label>
+                                <input type="date" name="lab-doc-date" id="lab-doc-date" value="2026-05-29" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
                             </div>
-                            <!-- Заполняется лабораторией -->
-                            <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
-                                <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b; font-size: 1.25rem; padding-bottom: 10px;">🔬 Заполняется лабораторией</div>
-                                <p style="margin-bottom: 2px; font-size: 1rem; padding-bottom: 25px;"><strong>Получение образцов микробиологической лабораторией:</strong></p>
-                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                    <div style="flex: 1; min-width: 200px; padding-bottom: 20px;">
-                                        <label style="font-size: 0.85rem; padding-bottom: 10px;">Дата получения образцов</label>
-                                        <input type="date" name="lab_doc_date" value="2026-05-29" required style="font-size: 1rem;">
-                                    </div>
-                                    <div style="flex: 1; min-width: 200px;">
-                                        <label style="font-size: 0.8rem; padding-bottom: 10px;">Время получения образцов</label>
-                                        <input type="time" name="lab_time" class="table-input tm-l" required style="font-size: 1rem;">
-                                    </div>
-                                    <div style="flex: 1; min-width: 200px;">
-                                        <label style="font-size: 0.85rem; padding-bottom: 10px;">Фамилия лаборанта</label>
-                                        <input type="text" name="lab_controller_name" value="name" required style="font-size: 1rem;">
-                                    </div>
-                                </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Время получения</label>
+                                <input type="time" name="lab-time" class="table-input tm-l" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
                             </div>
+                        </div>
                     </div>
+                </div>
+            </div>
 
             <!-- ТАБЛИЦА СМЫВОВ -->
-            <div class="table-container">
-                <div class="table-scroll">
+                <div class="table-scroll" >
                     <table>
                         <colgroup>
                             <col style="width: 8%;">
@@ -146,9 +157,6 @@
                             </tr>
                         </thead>
                         <tbody id="wash-table-body">
-                            <tr>
-                                <td class="section-row-header" colspan="7"></td>
-                            </tr>
                             <tr>
                                 <td class="text-static">атла чтота</td>
                                 <td class="text-static">атлас какта</td>
@@ -217,22 +225,17 @@
                     </table>
                 </div>
             </div>
-
-            <!-- КНОПКИ ДЕЙСТВИЙ -->
+            <!-- КНОПКИ ДЕЙСТВИЙ (ИСПРАВЛЕНО: Кнопка Сохранить теперь имеет тип submit) -->
             <div class="actions-bar">
                 <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
                 <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
                 <button type="button" class="btn btn-warning" id="btnCollapse">📦 Свернуть акт (сохранить как черновик)</button>
             </div>
         </form>
-    </div>
-<div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
+        <div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
                     <span>W: 01 от 22.08..2024</span>
         </div>
-    <script src="/form/global-yadro-JS/acts-logic.js"></script>
-    <script src="/form/global-yadro-JS/acts-bach.js"></script>
-    <script src="/form/global-yadro-JS/acts-bach.js"></script>
-    <script src="/form/global-yadro-JS/acts-print.js"></script>
+    </div>
     <script src="act-swab-cremper.js"></script>
 </body>
 </html>
