@@ -1,79 +1,76 @@
 // =========================================================================
-// 1. ИНИЦИАЛИЗАЦИЯ СЕРВИСОВ И АВТОПОДСТАНОВКА ДАННЫХ СОТРУДНИКА
+// 1. БЕЗОПАСНЫЕ ПРЕФИКСЫ И НАСТРОЙКИ
+// =========================================================================
+if (typeof ARCHIVE_PREFIX === 'undefined') { var ARCHIVE_PREFIX = 'qaArchive_'; }
+if (typeof ACTIVE_ACTS_KEY === 'undefined') { var ACTIVE_ACTS_KEY = 'global_active_acts_list'; }
+if (typeof DRAFT_DATA_KEY === 'undefined') { var DRAFT_DATA_KEY = 'qa_all_drafts_data'; }
+if (typeof SHADOW_PREFIX === 'undefined') { var SHADOW_PREFIX = 'shadow_arch_'; }
+if (typeof FINAL_ARCHIVE_PREFIX === 'undefined') { var FINAL_ARCHIVE_PREFIX = 'qaArchive_'; }
+
+var BLANK_VERSION = '2.2.0'; 
+var mainForm = null;
+let rowCounter = 0; 
+
+// =========================================================================
+// 2. ИНИЦИАЛИЗАЦИЯ И РАЗВОРАЧИВАНИЕ ЧЕРНОВИКОВ
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('wash-sd-form') || document.querySelector('form');
-    const tableBody = document.getElementById('wash-table-body');
-    const btnCancel = document.getElementById('btnCancel');
-    const btnSaveArchive = document.getElementById('btnSaveArchive');
-    const btnCollapse = document.getElementById('btnCollapse');
-    const btnAddSupply = document.getElementById('btnAddSupply');
-
-    if (!form) {
-        console.error("Критическая ошибка: Форма с id='wash-sd-form' не найдена!");
+    mainForm = document.getElementById('wash-sd-form') || document.querySelector('form');
+    if (!mainForm) {
+        console.error("Критическая ошибка: Форма не найдена в HTML!");
         return;
     }
 
-    // Автоматическое извлечение данных сотрудника из локальной сессии системы
+    // Слушатели для авторасчета Батч-кода
+    const citySelect = document.getElementById('cyti') || mainForm.querySelector('[name*="fabrika" i]');
+    const daySelect = mainForm.querySelector('[name*="smena" i]') || document.getElementById('day');
+    const dateInput = mainForm.querySelector('input[type="date"]') || document.getElementById('doc-date');
+    const shiftColorSelect = document.getElementById('shift-color');
+
+    if (citySelect) citySelect.addEventListener('change', updateLotValue);
+    if (daySelect) daySelect.addEventListener('change', updateLotValue);
+    if (dateInput) dateInput.addEventListener('change', updateLotValue);
+    if (shiftColorSelect) shiftColorSelect.addEventListener('change', updateLotValue);
+
+    // Автоподстановка ФИО
     const savedFirstName = localStorage.getItem('userFirstName') || '';
     const savedLastName = localStorage.getItem('userLastName') || '';
     const fullUserName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : '';
 
-    // Подставляем имя контролера/техника в поля формы, если они пустые
-    const techField = form.querySelector('[name*="tech" i]') || form.querySelector('[name*="name" i]');
-    if (techField && !techField.value) techField.value = fullUserName;
+    const techFieldUpper = mainForm.querySelector('[name*="tech" i]') || mainForm.querySelector('[id*="tech" i]');
+    const nameFieldLower = mainForm.querySelector('[name*="lab" i]') || mainForm.querySelector('[name="name" i]');
+    
+    if (techFieldUpper && !techFieldUpper.value) techFieldUpper.value = fullUserName;
+    if (nameFieldLower && !nameFieldLower.value) nameFieldLower.value = fullUserName;
 
-    // Извлекаем draftId из адреса строки браузера (для черновиков)
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentDraftId = urlParams.get('draftId');
+    // Привязка кнопок действий
+    const btnCancel = document.getElementById('btnCancel') || document.querySelector('.btn-secondary');
+    const btnSaveArchive = document.getElementById('btnSaveArchive') || document.getElementById('saveArchiveBtn') || document.querySelector('.btn-success');
+    const btnCollapse = document.getElementById('btnCollapse') || document.getElementById('collapseBtn') || document.querySelector('.btn-warning');
+    const btnAddSupply = document.getElementById('btnAddSupply') || document.querySelector('.btn-primary') || document.querySelector('[id*="Supply" i]');
 
-    // Переменная-счетчик для уникальной индексации динамических строк таблицы поставщиков
-    let rowCounter = 2;
+    if (btnCancel) {
+        btnCancel.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('Вы уверены, что хотите выйти? Все несохраненные изменения будут потеряны.')) {
+                window.location.href = '/menu/index.html';
+            }
+        });
+    }
 
-    // Регистрируем перехватчик клавиш на форму
-    form.addEventListener('keydown', handleTableNavigation);
+    if (btnCollapse) {
+        btnCollapse.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleCollapse();
+        });
+    }
 
-        // =========================================================================
-    // 2. ДИНАМИЧЕСКАЯ ГЕНЕРАЦИЯ СТРОК ПОСТАВОК ТАБЛИЦЫ
-    // =========================================================================
-    function createNewSupplyRow() {
-        rowCounter++;
-        const nextRow1 = rowCounter;
-        rowCounter++;
-        const nextRow2 = rowCounter;
-
-        const supplyHtml = `
-            <tr>
-                <td class="section-row-header" colspan="7">
-                    <select name="supplier_select" class="supplier-selector" required>
-                        <option value="поставщик1">поставщик №1</option>
-                        <option value="поставщик2">поставщик №2</option>
-                        <option value="поставщик3">поставщик №3</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-static">атла чтота</td>
-                <td class="text-static">атлас какта</td>
-                <td class="text-static">состараны шарового крана</td>
-                <td><input type="time" name="time_1" class="table-input tm-l"></td>
-                <td class="text-center-bold">1</td>
-                <td><input type="text" name="lab_num_1" class="table-input lb-l"></td>
-                <td><input type="text" name="il_1" class="table-input lb-l"></td>
-            </tr>
-            <tr>
-                <td class="text-static">атла чтота</td>
-                <td class="text-static">атлас какта</td>
-                <td class="text-static">состараны латунного коннектора</td>
-                <td><input type="time" name="time_2" class="table-input tm-l"></td>
-                <td class="text-center-bold">2</td>
-                <td><input type="text" name="lab_num_2" class="table-input lb-l"></td>
-                <td><input type="text" name="il_2" class="table-input lb-l"></td>
-            </tr>
-        `;
-        if (tableBody) {
-            tableBody.insertAdjacentHTML('beforeend', supplyHtml);
-        }
+    if (btnSaveArchive) {
+        btnSaveArchive.removeAttribute('onclick');
+        btnSaveArchive.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleSaveArchive();
+        });
     }
 
     if (btnAddSupply) {
@@ -83,305 +80,237 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-        // =========================================================================
-    // 3. ВОССТАНОВЛЕНИЕ ДИНАМИЧЕСКОЙ СТРУКТУРЫ ИЗ ЧЕРНОВИКА
-    // =========================================================================
+    // Проверка режима работы (Новый бланк vs Черновик)
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentDraftId = urlParams.get('draftId'); 
+    let currentMode = urlParams.get('mode'); 
+
     if (currentDraftId) {
         try {
-            const allDrafts = JSON.parse(localStorage.getItem('qa_all_drafts_data')) || {};
-            const savedData = allDrafts[currentDraftId]?.fields;
+            const allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
+            let foundData = allDrafts[currentDraftId]?.fields;
 
-            if (savedData) {
-                const savedKeys = Object.keys(savedData);
-                let maxIndex = 2;
+            if (!foundData) {
+                const archivedDocRaw = localStorage.getItem(`${ARCHIVE_PREFIX}${currentDraftId}`);
+                if (archivedDocRaw) {
+                    const parsedObj = JSON.parse(archivedDocRaw);
+                    foundData = parsedObj.data ? parsedObj.data : parsedObj;
+                }
+            }
+
+            if (foundData) {
+                const targetData = foundData.meta ? foundData.meta : foundData;
                 
-                savedKeys.forEach(key => {
-                    if (key.startsWith('time_')) {
-                        const num = parseInt(key.split('_')[1], 10);
-                        if (num > maxIndex) maxIndex = num;
-                    }
-                });
-
-                // Генерируем блоки поставок на экране до тех пор, пока структура не совпадет с черновиком
-                while (rowCounter < maxIndex) {
+                // Воссоздаем динамические строки на основе сохраненного клик-счетчика
+                const savedClicks = parseInt(targetData['__dynamic_clicks_count'], 10) || 0;
+                for (let i = 0; i < savedClicks; i++) {
                     createNewSupplyRow();
                 }
 
-                // Заполняем сгенерированные и базовые поля данными
-                Object.keys(savedData).forEach(name => {
-                    const field = form.querySelector(`[name="${name}"]`);
-                    if (field) {
-                        if (field.type === 'checkbox') field.checked = savedData[name];
-                        else field.value = savedData[name];
+                // Заполняем поля значениями
+                mainForm.querySelectorAll('input, select, textarea').forEach((field, index) => {
+                    const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
+                    const savedValue = targetData[name];
+                    
+                    if (savedValue !== undefined) {
+                        if (field.type === 'checkbox') {
+                            field.checked = savedValue;
+                        } else {
+                            field.value = savedValue;
+                        }
+                    }
+
+                    // Режим просмотра (VIEW)
+                    if (currentMode === 'view') {
+                        field.readOnly = true;
+                        field.disabled = true;
+                        field.style.backgroundColor = '#f1f5f9'; 
+                        field.style.color = '#475569';
+                        field.style.cursor = 'not-allowed';
                     }
                 });
-                console.log(`✅ Черновик прямых поставок успешно подгружен. Восстановлено строк: ${rowCounter}`);
             }
-        } catch (e) {
-            console.error("Ошибка при восстановлении динамической таблицы:", e);
+        } catch (error) {
+            console.error('Ошибка восстановления чеклиста:', error);
+        }
+    } else {
+        // Логика очистки исходника для другого/нового пользователя
+        if (mainForm) {
+            mainForm.reset();
+            rowCounter = 0;
+            document.querySelectorAll('.dynamic-supplier-row, .dynamic-data-row').forEach(el => el.remove());
         }
     }
 
-        // =========================================================================
-    // 4. ОБРАБОТЧИКИ КНОПОК ДЕЙСТВИЙ (ЧЕРНОВИК, АРХИВ, ОТМЕНА)
-    // =========================================================================
-    
-    // КНОПКА «СВЕРНУТЬ АКТ»
-    if (btnCollapse) {
-        btnCollapse.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (!window.QA_Core) return;
-
-            const formData = window.QA_Core.collectData(form);
-            const now = Date.now();
-
-            if (!currentDraftId) {
-                currentDraftId = 'draft_' + now;
-            }
-
-            const shiftColor = formData['shiftColor'] || formData['shift'] || 'ВЫБОР';
-            const shiftTime = formData['sutki'] || formData['smena'] || 'ВЫБОР';
-            const batchVal = formData['batchCode'] || formData['batch'] || '';
-            
-            const titleEl = document.querySelector('.main-title');
-            let cleanTitle = titleEl ? titleEl.innerText.trim() : 'Прямые поставки';
-            if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
-
-            let displayTitle = `💼 ${cleanTitle}`;
-            if (shiftColor !== 'ВЫБОР' || shiftTime !== 'ВЫБОР') {
-                displayTitle += ` [${shiftColor}/${shiftTime}]`;
-            }
-            if (batchVal.trim() !== '') {
-                displayTitle += ` [Лот: ${batchVal}]`;
-            }
-
-            // Запекаем данные в локальную базу черновиков через ядро
-            window.QA_Core.saveDraftState(currentDraftId, window.location.pathname, displayTitle, formData);
-
-            form.reset();
-            currentDraftId = null;
-            window.location.href = '/menu/index.html';
+    if (currentMode === 'view') {
+        const elementsToHide = ['#btnCollapse', '#collapseBtn', '#btnSaveArchive', '#saveArchiveBtn', '#btnAddSupply', '.btn-primary', '.btn-warning', '.btn-success'];
+        elementsToHide.forEach(selector => {
+            const el = document.getElementById(selector) || document.querySelector(selector);
+            if (el) el.style.setProperty('display', 'none', 'important');
         });
     }
 
-    // КНОПКА «СОХРАНИТЬ В АРХИВ»
-    if (btnSaveArchive) {
-        btnSaveArchive.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (!window.QA_Core) return;
-
-            const formData = window.QA_Core.collectData(form);
-            const archiveId = 'arch_' + Date.now();
-
-            // 1. Публикуем тело документа в архив
-            localStorage.setItem(`qaArchive_${archiveId}`, JSON.stringify({
-                data: formData,
-                savedAt: new Date().toISOString()
-            }));
-
-            // 2. Интегрируем паспорт записи в общий реестр архива для отображения в таблице журнала
-            let archiveActs = JSON.parse(localStorage.getItem('archiveActs')) || [];
-            const titleEl = document.querySelector('.main-title');
-            let cleanTitle = titleEl ? titleEl.innerText.trim() : 'Прямые поставки';
-            if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
-
-            const finalBatchVal = formData['batchCode'] || formData['batch'] || 'БЕЗ БАТЧА';
-
-            archiveActs.unshift({
-                id: archiveId,
-                date: new Date().toISOString().split('T')[0],
-                number: "1.1.0",
-                controller: fullUserName || "Не указан",
-                actType: cleanTitle,
-                batch: finalBatchVal,
-                blankPath: window.location.pathname
-            });
-            localStorage.setItem('archiveActs', JSON.stringify(archiveActs));
-
-            // 3. Вычищаем черновик смены, если он был открыт
-            if (currentDraftId) {
-                window.QA_Core.clearDraft(currentDraftId);
-            }
-
-            alert('Акт успешно за архивирован и сохранен в журнал фабрики!');
-            form.reset();
-            window.location.href = '/menu/index.html';
-        });
-    }
-
-    // КНОПКА «ОТМЕНА»
-    if (btnCancel) {
-        btnCancel.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (confirm('Выйти без сохранения? Вся внесенная информация будет безвозвратно стерта.')) {
-                window.location.href = '/menu/index.html';
-            }
-        });
-    }
+    updateLotValue();
+    setTimeout(updateShadowArchiveCopy, 600);
+    mainForm.addEventListener('input', updateShadowArchiveCopy);
+    mainForm.addEventListener('change', updateShadowArchiveCopy);
 });
 
-// =========================================================================
-// 5. АВТОНОМНОЕ УНИВЕРСАЛЬНОЕ ЯДРО СБОРА ДАННЫХ БЛАНКОВ (QA_CORE)
-// =========================================================================
-window.QA_Core = {
-    KEYS: {
-        ACTIVE_ACTS: 'global_active_acts_list',
-        ARCHIVE_PREFIX: 'qaArchive_',
-        DRAFT_DATA: 'qa_all_drafts_data'
-    },
-    collectData(formElement) {
-        const data = {};
-        const fields = formElement.querySelectorAll('input, select, textarea');
-        fields.forEach((field, index) => {
-            const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
-            if (field.type === 'checkbox') {
-                data[name] = field.checked;
-            } else if (field.type === 'radio') {
-                if (field.checked) data[name] = field.value;
-            } else {
-                data[name] = field.value;
-            }
-        });
-        return data;
-    },
-    restoreData(formElement, draftId) {
-        if (!draftId) return;
-        const allDrafts = JSON.parse(localStorage.getItem(this.KEYS.DRAFT_DATA)) || {};
-        const savedDraft = allDrafts[draftId];
-        if (!savedDraft || !savedDraft.fields) return;
-        const fields = formElement.querySelectorAll('input, select, textarea');
-        fields.forEach((field, index) => {
-            const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
-            const savedValue = savedDraft.fields[name];
-            if (savedValue !== undefined) {
-                if (field.type === 'checkbox') {
-                    field.checked = savedValue;
-                } else if (field.type === 'radio') {
-                    if (field.value === savedValue) field.checked = true;
-                } else {
-                    field.value = savedValue;
-                }
-            }
-        });
-    },
-    saveDraftState(draftId, fileUrl, title, fieldsData) {
-        const now = Date.now();
-        let allDrafts = JSON.parse(localStorage.getItem(this.KEYS.DRAFT_DATA)) || {};
-        allDrafts[draftId] = { timestamp: now, fields: fieldsData };
-        localStorage.setItem(this.KEYS.DRAFT_DATA, JSON.stringify(allDrafts));
-
-        let acts = JSON.parse(localStorage.getItem(this.KEYS.ACTIVE_ACTS)) || [];
-        const existingIndex = acts.findIndex(act => act.id === draftId);
-        const actMeta = { id: draftId, url: fileUrl, title: title, updated: now };
-        if (existingIndex !== -1) acts[existingIndex] = actMeta;
-        else acts.push(actMeta);
-        
-        localStorage.setItem(this.KEYS.ACTIVE_ACTS, JSON.stringify(acts));
-    },
-    clearDraft(draftId) {
-        if (!draftId) return;
-        let acts = JSON.parse(localStorage.getItem(this.KEYS.ACTIVE_ACTS)) || [];
-        acts = acts.filter(act => act.id !== draftId);
-        localStorage.setItem(this.KEYS.ACTIVE_ACTS, JSON.stringify(acts));
-
-        let allDrafts = JSON.parse(localStorage.getItem(this.KEYS.DRAFT_DATA)) || {};
-        delete allDrafts[draftId];
-        localStorage.setItem(this.KEYS.DRAFT_DATA, JSON.stringify(allDrafts));
-    }
-};
-
-// =========================================================================
-// 6. АВТОНОМНАЯ НАВИГАЦИЯ КЛАВИШАМИ (ENTER / СТРЕЛКИ) ДЛЯ ДИНАМИЧЕСКИХ СТРОК
-// =========================================================================
-function handleTableNavigation(e) {
-    const validKeys = ['Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-    if (!validKeys.includes(e.key)) return;
-
-    const currentInput = e.target;
-    if (currentInput.tagName !== 'INPUT' && currentInput.tagName !== 'SELECT') return;
-
-    const currentTd = currentInput.closest('td');
-    const currentTr = currentInput.closest('tr');
-    if (!currentTd || !currentTr) return;
-
-    const tableBody = currentTr.closest('tbody');
-    if (!tableBody) return;
-
-    const colIndex = Array.from(currentTr.children).indexOf(currentTd);
-    const allRows = Array.from(tableBody.querySelectorAll('tr'));
-    const rowIndex = allRows.indexOf(currentTr);
-
-    let targetInput = null;
-
-    if (e.key === 'Enter' || e.key === 'ArrowDown') {
-        e.preventDefault(); 
-        if (rowIndex < allRows.length - 1) {
-            targetInput = allRows[rowIndex + 1].children[colIndex]?.querySelector('input, select');
-        }
-    } 
-    else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        if (rowIndex > 0) {
-            targetInput = allRows[rowIndex - 1].children[colIndex]?.querySelector('input, select');
-        }
-    } 
-    else if (e.key === 'ArrowRight') {
-        if (currentInput.selectionStart === currentInput.value.length || currentInput.type === 'select-one') {
-            let nextTd = currentTd.nextElementSibling;
-            while (nextTd) {
-                const input = nextTd.querySelector('input, select');
-                if (input && !input.hasAttribute('readonly')) {
-                    targetInput = input;
-                    break;
-                }
-                nextTd = nextTd.nextElementSibling;
-            }
-        }
-    } 
-    else if (e.key === 'ArrowLeft') {
-        if (currentInput.selectionStart === 0 || currentInput.type === 'select-one') {
-            let prevTd = currentTd.previousElementSibling;
-            while (prevTd) {
-                const input = prevTd.querySelector('input, select');
-                if (input && !input.hasAttribute('readonly')) {
-                    targetInput = input;
-                    break;
-                }
-                prevTd = prevTd.previousElementSibling;
-            }
-        }
-    }
-
-    if (targetInput) {
-        targetInput.focus();
-        if (typeof targetInput.select === 'function') {
-            targetInput.select();
-        }
-    }
+// ====================================================
+// 3. СБОР ДАННЫХ И СВЕРТЫВАНИЕ В ЧЕРНОВИК
+// ====================================================
+function collectFormData() {
+    if (!mainForm) return {};
+    const data = {};
+    mainForm.querySelectorAll('input, select, textarea').forEach((field, index) => {
+        const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
+        data[name] = field.type === 'checkbox' ? field.checked : field.value;
+    });
+    // Сохраняем точное число кликов добавления строк
+    data['__dynamic_clicks_count'] = Math.ceil(rowCounter / 2);
+    return data;
 }
 
-// =========================================================================
-// 7. СЛУЖБА АВТОМАТИЧЕСКОГО РАСЧЕТА BATCH CODE ДЛЯ ПРЯМЫХ ПОСТАВОК
-// =========================================================================
-(function() {
-    function updateFatSupplyLotValue() {
-        const factorySelect = document.querySelector('select[name*="fabrika" i]') || document.querySelector('select');
-        const shiftSelect = document.querySelector('select[name*="smena" i]') || document.querySelectorAll('select')[2]; 
-        const dateInput = document.querySelector('input[type="date"]');
-        const targetBatchInput = document.querySelector('input[name*="batch" i]') || document.querySelector('[placeholder*="Batch" i]');
+function handleCollapse() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentDraftId = urlParams.get('draftId') || 'draft_' + Date.now();
+    
+    const formData = collectFormData();
+    const now = Date.now();
 
-        if (!dateInput || !dateInput.value || !targetBatchInput) return;
+    const targetInput = document.getElementById('batch-code-field') || mainForm.querySelector('input[name="batchCode"]');
+    const batchVal = targetInput && targetInput.value.trim() ? targetInput.value.trim() : '';
 
-        const date = new Date(dateInput.value.replace(/-/g, '/'));
+    const titleEl = document.querySelector('.main-title');
+    let cleanTitle = titleEl ? titleEl.textContent.trim() : 'Акт верификации смывов';
+    if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
+
+    const displayTitle = `💼 ${cleanTitle} ${batchVal ? '['+batchVal+']' : ''}`;
+
+    let allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
+    allDrafts[currentDraftId] = { timestamp: now, fields: formData };
+    localStorage.setItem(DRAFT_DATA_KEY, JSON.stringify(allDrafts));
+
+    let registry = JSON.parse(localStorage.getItem(ACTIVE_ACTS_KEY)) || [];
+    const existsIndex = registry.findIndex(a => a.id === currentDraftId);
+    const meta = { id: currentDraftId, url: window.location.pathname, title: displayTitle, updated: now };
+
+    if (existsIndex !== -1) registry[existsIndex] = meta;
+    else registry.push(meta);
+    localStorage.setItem(ACTIVE_ACTS_KEY, JSON.stringify(registry));
+
+    alert('Акт успешно свернут в черновик!');
+    window.location.href = '/menu/index.html'; 
+}
+
+// ====================================================
+// 4. СИСТЕМА АРХИВАЦИИ И ТЕНЕВОГО КОПИРОВАНИЯ
+// ====================================================
+function generateArchiveStandardId() {
+    const operatorId = localStorage.getItem('userId') || '000';
+    return `${BLANK_VERSION}-${operatorId.trim().replace(/\s+/g, '')}`;
+}
+
+function updateShadowArchiveCopy() {
+    if (!mainForm) return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentDraftId = urlParams.get('draftId') || 'temp';
+    localStorage.setItem(`${SHADOW_PREFIX}${currentDraftId}`, JSON.stringify({
+        meta: collectFormData(), shadowSavedAt: new Date().toISOString(), status: 'shadow'
+    }));
+}
+
+function handleSaveArchive() {
+    if (typeof validateForm === 'function' && !validateForm()) return;
+    updateShadowArchiveCopy();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentDraftId = urlParams.get('draftId') || 'temp';
+    
+    const shadowDataRaw = localStorage.getItem(`${SHADOW_PREFIX}${currentDraftId}`);
+    if (!shadowDataRaw) { 
+        alert('Ошибка: Данные документа пусты.'); return; 
+    }
+    
+    const shadowObj = JSON.parse(shadowDataRaw);
+    const now = new Date();
+    let archiveFinalId = (currentDraftId && currentDraftId.includes('-')) ? currentDraftId : 
+    generateArchiveStandardId();
+    
+    shadowObj.status = 'published';
+    shadowObj.savedAt = now.toISOString();
+    localStorage.setItem(`${FINAL_ARCHIVE_PREFIX}${archiveFinalId}`, 
+        JSON.stringify(shadowObj));
+        
+        let archiveActs = JSON.parse(localStorage.getItem('archiveActs')) || [];
+        const titleEl = document.querySelector('.main-title');
+        let cleanTitle = titleEl ? titleEl.textContent.trim() : 'Акт верификации смывов';
+        
+        if (cleanTitle.includes(':')) cleanTitle = cleanTitle.split(':')[0].trim();
+        
+        const savedLastName = localStorage.getItem('userLastName') || '';
+        const savedFirstName = localStorage.getItem('userFirstName') || '';
+        const controllerName = savedLastName && savedFirstName ? `${savedLastName} ${savedFirstName.charAt(0)}.` : "Не указан";
+
+        
+        const targetInput = document.getElementById('batch-code-field') || 
+        mainForm.querySelector('input[name="batchCode"]');
+        let finalBatchVal = targetInput && targetInput.value.trim() ? targetInput.value.trim() : 'БЕЗ БАТЧА';
+        
+        const archiveRegistryEntry = {
+            id: archiveFinalId,
+            date: now.toISOString().split('T')[0],
+            number:` АКТ-${now.getTime().toString().slice(-6)}`,
+            controller: controllerName,
+            actType: cleanTitle,
+            batch: finalBatchVal,
+            blankPath: '../архив/хранилище/index.html'
+        };
+        
+        const existingIndex = archiveActs.findIndex(act => act.id === archiveFinalId);
+        if (existingIndex !== -1) archiveActs[existingIndex] = archiveRegistryEntry;
+        else archiveActs.unshift(archiveRegistryEntry);
+        
+        localStorage.setItem('archiveActs', JSON.stringify(archiveActs));
+        localStorage.removeItem(`${SHADOW_PREFIX}${currentDraftId}`);
+        
+        let registry = JSON.parse(localStorage.getItem('global_active_acts_list')) || [];
+        localStorage.setItem('global_active_acts_list', JSON.stringify(registry.filter(a => a.id !== currentDraftId)));
+        
+        let allDrafts = JSON.parse(localStorage.getItem('qa_all_drafts_data')) || {};
+        delete allDrafts[currentDraftId];
+        localStorage.setItem('qa_all_drafts_data', JSON.stringify(allDrafts));
+        
+        // ИСПРАВЛЕНО: Добавлены косые кавычки `...` внутрь alert
+        alert(`Документ смывов успешно сохранен в архив!\nID: ${archiveFinalId}`);
+            window.location.href = '/menu/index.html'; 
+    }
+    
+    // ====================================================
+    // 5. РАСЧЕТ BATCH CODE И ДИНАМИЧЕСКИЕ СТРОКИ
+    // ====================================================
+    function updateLotValue() {
+        const citySelect = document.getElementById('cyti') || 
+        mainForm.querySelector('[name*="fabrika" i]');
+        
+        const daySelect = mainForm.querySelector('[name*="smena" i]') || 
+        document.getElementById('day');
+        
+        const dateInput = mainForm.querySelector('input[type="date"]') || 
+        document.getElementById('doc-date');
+        
+        const targetInput = mainForm.querySelector('input[name="batchCode"]') || 
+        document.getElementById('batch-code-field');
+        
+        if (!dateInput || !dateInput.value || !targetInput) return;
+        
+        const date = new Date(dateInput.value);
         if (isNaN(date.getTime())) return;
-
-        // 1. Извлекаем последнюю цифру года
+        
         const lastYearDigit = date.getFullYear().toString().slice(-1);
-
-        // 2. Вычисляем номер недели по стандарту ISO-8601
         const target = new Date(date.valueOf());
-        const dayNum = date.getDay() === 0 ? 7 : date.getDay();
-        target.setDate(target.getDate() - dayNum + 4);
+        const dayNr = (date.getDay() + 6) % 7;
+        target.setDate(target.getDate() - dayNr + 3);
         const firstThursday = target.valueOf();
         target.setMonth(0, 1);
         if (target.getDay() !== 4) {
@@ -390,35 +319,60 @@ function handleTableNavigation(e) {
         const weekNumber = 1 + Math.ceil((firstThursday - target) / 604800000);
         const formattedWeek = weekNumber.toString().padStart(2, '0');
 
-        // 3. Вычисляем буквенный маркер дня недели
-        const daysLetters = ['G', 'A', 'B', 'C', 'D', 'E', 'F']; 
+        const daysLetters = ['G', 'A', 'B', 'C', 'D', 'E', 'F'];
         const dayLetter = daysLetters[date.getDay()];
-
         const datePart = lastYearDigit + formattedWeek + dayLetter;
+        
+        let dayPart = "";
+        if (daySelect && daySelect.value === "ДЕНЬ") dayPart = "1";
+        if (daySelect && daySelect.value === "НОЧЬ") dayPart = "2";
 
-        // 4. Логика кодирования Смены
-        let dayPart = "1"; 
-        if (shiftSelect && shiftSelect.value.trim().toUpperCase() === "НОЧЬ") dayPart = "2";
-
-        // 5. Логика кодирования Фабрики
         let cityPart = "";
-        const factoryVal = factorySelect ? factorySelect.value.trim().toUpperCase() : "";
-        if (factoryVal === "ЛУЖНИКИ") cityPart = "LUZ";
-        if (factoryVal === "НОВОСИБИРСК") cityPart = "NOV";
-
-        // Записываем итоговый Batch Code в поле
-        targetBatchInput.value = datePart + dayPart + cityPart;
+        if (citySelect && citySelect.value.toUpperCase().includes("ЛУЖНИКИ")) cityPart = "LUZ";
+        if (citySelect && citySelect.value.toUpperCase().includes("НОВОСИБИРСК")) cityPart = "NOV";
+        
+        targetInput.value = datePart + dayPart + cityPart;
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const factorySelect = document.querySelector('select[name*="fabrika" i]') || document.querySelector('select');
-        const shiftSelect = document.querySelector('select[name*="smena" i]') || document.querySelectorAll('select')[2];
-        const dateInput = document.querySelector('input[type="date"]');
-
-        if (factorySelect) factorySelect.addEventListener('change', updateFatSupplyLotValue);
-        if (shiftSelect) shiftSelect.addEventListener('change', updateFatSupplyLotValue);
-        if (dateInput) dateInput.addEventListener('change', updateFatSupplyLotValue);
-
-        setTimeout(updateFatSupplyLotValue, 400);
-    });
-})();
+    
+    function createNewSupplyRow() {
+        const tableBody = document.querySelector('#wash-sd-form table tbody') || 
+        document.querySelector('table tbody');
+        if (!tableBody) return;
+        
+        rowCounter++;
+        const idx1 = rowCounter;
+        rowCounter++;
+        const idx2 = rowCounter;
+        
+        const supplyHtml = `
+        <tr class="dynamic-supplier-row">
+            <td class="section-row-header" colspan="7">
+                <select name="supplier_select_${idx1}" class="supplier-selector" required>
+                    <option value="поставщик1">поставщик №1</option>
+                    <option value="поставщик2">поставщик №2</option>
+                    <option value="поставщик3">поставщик №3</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="dynamic-data-row">
+            <td class="text-static">атла чтота</td>
+            <td class="text-static">атлас какта</td>
+            <td class="text-static">состараны шарового крана</td>
+            <td><input type="time" name="time_${idx1}" class="table-input tm-l"></td>
+            <td class="text-center-bold">${idx1}</td>
+            <td><input type="text" name="lab_num_${idx1}" class="table-input lb-l"></td>
+            <td><input type="text" name="il_${idx1}" class="table-input lb-l"></td>
+        </tr>
+        <tr class="dynamic-data-row">
+            <td class="text-static">атла чтота</td>
+            <td class="text-static">атлас какта</td>
+            <td class="text-static">состараны латунного коннектора</td>
+            <td><input type="time" name="time_${idx2}" class="table-input tm-2"></td>
+            <td class="text-center-bold">${idx2}</td>
+            <td><input type="text" name="lab_num_${idx2}" class="table-input lb-2"></td>
+            <td><input type="text" name="il_${idx2}" class="table-input lb-2"></td>
+        </tr>
+    `;
+    // 4. Безопасно добавляем строки в самый конец таблицы
+    tableBody.insertAdjacentHTML('beforeend', supplyHtml);
+}
