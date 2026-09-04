@@ -112,60 +112,22 @@ function renderArchiveTable(filterText = '') {
 }
 
 // =========================================================================
-// ЧАСТЬ 3: ПЕРЕНАПРАВЛЕНИЕ НА ЖИВОЙ БЛАНК (СИНХРОНИЗАЦИЯ С ЧЕРНОВИКАМИ)
+// ЧАСТЬ 3: БЕЗОПАСНОЕ ПЕРЕНАПРАВЛЕНИЕ НА ЖИВОЙ БЛАНК ДЛЯ ИСПРАВЛЕНИЙ
 // =========================================================================
 window.redirectToBlank = function(blankPath, archiveId, mode) {
-    // 1. Достаем оригинальное тело файла из архива
+    // Проверяем, существует ли вообще тело файла в памяти
     const fullDocRaw = localStorage.getItem(`qaArchive_${archiveId}`);
     if (!fullDocRaw) {
         alert('Ошибка: Полное тело файла данных не найдено в хранилище архива.');
         return;
     }
 
-    // 🚀 ЕСЛИ КЛИКНУЛИ "ИСПРАВИТЬ" — КЛОНИРУЕМ ДАННЫЕ В РЕЕСТР ЧЕРНОВИКОВ СМЕНЫ
-    if (mode === 'edit') {
-        try {
-            const parsedDoc = JSON.parse(fullDocRaw);
-            // Извлекаем чистый массив полей (учитываем возможные вложенности .meta или .fields)
-            const pureFields = parsedDoc.fields || parsedDoc.meta || parsedDoc;
-
-            // Шаг А: Записываем данные в глобальный реестр черновиков (qa_all_drafts_data)
-            let allDrafts = JSON.parse(localStorage.getItem('qa_all_drafts_data')) || {};
-            allDrafts[archiveId] = {
-                timestamp: Date.now(),
-                fields: pureFields
-            };
-            localStorage.setItem('qa_all_drafts_data', JSON.stringify(allDrafts));
-
-            // Шаг Б: Добавляем карточку в список активных актов главного меню (global_active_acts_list)
-            let registry = JSON.parse(localStorage.getItem('global_active_acts_list')) || [];
-            const exists = registry.some(act => act.id === archiveId);
-            
-            if (!exists) {
-                // Пытаемся вытащить батч-код из сохраненных полей для красивого заголовка карточки
-                const savedBatch = pureFields['batchCode'] || pureFields['batch-code-field'] || '';
-                const displayTitle = `💼 Акт верификации смывов ${savedBatch ? '[' + savedBatch + ']' : ''}`;
-                
-                registry.push({
-                    id: archiveId,
-                    url: blankPath,
-                    title: displayTitle,
-                    updated: Date.now()
-                });
-                localStorage.setItem('global_active_acts_list', JSON.stringify(registry));
-            }
-        } catch (e) {
-            console.error('Критическая ошибка синхронизации архива с черновиками:', e);
-        }
-    }
-
-    // 2. Формируем стандартную ссылку и перенаправляем пользователя
-    // Теперь бланк откроет этот документ на 100% как родной черновик!
+    // Собираем красивую ссылку на реальный бланк формы (например, ../form/_S_B_/index.html?draftId=...&mode=edit)
     const targetUrl = `${blankPath}?draftId=${archiveId}&mode=${mode}`;
+    
     console.log(`[Архив-Навигация]: Переход на бланк. Путь: ${targetUrl} | Режим: ${mode}`);
     window.location.href = targetUrl;
 };
-
 
 // =========================================================================
 // ЧАСТЬ 4: БЕЗОПАСНОЕ УДАЛЕНИЕ ИЗ РЕЕСТРА
