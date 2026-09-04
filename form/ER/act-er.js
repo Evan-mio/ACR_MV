@@ -7,7 +7,7 @@ if (typeof DRAFT_DATA_KEY === 'undefined') { var DRAFT_DATA_KEY = 'qa_all_drafts
 if (typeof SHADOW_PREFIX === 'undefined') { var SHADOW_PREFIX = 'shadow_arch_'; }
 if (typeof FINAL_ARCHIVE_PREFIX === 'undefined') { var FINAL_ARCHIVE_PREFIX = 'qaArchive_'; }
 
-var BLANK_VERSION = '3.1.0'; 
+var BLANK_VERSION = '4.1.0'; 
 var mainForm = null;
 
 // =========================================================================
