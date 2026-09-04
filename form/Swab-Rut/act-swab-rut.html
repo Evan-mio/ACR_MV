@@ -817,43 +817,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Чтение параметров URL для разворачивания документа из памяти
+        // Чтение параметров URL для разворачивания документа из памяти
     const urlParams = new URLSearchParams(window.location.search);
     let currentDraftId = urlParams.get('draftId'); 
     let currentMode = urlParams.get('mode'); 
 
-        if (currentDraftId) {
+    if (currentDraftId) {
         try {
-            // 1. Пытаемся взять данные из черновиков
+            // 1. Сначала ищем в черновиках
             const allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
             let foundData = allDrafts[currentDraftId]?.fields;
-            let targetData = null;
 
-            if (foundData) {
-                // Если нашли в черновиках, берем как есть
-                targetData = foundData;
-            } else {
-                // 🚀 2. Если в черновиках нет — вытаскиваем ОРИГИНАЛ из архива
+            // 2. Если в черновиках нет, забираем оригинал из архива
+            if (!foundData) {
                 const archivedDocRaw = localStorage.getItem(`${ARCHIVE_PREFIX}${currentDraftId}`);
                 if (archivedDocRaw) {
                     const parsedObj = JSON.parse(archivedDocRaw);
-                    // Вытаскиваем внутренности архива (они лежат в .meta)
-                    targetData = parsedObj.meta || parsedObj.fields || parsedObj;
+                    foundData = parsedObj.meta || parsedObj.fields || parsedObj;
                 }
             }
 
-            // 3. Если данные успешно определены (из черновика или из архива)
-            if (targetData) {
-                // Избавляемся от возможной двойной вложенности .meta
-                if (targetData.meta) targetData = targetData.meta;
-
-                // Воссоздаем точное количество динамических строк поставщиков
+            // 3. Распределяем данные, если они найдены
+            if (foundData) {
+                const targetData = foundData.meta ? foundData.meta : foundData;
+                
+                // Воссоздаем динамические строки поставщиков на основе сохраненного счетчика
                 const savedClicks = parseInt(targetData['__dynamic_clicks_count'], 10) || 0;
                 for (let i = 0; i < savedClicks; i++) {
-                    if (typeof createNewSupplyRow === 'function') createNewSupplyRow();
+                    if (typeof createNewSupplyRow === 'function') {
+                        createNewSupplyRow();
+                    }
                 }
 
-                // Раскладываем все сохраненные данные по инпутам бланка
+                // Заполняем инпуты бланка данными
                 mainForm.querySelectorAll('input, select, textarea').forEach((field, index) => {
                     const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
                     const savedValue = targetData[name];
@@ -866,8 +862,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
 
-                    // 🔒 Блокировка полей ТОЛЬКО если режим 'view' (Просмотр)
-                    // Если режим 'edit' (Исправить) — всё можно редактировать!
+                    // 🔒 Режим просмотра (VIEW) — блокируем поля
                     if (currentMode === 'view') {
                         field.readOnly = true;
                         field.disabled = true;
@@ -876,12 +871,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         field.style.cursor = 'not-allowed';
                     }
                 });
+                
+                if (typeof updateLotValue === 'function') {
+                    updateLotValue();
+                }
             }
         } catch (error) {
-            console.error('Критическая ошибка восстановления бланка:', error);
+            // ОСТАВЛЯЕМ ОДИН ЧИСТЫЙ БЛОК ДЛЯ ОТСЛЕЖИВАНИЯ ОШИБОК
+            console.error('Критическая ошибка восстановления бланка из JSON:', error);
         }
     } else {
-        // Полная очистка исходника, если открыли абсолютно новый бланк без draftId
+        // Очистка исходника под ноль для другого/нового пользователя
         if (mainForm) {
             mainForm.reset();
             rowCounter = 0;
