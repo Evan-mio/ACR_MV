@@ -822,18 +822,73 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentDraftId = urlParams.get('draftId'); 
     let currentMode = urlParams.get('mode'); 
 
-    if (currentDraftId) {
+        if (currentDraftId) {
         try {
+            // 1. Пытаемся взять данные из черновиков
             const allDrafts = JSON.parse(localStorage.getItem(DRAFT_DATA_KEY)) || {};
             let foundData = allDrafts[currentDraftId]?.fields;
+            let targetData = null;
 
-            if (!foundData) {
+            if (foundData) {
+                // Если нашли в черновиках, берем как есть
+                targetData = foundData;
+            } else {
+                // 🚀 2. Если в черновиках нет — вытаскиваем ОРИГИНАЛ из архива
                 const archivedDocRaw = localStorage.getItem(`${ARCHIVE_PREFIX}${currentDraftId}`);
                 if (archivedDocRaw) {
                     const parsedObj = JSON.parse(archivedDocRaw);
-                    foundData = parsedObj.data ? parsedObj.data : parsedObj;
+                    // Вытаскиваем внутренности архива (они лежат в .meta)
+                    targetData = parsedObj.meta || parsedObj.fields || parsedObj;
                 }
             }
+
+            // 3. Если данные успешно определены (из черновика или из архива)
+            if (targetData) {
+                // Избавляемся от возможной двойной вложенности .meta
+                if (targetData.meta) targetData = targetData.meta;
+
+                // Воссоздаем точное количество динамических строк поставщиков
+                const savedClicks = parseInt(targetData['__dynamic_clicks_count'], 10) || 0;
+                for (let i = 0; i < savedClicks; i++) {
+                    if (typeof createNewSupplyRow === 'function') createNewSupplyRow();
+                }
+
+                // Раскладываем все сохраненные данные по инпутам бланка
+                mainForm.querySelectorAll('input, select, textarea').forEach((field, index) => {
+                    const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
+                    const savedValue = targetData[name];
+                    
+                    if (savedValue !== undefined) {
+                        if (field.type === 'checkbox') {
+                            field.checked = savedValue;
+                        } else {
+                            field.value = savedValue;
+                        }
+                    }
+
+                    // 🔒 Блокировка полей ТОЛЬКО если режим 'view' (Просмотр)
+                    // Если режим 'edit' (Исправить) — всё можно редактировать!
+                    if (currentMode === 'view') {
+                        field.readOnly = true;
+                        field.disabled = true;
+                        field.style.backgroundColor = '#f1f5f9'; 
+                        field.style.color = '#475569';
+                        field.style.cursor = 'not-allowed';
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Критическая ошибка восстановления бланка:', error);
+        }
+    } else {
+        // Полная очистка исходника, если открыли абсолютно новый бланк без draftId
+        if (mainForm) {
+            mainForm.reset();
+            rowCounter = 0;
+            document.querySelectorAll('.dynamic-supplier-row, .dynamic-data-row').forEach(el => el.remove());
+        }
+    }
+
 
             // Пошагово заполняем чеклист сохраненными значениями
             if (foundData) {
