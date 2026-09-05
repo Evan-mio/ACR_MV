@@ -6,7 +6,7 @@ if (localStorage.getItem('isAuth') !== 'true') {
 }
 
 // =========================================================================
-// 2. ЧАСЫ И ДАТА В ШАПКЕ
+// 2. ЧАСЫ И ДАТА С ПЕРИУДОМ В ШАПКЕ
 // =========================================================================
 function updateClock() {
     const now = new Date();
@@ -21,6 +21,43 @@ function updateClock() {
 }
 updateClock();
 setInterval(updateClock, 1000); // Перезапуск каждую секунду
+
+// Базовая точка старта: 3 января 2021 года (Воскресенье, P1:W1:D1)
+const START_DATE = new Date('2021-01-03T00:00:00'); 
+
+function updatePeriodCalendar() {
+    const now = new Date();
+    
+    // Считаем разницу в днях, округляя в меньшую сторону
+    const diffTime = now - START_DATE;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Если текущая дата вдруг меньше даты старта
+    if (diffDays < 0) return;
+
+    const DAYS_IN_WEEK = 7;
+    const DAYS_IN_PERIOD = 28; // 4 недели по 7 дней
+
+    // 1. Сколько всего полных периодов прошло с 2021 года
+    const totalPeriods = Math.floor(diffDays / DAYS_IN_PERIOD);
+    
+    // 2. Текущий период в рамках 13-месячного цикла (от 1 до 13)
+    const currentPeriod = (totalPeriods % 13) + 1;
+    
+    // 3. Текущая неделя внутри этого периода (от 1 до 4)
+    const currentWeek = Math.floor((diffDays % DAYS_IN_PERIOD) / DAYS_IN_WEEK) + 1;
+    
+    // 4. Текущий день внутри недели (от 1 до 7, где 1 — Воскресенье)
+    const currentDay = (diffDays % DAYS_IN_WEEK) + 1;
+
+    // Выводим данные в ваши HTML-элементы
+    document.getElementById('pereaud').textContent = `P${currentPeriod}`;
+    document.getElementById('wek').textContent = `:W${currentWeek}`;
+    document.getElementById('day').textContent = `:D${currentDay}`;
+}
+
+// Запускаем расчет при загрузке страницы
+updatePeriodCalendar();
 
 // =========================================================================
 // 3. ДИНАМИЧЕСКИЕ НОВОСТИ (Исправленная синхронизированная версия)
