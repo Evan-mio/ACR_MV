@@ -370,8 +370,8 @@ a {
 ========================================================================== */
 .act-card, .card {
     background: var(--glass-bg);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
     border: 1px solid var(--glass-border);
     border-radius: 22px;
     padding: 30px;
