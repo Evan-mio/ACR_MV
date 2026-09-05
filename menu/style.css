@@ -682,6 +682,45 @@ a {
     margin-top: 2px;
 }
 
+/* ==========================================================================
+    ФИШКА: ФИКСИРОВАННОЕ ОКОШКО ПЕРИУДА УГЛУ ЭКРАНА
+========================================================================== */
+.fixed-pereaud {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 10006;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 8px 18px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Эффект легкого неонового свечения текста внутри окошка */
+.fixed-pereaud .pereaud {
+    text-align: right;
+    background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
+}
+
+.fixed-pereaud 
+#pereaud, 
+#wek, 
+#day {
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
 /* Кнопка удаления новости на карточке */
 .btn-delete-card {
     background: rgba(239, 68, 68, 0.1);
