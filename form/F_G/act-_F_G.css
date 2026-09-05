@@ -2,7 +2,7 @@
 * {
     box-sizing: border-box;
     margin: 0;
-    padding: 3px;
+    padding: 0;
 }
 
 body {
@@ -36,29 +36,6 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
-}
-
-.back-btn {
-    text-decoration: none;
-    color: #64748b;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 8px;
-    background-color: #f1f5f9;
-    transition: all 0.2s;
-}
-
-.back-btn:hover {
-    background-color: #e2e8f0;
-    color: #1e293b;
-}
-
-.main-title {
-    font-size: 25px;
-    font-weight: 700;
-    color: #0f172a;
-    text-align: center;
 }
 
 /* Базовые стили кнопки */
@@ -124,12 +101,29 @@ body {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+.nav-home-link { font-size: 14px; color: #2563eb; text-decoration: none; font-weight: 600; }
 
-.nav-home-link {
-    font-size: 14px;
-    color: #2563eb;
+.back-btn {
     text-decoration: none;
-    font-weight: 600;
+    color: #64748b;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background-color: #f1f5f9;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.main-title {
+    font-size: 25px;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
 }
 
 /* Контейнер формы */
@@ -190,7 +184,7 @@ select {
     border: 1px solid #7b7d80;
     border-radius: 6px;
     font-size: 13px;
-    color: #334155; 
+    color: #000;
 }
 
 input[readonly] {
@@ -320,37 +314,12 @@ input[readonly] {
     background-color: #059669;
 }
 
-    .btn:hover {
+.btn:hover {
     background-color: #f8fafc;
     border-color: #94a3b8;
     color: #1e293b;
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
-}
-
-/* Стили для временных бейджей */
-.time-badge-day, .time-badge-night {
-    display: inline-block;
-    padding: 3px 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    font-family: monospace;
-    border-radius: 4px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-/* Стилизация дня (Теплые янтарные тона) */
-.time-badge-day {
-    background-color: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
-}
-
-/* Стилизация ночи (Спокойные зеленые тона) */
-.time-badge-night {
-    background-color: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
 }
 
 
@@ -396,4 +365,3 @@ input[readonly] {
         box-shadow: none !important;
     }
 }
-
