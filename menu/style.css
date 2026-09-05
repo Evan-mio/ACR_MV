@@ -369,10 +369,10 @@ a {
     БЛОК 5. УНИКАЛЬНЫЙ ДИЗАЙН КАРТОЧЕК И НЕОНОВЫЕ ФИШКИ
 ========================================================================== */
 .act-card, .card {
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
     border-radius: 22px;
     padding: 30px;
     display: flex !important;
