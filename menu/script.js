@@ -835,3 +835,33 @@ tabButtons.forEach(btn => {
         }
     });
 })();
+
+/// =========================================================================
+// АНИМАЦИЯ ФОНА
+// =========================================================================
+// Функция для создания случайных градиентов-звёзд
+        function generateStars(count, size) {
+            const starsArray = [];
+            for (let i = 0; i < count; i++) {
+                // Случайные координаты от 0% до 100%
+                const x = Math.floor(Math.random() * 100);
+                const y = Math.floor(Math.random() * 100);
+                starsArray.push(`radial-gradient(${size}px ${size}px at ${x}% ${y}%, #fff 100%, transparent)`);
+            }
+            return starsArray.join(', ');
+        }
+
+        // Находим элемент со звёздами
+        const starsContainer = document.getElementById('stars');
+
+        // Генерируем по 40 звёзд разного размера для каждого слоя
+        const smallStars = generateStars(50, 1);   /* 40 мелких звёзд по 1px */
+        const mediumStars = generateStars(60, 2.5); /* 40 крупных звёзд по 2.5px */
+
+        // Записываем их напрямую в CSS-переменные или стили тега через специальный хак для псевдоэлементов
+        const style = document.createElement('style');
+        style.textContent = `
+            #stars::before { background-image: ${smallStars}; }
+            #stars::after { background-image: ${mediumStars}; }
+        `;
+        document.head.appendChild(style);
