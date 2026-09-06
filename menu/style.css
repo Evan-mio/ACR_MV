@@ -817,3 +817,14 @@ a {
                 background-position: 0 100vh;
             }
         }
+
+/* Адаптивность для планшетов и десктопов */ 
+        min-width: 768px {
+            .kodfun-galeri {
+                min-height: 20rem;
+                gap: 1rem;
+            }
+            .kodfun-galeri span {
+                font-size: 1.2rem;
+            }
+        }
