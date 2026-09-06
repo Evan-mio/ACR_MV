@@ -138,8 +138,8 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 15px;
-    margin-bottom: 15px;
 }
+
 
 .meta-card {
     background: #ffffff;
@@ -272,7 +272,7 @@ input[readonly] {
     display: flex;
     gap: 12px;
     flex-direction: row-reverse;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Ключевое правило */
 }
 
 .btn {
