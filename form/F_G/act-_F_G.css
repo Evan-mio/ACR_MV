@@ -10,7 +10,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: #333;
     line-height: 1.4;
-    padding-bottom: 60px; /* исправлено: было adding-bottom */
+    padding-bottom: 60px; 
 }
 
 /* Навигационный хедер */
@@ -55,14 +55,14 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
-/* Эффект при наведении (вместо onmouseover и onmouseout) */
+/* Эффект при наведении  */
 .nav-print-link:hover {
   background-color: #2563eb;
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* Эффект при клике (вместо onmousedown и onmouseup) */
+/* Эффект при клике  */
 .nav-print-link:active {
   transform: translateY(0);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -101,7 +101,12 @@ body {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.nav-home-link { font-size: 14px; color: #2563eb; text-decoration: none; font-weight: 600; }
+.nav-home-link { 
+    font-size: 14px; 
+    color: #2563eb; 
+    text-decoration: none; 
+    font-weight: 600; 
+}
 
 .back-btn {
     text-decoration: none;
@@ -216,7 +221,7 @@ input[readonly] {
 
 .act-table {
     width: 100%;
-    table-layout: fixed; /* критично для colgroup */
+    table-layout: fixed;
     border-collapse: collapse;
     font-size: 12px;
     min-width: 900px;
@@ -272,7 +277,7 @@ input[readonly] {
     display: flex;
     gap: 12px;
     flex-direction: row-reverse;
-    flex-wrap: wrap; /* Ключевое правило */
+    flex-wrap: wrap;
 }
 
 .btn {
