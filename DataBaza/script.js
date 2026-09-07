@@ -101,7 +101,7 @@ function downloadRealJsFile() {
     link.click();
 }
 
-// 8. НОВОЕ СОБЫТИЕ: Имитация быстрого сохранения файла на презентации
+// 8. НОВОЕ СОБЫТИЕ: сохранения файла
 function saveDatabaseDemo() {
     if (!AppState.activeFileId) return;
     
@@ -109,7 +109,7 @@ function saveDatabaseDemo() {
     const originalText = btn.innerText;
     const originalBg = btn.style.backgroundColor;
 
-    // Визуальный эффект для зрителей презентации
+    // Визуальный эффект
     btn.innerText = "⏳ Сохранение...";
     btn.style.backgroundColor = "#eab308"; // Жёлтый цвет загрузки
     btn.style.pointerEvents = "none";
@@ -128,12 +128,12 @@ function saveDatabaseDemo() {
             btn.style.pointerEvents = "auto";
         }, 1500);
 
-    }, 800); // Небольшая задержка "обработки" для реалистичности
+    }, 800); 
 }
 
-// Модуль управления состоянием данных (Бизнес-логика)
+// Модуль управления состоянием данных
 const AppState = {
-    dbSessions: {}, // Хранилище всех виртуальных баз
+    dbSessions: {}, // Хранилище всех 
     activeFileId: null, // Имя текущей выбранной базы
 
     // Генерация случайного имени константы (например, CONST_a8f2)
@@ -146,7 +146,7 @@ const AppState = {
         return result;
     },
 
-    // Создание новой виртуальной базы
+    // Создание новой  базы
     createDatabase: function(dbName) {
         const cleanName = dbName.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
         const fileName = `${cleanName}_database.js`;
@@ -257,7 +257,7 @@ const AppUI = {
     toggleControls: function(activeFileId) {
         const elements = ['btnCol', 'btnDelCol', 'btnRow', 'btnDelRow', 'btnDeleteDb'];
         const btnDownload = document.getElementById('btnDownload');
-        const btnSaveDemo = document.getElementById('btnSaveDemo'); // Ссылка на новую кнопку
+        const btnSaveDemo = document.getElementById('btnSaveDemo');
         const currentFileName = document.getElementById('currentFileName');
 
         if (activeFileId) {
@@ -311,7 +311,7 @@ const AppUI = {
         }
 
         const currentDb = sessions[activeFileId];
-        const generatedJsCode = `// Сгенерированный файл скрипта: /ACR 1/DataBaza/${activeFileId}\n` +
+        const generatedJsCode = `// Сгенерированный файл скрипта: /ACR_MV/DataBaza/${activeFileId}\n` +
 `// Динамическая константа со случайным именем:\n` +
 `const ${currentDb.constantName} = {\n` +
 `    columns: ${JSON.stringify(currentDb.columns)},\n` +
