@@ -1,11 +1,11 @@
-// acts-navigation.js — Умная навигация по таблицам клавишами (ENTER / СТРЕЛКИ)
+// Умная навигация по таблицам клавишами (ENTER / СТРЕЛКИ)
 (function() {
     function handleTableNavigation(e) {
         const validKeys = ['Enter', 'ArrowUp', 'ArrowDown'];
         if (!validKeys.includes(e.key)) return;
         if (!e.target || e.target.tagName !== 'INPUT') return;
 
-        // 🔥 ЗАЩИТА: Если открыт datalist (база database.js), стрелки выбирают строки из меню браузера
+        //  ЗАЩИТА: Если открыт datalist (база database.js), стрелки выбирают строки из меню браузера
         if (e.target.hasAttribute('list') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
             return; 
         }
@@ -36,7 +36,7 @@
             }
         }
 
-        // 🔥 ЗАЩИТА: Фокусируемся, только если ячейка не заблокирована системой RBAC или mode=view
+        // ЗАЩИТА: Фокусируемся, только если ячейка не заблокирована системой RBAC или mode=view
         if (targetInput && !targetInput.hasAttribute('readonly') && !targetInput.disabled) {
             e.preventDefault(); // Блокируем отправку формы по Enter
             targetInput.focus();
