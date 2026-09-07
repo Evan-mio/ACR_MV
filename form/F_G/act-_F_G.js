@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         generateFreshInitialSheets();
     }
 
-    // 🔥 АВТОМАТИЧЕСКАЯ ЗАЩИТА РЕЖИМА "ПРОСМОТР" (MODE = VIEW)
+    //  АВТОМАТИЧЕСКАЯ ЗАЩИТА РЕЖИМА "ПРОСМОТР" (MODE = VIEW)
     if (currentMode === 'view') {
         // 1. Намертво блокируем все инпуты, селекты и текстовые зоны формы
         const inputsToBlock = document.querySelectorAll('input, select, textarea');
@@ -227,7 +227,7 @@ function validateTableNakeConsistency() {
 
     let firstActiveNake = null;
     let firstActiveNakeName = null;
-    let currentProbaNumber = 1; // 🔥 ИСПРАВЛЕНО: Базовый номер инициализируется с 1
+    let currentProbaNumber = 1; 
     let lastFilledRowForProba = null;
 
     // ШАГ 1: Сканируем таблицу и находим САМУЮ ПЕРВУЮ заполненную строку с валидным GRD
@@ -290,10 +290,10 @@ function validateTableNakeConsistency() {
                     nameInput.style.backgroundColor = "#fff";
                     nameInput.style.fontWeight = "normal";
                 } else {
-                    // 🛑 ПРОДУКТ ИЗ ДРУГОЙ СЕРИИ NAKE: Жесткое уведомление об ошибке
+                    //  ПРОДУКТ ИЗ ДРУГОЙ СЕРИИ NAKE: Жесткое уведомление об ошибке
                     nameInput.value = "Найк не соответствует продукту!";
                     nameInput.style.color = "red";
-                    nameInput.style.backgroundColor = "#ffebeb"; // Мягкая красная подсветка
+                    nameInput.style.backgroundColor = "#ffebeb"; 
                     nameInput.style.fontWeight = "bold";
                 }
             } else {
@@ -330,7 +330,7 @@ function validateTableNakeConsistency() {
         const prevMin = lastFilledRowForProba.querySelector('[name^="min_"]').value.trim();
         const prevLine = lastFilledRowForProba.querySelector('[name^="no_line_"]').value.trim();
 
-        // 🔥 ОПТИМИЗИРОВАНО: Корректный расчет шага и фиксация изменений серий
+        //  Корректный расчет шага и фиксация изменений серий
         if (currentCas === prevCas && currentMin === prevMin && currentLine === prevLine) {
             // Если параметры совпадают с предыдущей строкой — номер пробы остается прежним
             if (currentProbaNumber >= 16) {
@@ -360,8 +360,7 @@ function validateTableNakeConsistency() {
     });
 }
 
-// 🔥 ФУНКЦИЯ-МОСТ ДЛЯ СОВМЕСТИМОСТИ С МЕТОДОМ addTableRows
-// Устраняет предупреждение "updateAllProbaValues не определена"
+//  ФУНКЦИЯ-МОСТ ДЛЯ СОВМЕСТИМОСТИ С МЕТОДОМ addTableRows
 function updateAllProbaValues() {
     validateTableNakeConsistency();
 }
@@ -571,7 +570,6 @@ function addTableRows(count) {
         const nextIndex = currentRowsCount + 1;
 
         const tr = document.createElement('tr');
-        // Чистая 8-колоночная структура без лишнего поля no_mesh
         tr.innerHTML = `
             <td><input type="text" name="cas_${nextIndex}" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
             <td><input type="text" name="min_${nextIndex}" style="text-align: center; font-size: 0.85rem; background-color: #fff;"></td>
@@ -589,7 +587,7 @@ function addTableRows(count) {
         }
     }
     
-    // 🔥 ИСПРАВЛЕНО: Защитная проверка существования функции
+    //  Защитная проверка существования функции
     if (typeof updateAllProbaValues === 'function') {
         updateAllProbaValues();
     } else {
@@ -608,7 +606,7 @@ function collectFormData() {
     const formData = new FormData(mainForm);
     const metaData = Object.fromEntries(formData.entries());
 
-    //  Регулярное выражение железно вычищает строки таблицы Акта ссыпки из шапки
+    //  Регулярное выражение железно вычищает строки таблицы Акта  из шапки
     Object.keys(metaData).forEach(key => {
         if (/^(cas|min|no_line|grd|name[-_]prod|no_car|lot_fg_prod|proba)_/i.test(key)) {
             delete metaData[key];
@@ -673,14 +671,14 @@ function handleCollapse() {
     if (tableBody) tableBody.innerHTML = '';
     sheetCounter = 1;
     
-    // 🔥 Безопасный сброс параметров в URL-строке браузера
+    //  Безопасный сброс параметров в URL-строке браузера
     if (window.history.pushState) {
         const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
         window.history.pushState({ path: cleanURL }, '', cleanURL);
     }
     currentDraftId = null;
 
-    // 🔥 Инициализируем стартовый чистый бланк, чтобы DOM не оставался пустым
+    //  Инициализируем стартовый чистый бланк, чтобы DOM не оставался пустым
     if (typeof addNewSheet === 'function') addNewSheet();
 
     alert('Акт успешно свернут в черновик. Оригинал обнулен!');
@@ -729,7 +727,7 @@ function handleTableNavigation(e) {
     const currentInput = e.target;
     if (currentInput.tagName !== 'INPUT' && currentInput.tagName !== 'SELECT') return;
 
-    // 🔥 Защита навигации при выборе элементов из выпадающей базы данных datalist
+    //  Защита навигации при выборе элементов из выпадающей базы данных datalist
     if (currentInput.hasAttribute('list') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
         return; // Даем встроенному меню браузера выбрать строку из database.js
     }
@@ -806,14 +804,14 @@ function updateLotValue() {
 
     if (!dateInput || !dateInput.value || !targetInput) return;
 
-    // 🔥 Избегаем внутренних сдвигов часовых поясов браузера при локальном запуске
+    //  Избегаем внутренних сдвигов часовых поясов браузера при локальном запуске
     const date = new Date(dateInput.value.replace(/-/g, '/'));
     if (isNaN(date.getTime())) return;
 
     // 1. Извлекаем последнюю цифру года
     const lastYearDigit = date.getFullYear().toString().slice(-1);
 
-    // 2. Вычисляем номер недели по международному стандарту ISO-8601
+    // 2. Вычисляем номер недели
     const target = new Date(date.valueOf());
     const dayNum = date.getDay() === 0 ? 7 : date.getDay(); // Считаем Вс как 7
     
@@ -847,7 +845,7 @@ function updateLotValue() {
     // Записываем собранный код батча в шапку формы
     targetInput.value = datePart + dayPart + cityPart;
 
-    // 🔥 Сигнализируем таблице, что лоты готовой продукции для машин нужно пересчитать
+    //  Сигнализируем таблице, что лоты готовой продукции для машин нужно пересчитать
     if (typeof updateAllRowsLots === 'function') {
         updateAllRowsLots();
     }
@@ -1020,7 +1018,7 @@ function updateLotValue() {
                         nameInput.style.backgroundColor = "#fff";
                         nameInput.style.fontWeight = "normal";
                     } else {
-                        // 🛑 КРИТИЧЕСКАЯ ОШИБКА: Продукт относится к другому Nake!
+                        //  КРИТИЧЕСКАЯ ОШИБКА: Продукт относится к другому Nake!
                         nameInput.value = "КОД не соответствует НАЙКУ!";
                         nameInput.style.color = "red";
                         nameInput.style.backgroundColor = "#ffebeb"; // Нежно-красный фон
@@ -1077,7 +1075,7 @@ function updateLotValue() {
         if (btnEdit) btnEdit.classList.add('hide-on-print');
         if (btnAddSheet) btnAddSheet.classList.add('hide-on-print');
 
-        // 🔥 Динамически внедряем печатное CSS-правило прямо в документ
+        //  Динамически внедряем печатное CSS-правило прямо в документ
         if (!document.getElementById('dynamic-print-rules')) {
             const style = document.createElement('style');
             style.id = 'dynamic-print-rules';
@@ -1116,9 +1114,6 @@ function updateLotValue() {
 // 16. БЕЗОПАСНАЯ ИНТЕГРАЦИЯ С АРХИВОМ БЕЗ НАРУШЕНИЯ CSP
 // ====================================================
 
-// 🔥 СТАРАЯ КОНФЛИКТНАЯ ФУНКЦИЯ handleSaveArchive УДАЛЕНА.
-// Вся промышленная логика теперь выполняется централизованно в Блоке 18.
-
 // НАЗНАЧЕНИЕ СЛУШАТЕЛЕЙ ПОСЛЕ ЗАГРУЗКИ СТРАНИЦЫ (БЕЗОПАСНЫЙ ПЕРЕХВАТ ДЛЯ CSP)
 document.addEventListener('DOMContentLoaded', function() {
     // Находим альтернативную кнопку сохранения
@@ -1126,7 +1121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (saveBtnAlt) {
         saveBtnAlt.addEventListener('click', function(e) {
             e.preventDefault();
-            // Вызываем правильную единую функцию из Блока 18
+            // Вызываем правильную единую функцию 
             if (typeof handleSaveArchive === 'function') {
                 handleSaveArchive();
             }
@@ -1147,7 +1142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // =========================================================================
-// 17. СИСТЕМА ПРАВ ДОСТУПА ДЛЯ БЛАНКА (RBAC - РЕЖИМ ЛАБОРАТОРИЯ)
+// 17. СИСТЕМА ПРАВ ДОСТУПА ДЛЯ БЛАНКА
 // =========================================================================
 (function() {
     function enforceBlankRoleRestrictions() {
@@ -1231,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const FINAL_ARCHIVE_PREFIX = 'qaArchive_';
     const BLANK_VERSION = '1.1.0'; 
 
-    // 🔥 ИСПРАВЛЕНО: Функция теперь генерирует чистый ID без привязки к батч-коду
+    //  Функция теперь генерирует чистый ID без привязки к батч-коду
     function generateArchiveStandardId() {
         const operatorId = localStorage.getItem('userId') || '000';
         const cleanOperator = operatorId.trim().replace(/\s+/g, ''); 
@@ -1382,10 +1377,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 19. ДИНАМИЧЕСКОЙ ВАЛИДАЦИИ МАШИНЫ НАПРЯМУЮ ИЗ БАЗЫ ДАННЫХ CAR_GRD_DATABASA
 // =========================================================================
 (function() {
-  /**
-   * Функция динамической проверки конкретной строки таблицы на основе CAR_GRD_DATABASA
-   * @param {HTMLElement} rowElement - Текущая строка таблицы <tr>
-   */
+ 
   function checkCarAndGrdFromDatabase(rowElement) {
     if (!rowElement) return;
 
@@ -1425,7 +1417,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isCarValid = rule.PacCars.includes(carValue);
 
         if (!isCarValid) {
-          // 🛑 ОШИБКА: Машина не подходит под формат кода
+          //  ОШИБКА: Машина не подходит под формат кода
           nameProdInput.value = "Формат не соответствует коду";
           nameProdInput.style.color = "red";
           nameProdInput.style.backgroundColor = "#ffebeb"; // Нежно-красный фон для текста ошибки
