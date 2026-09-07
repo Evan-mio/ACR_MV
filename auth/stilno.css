@@ -13,7 +13,6 @@ body {
     background-position: center center; 
     background-repeat: no-repeat; 
     background-attachment: fixed; 
-    /* background-size: cover;  */
     min-height: 100vh; 
     margin: 0; 
     display: flex;
@@ -27,7 +26,7 @@ body {
    2. 3D-КОНТЕЙНЕР И ЛОГИКА ПЕРЕВОРОТА (FLIP)
    ========================================================================== */
 .card-container {
-    perspective: 1000px; /* Глубина сцены, чтобы поворот выглядел объемно, а не плоско */
+    perspective: 1000px;
     width: 100%;
     max-width: 360px;
     margin: 0 auto;
@@ -36,13 +35,13 @@ body {
 .card-flipper {
     position: relative;
     width: 100%;
-    height: 540px; /* Фиксированная высота с запасом под форму смены пароля */
+    height: 540px;
     transform-style: preserve-3d; 
     -webkit-transform-style: preserve-3d;
     transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
-/* Класс активации поворота карточки через JavaScript */
+/* Класс активации поворота карточки через JS */
 .card-flipper.flipped {
     transform: rotateY(180deg);
 }
@@ -75,7 +74,7 @@ body {
     display: flex;
     flex-direction: column;
     
-    /* Плавное исчезновение неактивной стороны, чтобы стекло не конфликтовало в Chrome */
+    /* Плавное исчезновение неактивной стороны, чтобы стекло не конфликтовало */
     transition: opacity 0.4s ease, visibility 0.4s;
 }
 
@@ -91,7 +90,7 @@ body {
     -webkit-transform: rotateY(180deg);
     opacity: 0;
     visibility: hidden;
-    pointer-events: none; /* Защита от случайных кликов по скрытой форме */
+    pointer-events: none;
     z-index: 1;
 }
 
@@ -113,13 +112,11 @@ body {
    ========================================================================== */
 h2 { 
     font-size: 1.8rem;
-    font-weight: 800; /* Максимальная плотность и толщина букв */
+    font-weight: 800;
     text-align: center;
     margin-top: 0;
     margin-bottom: 25px; 
-    color: #ffffff; /* Белое ядро текста, чтобы он не казался тусклым на стекле */
-    
-    /* Исправлено синтаксис: добавлены запятые между тенями, неон теперь горит */
+    color: #ffffff;
     filter: drop-shadow(0 0 2px var(--neon-blue))                    
             drop-shadow(0 0 10px var(--neon-blue))
             drop-shadow(0 0 25px rgba(0, 242, 254, 0.8));
@@ -133,9 +130,9 @@ h2 {
 label { 
     display: block; 
     margin-bottom: 6px; 
-    color: #ffffff; /* Плотный белый цвет заголовков полей */
+    color: #ffffff; 
     font-size: 0.85rem;
-    font-weight: 700; /* Жирное начертание */
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     filter: drop-shadow(0 0 3px var(--neon-cyan))
@@ -149,8 +146,8 @@ input {
     width: 100%; 
     padding: 12px;
     font-size: 15px; 
-    font-weight: 700; /* Вводимые символы будут плотными и четкими */
-    background: rgba(0, 0, 0, 0.25); /* Темная подложка для идеального контраста с белым текстом */
+    font-weight: 700; 
+    background: rgba(0, 0, 0, 0.25);
     color: white;
     border: 1px solid rgba(0, 242, 254, 0.3); 
     border-radius: 6px;
@@ -167,17 +164,16 @@ input:hover {
 input:focus {
     background: rgba(0, 0, 0, 0.45);
     border-color: var(--neon-blue); 
-    /* Внутреннее и внешнее сочное неоновое свечение активного поля */
     box-shadow: 0 0 15px rgba(0, 242, 254, 0.6), 
                 inset 0 0 5px rgba(0, 242, 254, 0.4);
 }
 
-/* Особый стиль для заблокированного поля ID на второй стороне */
+/*  стиль для заблокированного поля ID на второй стороне */
 input[readonly] {
     background: rgba(20, 240, 240, 0.1);
     border-color: rgba(20, 240, 240, 0.45);
     color: var(--neon-blue);
-    font-family: 'Courier New', monospace; /* Технологичный моноширинный шрифт */
+    font-family: 'Courier New', monospace;
     font-weight: 700;
     cursor: default;
 }
@@ -190,7 +186,7 @@ input[readonly] {
     width: 100%;
     height: 46px;
     border-radius: 6px;
-    overflow: hidden; /* Обрезает вращающийся градиент, оставляя только рамку */
+    overflow: hidden;
     margin-top: 15px;
     box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
 }
@@ -219,7 +215,7 @@ input[readonly] {
     left: 2px;
     width: calc(100% - 4px);
     height: calc(100% - 4px);
-    background: #15181f; /* Глубокий темный цвет тела кнопки */
+    background: #15181f; 
     color: var(--neon-blue);
     border: none;
     border-radius: 5px;
@@ -235,7 +231,7 @@ input[readonly] {
 /* Эффект полного включения лампы при наведении */
 .neon-wrapper button:hover {
     background: var(--neon-blue);
-    color: #000000; /* Черный текст на бирюзовом фоне для читаемости */
+    color: #000000; 
     box-shadow: 0 0 20px var(--neon-blue);
 }
 
@@ -252,19 +248,19 @@ input[readonly] {
    7. ССЫЛКИ НАВИГАЦИИ И ОШИБКИ
    ========================================================================== */
 .card-nav {
-    margin-top: auto; /* Жестко прижимает блок ссылок к низу карточки */
+    margin-top: auto;
     text-align: center;
     padding-top: 20px;
 }
 
 .card-nav span {
-    color: rgba(0, 242, 254, 0.5); /* Белая плотная ссылка */
+    color: rgba(0, 242, 254, 0.5);
     font-size: 1.5rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
     filter: drop-shadow(0 0 5px var(--neon-blue));
-    border-bottom: 1px dashed rgba(0, 242, 254, 0.5); /* Пунктирное подчеркивание */
+    border-bottom: 1px dashed rgba(0, 242, 254, 0.5);
 }
 
 .card-nav span:hover {
