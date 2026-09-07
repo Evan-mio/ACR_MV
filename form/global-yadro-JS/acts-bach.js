@@ -12,7 +12,7 @@
         const date = new Date(dateInput.value);
         if (isNaN(date.getTime())) return;
 
-        // 1. Логика года и недели (ISO-8601)
+        // 1. Логика года и недели 
         const lastYearDigit = date.getFullYear().toString().slice(-1);
         const target = new Date(date.valueOf());
         const dayNr = (date.getDay() + 6) % 7;
