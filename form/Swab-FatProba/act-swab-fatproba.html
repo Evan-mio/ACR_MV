@@ -130,7 +130,7 @@
                 </div>
             </div>
 
-            <!-- ТАБЛИЦА СМЫВОВ (Двухблочная структура) -->
+            <!-- ТАБЛИЦА СМЫВОВ -->
                 <div class="table-scroll" >
                     <table>
                         <colgroup>
@@ -187,7 +187,7 @@
                     </table>
                 </div>
             </div>
-            <!-- КНОПКИ ДЕЙСТВИЙ (ИСПРАВЛЕНО: Кнопка Сохранить теперь имеет тип submit) -->
+            <!-- КНОПКИ ДЕЙСТВИЙ -->
             <div class="actions-bar">
                 <button type="button" class="btn btn-success" id="btnAddSupply">➕ Поставку</button>
                 <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена </button>
@@ -202,43 +202,3 @@
     <script src="act-swab-fatproba.js"></script>
 </body>
 </html>
-
-<!-- function createNewSupplyRow() {
-    rowCounter++; // Шаг счетчика для каждой новой группы поставщика
-    
-    const supplyHtml = `
-        <tr data-row-idx="${rowCounter}">
-            <td class="section-row-header" colspan="7">
-                <select name="supplier_select_${rowCounter}" class="supplier-selector" required>
-                    <option value="поставщик1">поставщик №1</option>
-                    <option value="поставщик2">поставщик №2</option>
-                    <option value="поставщик3">поставщик №3</option>
-                </select>
-            </td>
-        </tr>
-        <tr data-row-idx="${rowCounter}">
-            <td class="text-static">атла чтота</td>
-            <td class="text-static">атлас какта</td>
-            <td class="text-static">состараны шарового крана</td>
-            <td><input type="time" name="time_1_${rowCounter}" class="table-input tm-l"></td>
-            <td class="text-center-bold">1</td>
-            <td><input type="text" name="lab_num_1_${rowCounter}" class="table-input lb-l"></td>
-            <td><input type="text" name="il_1_${rowCounter}" class="table-input lb-l"></td>
-        </tr>
-        <tr data-row-idx="${rowCounter}">
-            <td class="text-static">атла чтота</td>
-            <td class="text-static">атлас какта</td>
-            <td class="text-static">состараны латунного коннектора</td>
-            <td><input type="time" name="time_2_${rowCounter}" class="table-input tm-l"></td>
-            <td class="text-center-bold">2</td>
-            <td><input type="text" name="lab_num_2_${rowCounter}" class="table-input lb-l"></td>
-            <td><input type="text" name="il_2_${rowCounter}" class="table-input lb-l"></td>
-        </tr>
-    `;
-    
-    const tableBody = document.getElementById('table-body') || document.querySelector('tbody');
-    if (tableBody) {
-        tableBody.insertAdjacentHTML('beforeend', supplyHtml);
-    }
-}
- -->
