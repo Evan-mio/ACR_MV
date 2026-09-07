@@ -12,7 +12,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: #333;
     line-height: 1.4;
-    padding-bottom: 60px; /* Исправлено: теперь отступ подвала работает штатно */
+    padding-bottom: 60px;
 }
 
 /* Главный рабочий контейнер бланка */
@@ -59,7 +59,7 @@ body {
 
 /* Кнопка "Распечатать акт" */
 .nav-print-link {
-    display: inline-flex !important; /* Исправлено: блокирует ошибку парсинга transform */
+    display: inline-flex !important;
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
@@ -91,7 +91,7 @@ body {
 
 /* Ссылка-кнопка "На Главную" */
 .nav-home-link {
-    display: inline-flex !important; /* Исправлено: блокирует ошибку парсинга transform */
+    display: inline-flex !important;
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
