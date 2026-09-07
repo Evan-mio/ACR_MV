@@ -281,7 +281,7 @@ function handleSaveArchive() {
         delete allDrafts[currentDraftId];
         localStorage.setItem('qa_all_drafts_data', JSON.stringify(allDrafts));
         
-        // ИСПРАВЛЕНО: Добавлены косые кавычки `...` внутрь alert
+        //  Добавлены косые кавычки `...` внутрь alert
         alert(`Документ смывов успешно сохранен в архив!\nID: ${archiveFinalId}`);
             window.location.href = '/menu/index.html'; 
     }
