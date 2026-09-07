@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. КНОПКА «СОХРАНИТЬ В АРХИВ» (Финал)
+    // 4. КНОПКА «СОХРАНИТЬ В АРХИВ» 
     if (btnSaveArchive) {
         btnSaveArchive.addEventListener('click', (e) => {
             e.preventDefault();
@@ -180,7 +180,7 @@ window.QA_Core = {
 };
 
 // ====================================================
-// ИСПРАВЛЕННАЯ АВТОНОМНАЯ НАВИГАЦИЯ КЛАВИШАМИ
+//  АВТОНОМНАЯ НАВИГАЦИЯ КЛАВИШАМИ
 // ====================================================
 function handleTableNavigation(e) {
     const validKeys = ['Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
@@ -197,7 +197,7 @@ function handleTableNavigation(e) {
     const currentTr = currentInput.closest('tr');
     if (!currentTd || !currentTr) return;
 
-    // ИСПРАВЛЕНО: Динамически находим tbody текущей таблицы, функция больше не падает!
+    // Динамически находим tbody текущей таблицы
     const tableBody = currentTr.closest('tbody');
     if (!tableBody) return;
 
