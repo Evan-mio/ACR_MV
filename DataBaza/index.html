@@ -2,8 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Конструктор баз данных (Презентация)</title>
-    <!-- Подключаем стили (можете вынести в style.css или оставить здесь) -->
+    <title>Конструктор баз данных</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +11,7 @@
         <a href="/ACR 1/menu/index.html" class="nav-home-link">
         <button class="btn-home" onclick="location.reload()">🏠 На главную</button>
         </a>
-        <div class="page-title">Демонстрационная панель (Интерактивный прототип)</div>
+        <div class="page-title">Интерактивный прототип</div>
     </header>
 
     <div class="workspace-wrapper">
@@ -56,13 +55,9 @@
                     <button id="btnDownload" class="btn-download-code" onclick="downloadRealJsFile()" style="display: none;">📥 Скачать JS-файл</button>
                 </div>
             </div>
-            <div class="code-display" id="codeOutput">// Здесь будет отображаться сгенерированный JS-код вашего скрипта...</div>
+            <div class="code-display" id="codeOutput">// Здесь будет отображаться сгенерированный JS-код</div>
         </section>
     </div>
-
-    <!-- ПОДКЛЮЧЕНИЕ СЦЕНАРНЫХ БЛОКОВ ПО ПОРЯДКУ -->
-    <script src="state.js"></script>
-    <script src="ui.js"></script>
-    <script src="main.js"></script>
+<script src="script.js"></script> 
 </body>
 </html>
