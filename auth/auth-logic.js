@@ -40,15 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // Проверяем, существует ли база данных mockUserBase, подключенная из users.js
             if (typeof mockUserBase !== 'undefined') {
                 
-                // ИСПРАВЛЕНО: берем правильную переменную idInput вместо enteredId
+                
                 const user = mockUserBase[idInput];
                 
-                // ИСПРАВЛЕНО: проверяем переменную user вместо userFound
+                //  проверяем переменную user 
                 if (user && user.password === passwordInput) {
                     
                     // Сохраняем сессию и данные пользователя в localStorage
                     localStorage.setItem('isAuth', 'true');
-                    localStorage.setItem('userId', idInput); // ИСПРАВЛЕНО: idInput
+                    localStorage.setItem('userId', idInput);
                     localStorage.setItem('userFirstName', user.firstName);
                     localStorage.setItem('userLastName', user.lastName);
                     localStorage.setItem('userPosition', user.position);
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     if (errorMessage) errorMessage.style.display = 'none';
                     
-                    // ИСПРАВЛЕНО: Перенаправляем на физический адрес главного меню проекта
+                    //  Перенаправляем на физический адрес главного меню проекта
                     window.location.href = '/menu/index.html';
                 } else {
                     if (errorMessage) errorMessage.style.display = 'block';
