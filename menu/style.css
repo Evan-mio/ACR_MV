@@ -28,12 +28,12 @@
     min-height: 100vh;
     overflow: hidden;
 }
-/* Эффект матового стекла (Glassmorphism) */
+/* Эффект матового стекла */
 .top-bar, .sidebar, .card, .drafts-panel {
     background: var(--glass-bg);
-    backdrop-filter: blur(15px); /* Размытие фона */
+    backdrop-filter: blur(15px); 
     -webkit-backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-border); /* Тонкая светлая граница */
+    border: 1px solid var(--glass-border); 
 }
 
 /* ==========================================================================
@@ -42,7 +42,7 @@
 .app-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
-    grid-template-areas: "sidebar content"; /* сетки, чтобы не ломать верстку при скрытии */
+    grid-template-areas: "sidebar content";
     height: 100vh;
 }
 
@@ -52,13 +52,13 @@
     top: 0; /* прячем за верхний край с запасом */
     left: 0;
     width: 100%;
-    height: 200px; /* фиксируем аккуратную высоту */
+    height: 200px;
     padding: 0 350px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* скольжение */
+    transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
 /* вех меню при наведении на саму панель или через вспомогательные JS-классы */
@@ -770,61 +770,26 @@ a {
         display: none;
     }
 }
+/* Мобильные (до 768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  .main-title {
+    text-align: center;
+    font-size: 1.2rem;
+  }
+}
 
-/* ==========================================================================
-    ФИШКА. СНЕЖНЫЙ ФОН
-========================================================================== */
-        .container-star {
-            width: 100%;
-            height: 100vh;
-            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-            position: relative;
-            overflow: hidden;
-        }
+/* Планшеты (769–1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* например, 2 колонки вместо 1 */
+}
 
-        #stars {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        #stars::before, #stars::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-repeat: repeat; 
-            background-size: 100% 100vh; 
-            animation: flyUp linear infinite;
-        }
-
-        /* Мелкие звёзды (50 штук) */
-        #stars::before {
-            /* Градиенты сгенерируются через JavaScript ниже */
-            animation-duration: 25s;
-        }
-
-        /* Крупные звёзды (60 штук) */
-        #stars::after {
-            /* Градиенты сгенерируются через JavaScript ниже */
-            animation-duration: 45s;
-        }
-
-        @keyframes flyUp {
-            from {
-                background-position: 0 0;
-            }
-            to {
-                background-position: 0 100vh;
-            }
-        }
-
-/* Адаптивность для планшетов и десктопов */ 
-        min-width: 768px {
-            .kodfun-galeri {
-                min-height: 20rem;
-                gap: 1rem;
-            }
-            .kodfun-galeri span {
-                font-size: 1.2rem;
-            }
-        }
+/* Десктоп (от 1025px) */
+@media (min-width: 1025px) {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
