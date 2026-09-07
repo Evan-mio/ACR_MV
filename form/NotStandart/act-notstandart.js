@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-// acts-core.js — Единое автономное ядро для всех 10 типов актов
+// Единое автономное ядро для всех  типов актов
 window.QA_Core = {
     KEYS: {
         ACTIVE_ACTS: 'global_active_acts_list',
@@ -253,7 +253,7 @@ window.QA_Core = {
         if (btnEdit) btnEdit.classList.add('hide-on-print');
         if (btnAddSheet) btnAddSheet.classList.add('hide-on-print');
 
-        // 🔥 Динамически внедряем печатное CSS-правило прямо в документ
+        //  Динамически внедряем печатное CSS-правило прямо в документ
         if (!document.getElementById('dynamic-print-rules')) {
             const style = document.createElement('style');
             style.id = 'dynamic-print-rules';
