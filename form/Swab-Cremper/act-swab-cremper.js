@@ -1,5 +1,5 @@
 // =========================================================================
-// 1. БЕЗОПАСНЫЕ ПРЕФИКСЫ (ФИКС ОШИБКИ RE-DECLARATION CONST)
+// 1. БЕЗОПАСНЫЕ ПРЕФИКСЫ
 // =========================================================================
 if (typeof ARCHIVE_PREFIX === 'undefined') { var ARCHIVE_PREFIX = 'qaArchive_'; }
 if (typeof ACTIVE_ACTS_KEY === 'undefined') { var ACTIVE_ACTS_KEY = 'global_active_acts_list'; }
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
 
-                    // 🔥 АВТОМАТИЧЕСКАЯ ЗАЩИТА РЕЖИМА "ПРОСМОТР" (MODE = VIEW)
+                    //  АВТОМАТИЧЕСКАЯ ЗАЩИТА РЕЖИМА "ПРОСМОТР" (MODE = VIEW)
                     if (currentMode === 'view') {
                         field.readOnly = true;
                         field.disabled = true;
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ====================================================
-// 3. СБОР И СВЕРТЫВАНИЕ В ЧЕРНОВИК (ПОД СТРУКТУРУ QA_CORE)
+// 3. СБОР И СВЕРТЫВАНИЕ В ЧЕРНОВИК (ПОД СТРУКТУРУ)
 // ====================================================
 function collectFormData() {
     if (!mainForm) return {};
@@ -293,7 +293,7 @@ function handleSaveArchive() {
         const date = new Date(dateInput.value);
         if (isNaN(date.getTime())) return;
 
-        // 1. Логика года и недели (ISO-8601)
+        // 1. Логика года и недели
         const lastYearDigit = date.getFullYear().toString().slice(-1);
         const target = new Date(date.valueOf());
         const dayNr = (date.getDay() + 6) % 7;
