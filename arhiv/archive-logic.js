@@ -2,7 +2,7 @@
 // ЧАСТЬ 1: РЕЕСТР НАЗВАНИЙ И ИНИЦИАЛИЗАЦИЯ
 // =========================================================================
 
-// Официальный справочник: номер акта -> красивое название на производстве
+// Официальный справочник: номер акта -> красивое название
 const ACTS_REGISTRY = {
     "1": "Акт отбора образцов готового продукта с упаковочных линий",
     "2": "Акт на рутинные смывы (микробиология)",
@@ -51,7 +51,7 @@ function renderArchiveTable(filterText = '') {
 
     const query = filterText.toLowerCase().trim();
     
-    // Фильтруем массив с учетом названий из ACTS_REGISTRY и жесткого номера W1.1.8
+    // Фильтруем массив с учетом названий из ACTS_REGISTRY и жесткого номера
     const filteredActs = archiveActs.filter(act => {
         const mappedName = ACTS_REGISTRY[act.actType] || act.actType || '';
         const actNum = act.number || '';
@@ -81,7 +81,7 @@ function renderArchiveTable(filterText = '') {
         const officialActName = ACTS_REGISTRY[act.actType] || act.actType || 'Акт верификации';
         
         // Берем сохраненный жесткий номер акта (например, W1.1.8) или автономер
-        const actNumberDisplay = act.number || 'W1.1.8';
+        const actNumberDisplay = act.number || 'BLANK_VERSION' ;
         
         // Безопасно определяем путь к бланку. Если в базе пути нет, ставим дефолтный шаблон
         const currentBlankPath = act.blankPath || '../form/_S_B_/index.html';
@@ -122,7 +122,7 @@ window.redirectToBlank = function(blankPath, archiveId, mode) {
         return;
     }
 
-    // Собираем красивую ссылку на реальный бланк формы (например, ../form/_S_B_/index.html?draftId=...&mode=edit)
+    // Собираем красивую ссылку на реальный бланк формы 
     const targetUrl = `${blankPath}?draftId=${archiveId}&mode=${mode}`;
     
     console.log(`[Архив-Навигация]: Переход на бланк. Путь: ${targetUrl} | Режим: ${mode}`);
