@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Привязываем авторасчет Батча к реальным элементам чеклиста смывов
+    // Привязываем авторасчет Батча к реальным элементам чеклиста
     const citySelect = document.getElementById('cyti') || mainForm.querySelector('[name*="fabrika" i]');
     const daySelect = mainForm.querySelector('[name*="smena" i]') || document.getElementById('day');
     const dateInput = mainForm.querySelector('input[type="date"]');
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
 
-                    // 🔥 АВТОМАТИЧЕСКАЯ ЗАЩИТА РЕЖИМА "ПРОСМОТР" (MODE = VIEW)
+                    //  АВТОМАТИЧЕСКАЯ ЗАЩИТА РЕЖИМА "ПРОСМОТР" (MODE = VIEW)
                     if (currentMode === 'view') {
                         field.readOnly = true;
                         field.disabled = true;
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ====================================================
-// 3. СБОР И СВЕРТЫВАНИЕ В ЧЕРНОВИК (ПОД СТРУКТУРУ QA_CORE)
+// 3. СБОР И СВЕРТЫВАНИЕ В ЧЕРНОВИК (ПОД СТРУКТУРУ)
 // ====================================================
 function collectFormData() {
     if (!mainForm) return {};
@@ -243,7 +243,7 @@ function handleSaveArchive() {
         finalBatchVal = targetInput.value.trim();
     }
     
-    const thisBlankPath = '../архив/хранилище/index.html';
+    const thisBlankPath = '../архив/index.html';
 
     const archiveRegistryEntry = {
         id: archiveFinalId, 
@@ -251,7 +251,7 @@ function handleSaveArchive() {
         number: `АКТ-${now.getTime().toString().slice(-6)}`, 
         controller: controllerName,
         actType: cleanTitle,
-        batch: finalBatchVal, // В таблице архива будет точный лот (например, 622E)
+        batch: finalBatchVal, // В таблице архива будет точный лот
         blankPath: thisBlankPath
     };
 
@@ -293,7 +293,7 @@ function handleSaveArchive() {
         const date = new Date(dateInput.value);
         if (isNaN(date.getTime())) return;
 
-        // 1. Логика года и недели (ISO-8601)
+        // 1. Логика года и недели
         const lastYearDigit = date.getFullYear().toString().slice(-1);
         const target = new Date(date.valueOf());
         const dayNr = (date.getDay() + 6) % 7;
