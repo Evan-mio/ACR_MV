@@ -111,13 +111,13 @@
                     <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">7. В акте указывается время отбора и  GRD код. В чеклисте в графе "время отбора" ставиться прочерк если образец не отобран.</p>
                     <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">8. Каждый отобранный образец жира и спрея дополнительно упаковывается в отдельный пакет-маечку. Образцы крошки упаковываются в дополнительный пакет-мечку по IL. Все пакеты дб хорошо завязаны. Затем все пакеты с образцами необходимо сложить в картонную коробку.</p>
                 </div>
-                <!-- Информация по типам смывов с исправленной flex-сеткой и уникальными ID -->
+                <!-- Информация по типам смывов с исправленной уникальными ID -->
                 <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
                     <div style="font-weight: 700; font-size: 1.5rem; margin-bottom: 4px; color: #1e293b;">🔬 Спецификация Сальмонелла / Энтеро:</div>
                     <p style="margin-bottom: 2px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Сальмонелла:</strong> Каждая дневная смена. 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
                     <p style="margin-bottom: 12px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Энтеро/Дрожжи/Плесень:</strong> Только в понедельник! 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
                     
-                    <!-- Корректный Flex-контейнер для полей лаборатории -->
+                    <!-- Корректный для полей лаборатории -->
                     <div style="display: flex; flex-direction: column; gap: 10px;">
                         <div class="form-group">
                             <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Фамилия лаборанта</label>
@@ -137,7 +137,7 @@
                 </div>
             </div>
 
-            <!-- ТАБЛИЦА СМЫВОВ (Двухблочная структура) -->
+            <!-- ТАБЛИЦА СМЫВОВ -->
                 <div class="table-scroll" >
                     <table>
                         <colgroup>
@@ -210,14 +210,12 @@
                                 <td><input type="text" class="table-input" name="labNum2"></td>
                                 <td><input type="text" class="table-input" name="il2"></td>
                             </tr>
-                            <!-- Остальные строки аналогично, с уникальными name для полей -->
-                            <!-- Для краткости я не дублирую все строки, но принцип тот же: каждому полю — свой name -->
-                            <!-- Важно: у всех полей в таблице должны быть name, чтобы JS мог их собрать -->
+                            
                         </tbody>
                     </table>
                 </div>
             </div>
-            <!-- КНОПКИ ДЕЙСТВИЙ (ИСПРАВЛЕНО: Кнопка Сохранить теперь имеет тип submit) -->
+            <!-- КНОПКИ ДЕЙСТВИЙ -->
             <div class="actions-bar">
                 <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
                 <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
