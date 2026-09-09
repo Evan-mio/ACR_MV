@@ -252,10 +252,23 @@ window.openDetailsModalByTimestamp = function(timestamp) {
 // =========================================================================
 // 4. ТРЕКЕР МЫШИ ПО ВСЕМУ ЭКРАНУ
 // =========================================================================
+// JS: Отслеживаем движение мыши по всей странице
 function initGlobalMouseTracker() {
     window.addEventListener('mousemove', (e) => {
+        // Записываем переменные в root (подходят для эффектов на фоне страницы)
         document.documentElement.style.setProperty('--screen-mouse-x', `${e.clientX}px`);
         document.documentElement.style.setProperty('--screen-mouse-y', `${e.clientY}px`);
+        
+        // Для карточек: лучше обновлять координаты относительно самой карточки
+        const cards = document.querySelectorAll('.act-card, .card');
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left; // Координата X относительно края карточки
+            const y = e.clientY - rect.top;  // Координата Y относительно края карточки
+            
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
     });
 }
 
