@@ -1,4 +1,3 @@
-
 /* ==========================================================================
     БЛОК 1. БАЗОВЫЕ НАСТРОЙКИ, ПЕРЕМЕННЫЕ И РАЗМЫТИЕ
 ========================================================================== */
@@ -670,14 +669,14 @@ a {
 }
 
 .fixed-clock-widget #time {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 900;
     font-family: 'Courier New', monospace;
     letter-spacing: 1px;
 }
 
 .fixed-clock-widget #date {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 700;
     text-align: right;
     background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
@@ -721,7 +720,7 @@ a {
 #pereaud, 
 #wek, 
 #day {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 900;
     font-family: 'Courier New', monospace;
     letter-spacing: 1px;
