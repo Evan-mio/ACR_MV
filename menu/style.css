@@ -141,7 +141,7 @@ body {
     height: 60px; 
     background-color: #1de2f0a4; 
     color: #ffffff; 
-    font-size: 0.9rem; 
+    font-size: 1rem; 
     font-weight: 600; 
     border: none; 
     border-radius: 8px; 
@@ -305,8 +305,8 @@ body {
 
 .view {
     display: none;
-    padding-left: 270px;
-    padding-top: 50px;
+    padding-left: 350px;
+    padding-top: 150px;
 }
 
 a {
@@ -436,17 +436,15 @@ a {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(250px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), 
-                                rgba(0, 242, 254, 0.15), 
-                                transparent 80%);
+    background: radial-gradient(250px circle at var(--mouse-x, 0px) 
+                                                var(--mouse-y, 0px), rgba(0, 242, 254, 0.15), 
+                                                transparent 80%);
     z-index: 1;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
-.act-card:hover::before, .card:hover::before { 
-    opacity: 1; 
-}
+.act-card:hover::before, .card:hover::before { opacity: 1; }
 
 /* Цветовое подцветка рамок */
 #products .act-card { 
@@ -576,8 +574,8 @@ a {
 /* Общие интерфейсные кнопки */
 .btn-content { 
     position: fixed; 
-    bottom: 30px; 
-    right: 40px; 
+    top: 157px;
+    left: 550px;
     z-index: 9999; 
     display: flex; 
     justify-content: flex-end; 
@@ -648,7 +646,7 @@ a {
 .fixed-clock-widget {
     position: fixed;
     top: 15px;
-    right: 20px;
+    left: 50%;
     z-index: 10006;
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
@@ -672,18 +670,21 @@ a {
 }
 
 .fixed-clock-widget #time {
-    font-size: 1.15rem;
-    font-weight: 800;
+    font-size: 1.5rem;
+    font-weight: 900;
     font-family: 'Courier New', monospace;
     letter-spacing: 1px;
 }
 
 .fixed-clock-widget #date {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    -webkit-text-fill-color: var(--text-secondary);
-    filter: none;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: right;
+    background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
     margin-top: 2px;
 }
 
@@ -693,7 +694,7 @@ a {
 .fixed-pereaud {
     position: fixed;
     top: 100px;
-    right: 20px;
+    left: 51%;
     z-index: 10006;
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
@@ -720,8 +721,8 @@ a {
 #pereaud, 
 #wek, 
 #day {
-    font-size: 1.15rem;
-    font-weight: 800;
+    font-size: 2rem;
+    font-weight: 900;
     font-family: 'Courier New', monospace;
     letter-spacing: 1px;
 }
