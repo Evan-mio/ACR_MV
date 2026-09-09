@@ -252,12 +252,30 @@ window.openDetailsModalByTimestamp = function(timestamp) {
 // =========================================================================
 // 4. ТРЕКЕР МЫШИ ПО ВСЕМУ ЭКРАНУ
 // =========================================================================
-function initGlobalMouseTracker() {
-    window.addEventListener('mousemove', (e) => {
-        document.documentElement.style.setProperty('--screen-mouse-x', `${e.clientX}px`);
-        document.documentElement.style.setProperty('--screen-mouse-y', `${e.clientY}px`);
+function initCardMouseTracker() {
+  document.addEventListener('DOMContentLoaded', () => {
+    // Находим все карточки на странице
+    const cards = document.querySelectorAll('.act-card, .card');
+    
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        // Получаем координаты карточки на экране
+        const rect = card.getBoundingClientRect();
+        
+        // Вычисляем координаты мыши именно ВНУТРИ этой карточки
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Записываем переменные локально для этой карточки
+        card.style.setProperty('--screen-mouse-x', `${x}px`);
+        card.style.setProperty('--screen-mouse-y', `${y}px`);
+      });
     });
+  });
 }
+
+// Запускаем трекер
+initCardMouseTracker();
 
 // =========================================================================
 // 5. ОСНОВНОЙ ЕДИНЫЙ БЛОК ИНИЦИАЛИЗАЦИИ КОНТЕНТА
