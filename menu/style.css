@@ -436,15 +436,17 @@ a {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(250px circle at var(--mouse-x, 0px) 
-                                                var(--mouse-y, 0px), rgba(0, 242, 254, 0.15), 
-                                                transparent 80%);
+    background: radial-gradient(250px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), 
+                                rgba(0, 242, 254, 0.15), 
+                                transparent 80%);
     z-index: 1;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
-.act-card:hover::before, .card:hover::before { opacity: 1; }
+.act-card:hover::before, .card:hover::before { 
+    opacity: 1; 
+}
 
 /* Цветовое подцветка рамок */
 #products .act-card { 
