@@ -1,3 +1,4 @@
+
 /* ==========================================================================
     БЛОК 1. БАЗОВЫЕ НАСТРОЙКИ, ПЕРЕМЕННЫЕ И РАЗМЫТИЕ
 ========================================================================== */
@@ -19,7 +20,7 @@
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
- body {
+body {
     background-color: #020a13;
     background-image: url('images/ава.jpg');
     background-position: center center;
@@ -28,12 +29,13 @@
     min-height: 100vh;
     overflow: hidden;
 }
-/* Эффект матового стекла */
+
+/* Эффект матового стекла (Glassmorphism) */
 .top-bar, .sidebar, .card, .drafts-panel {
     background: var(--glass-bg);
-    backdrop-filter: blur(15px); 
+    backdrop-filter: blur(15px); /* Размытие фона */
     -webkit-backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-border); 
+    border: 1px solid var(--glass-border); /* Тонкая светлая граница */
 }
 
 /* ==========================================================================
@@ -42,7 +44,7 @@
 .app-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
-    grid-template-areas: "sidebar content";
+    grid-template-areas: "sidebar content"; /* сетки, чтобы не ломать верстку при скрытии */
     height: 100vh;
 }
 
@@ -52,13 +54,13 @@
     top: 0; /* прячем за верхний край с запасом */
     left: 0;
     width: 100%;
-    height: 200px;
+    height: 200px; /* фиксируем аккуратную высоту */
     padding: 0 350px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+    transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* скольжение */
 }
 
 /* вех меню при наведении на саму панель или через вспомогательные JS-классы */
@@ -120,20 +122,22 @@
     letter-spacing: 1px;
 }
 
+
 /* кнопки авторизации и профиля */
 .auth-block { 
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    width: 20px; 
-    height: 70px; 
+    width: 150px; 
+    height: 50px; 
 }
 
 .auth-btn { 
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    gap: 8px; width: 200px; 
+    gap: 8px; 
+    width: 200px; 
     height: 60px; 
     background-color: #1de2f0a4; 
     color: #ffffff; 
@@ -301,8 +305,8 @@
 
 .view {
     display: none;
-    padding-left: 340px;
-    padding-top: 100px;
+    padding-left: 270px;
+    padding-top: 50px;
 }
 
 a {
@@ -769,27 +773,4 @@ a {
     .global-neon-glow {
         display: none;
     }
-}
-/* Мобильные (до 768px) */
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-  .main-title {
-    text-align: center;
-    font-size: 1.2rem;
-  }
-}
-
-/* Планшеты (769–1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  /* например, 2 колонки вместо 1 */
-}
-
-/* Десктоп (от 1025px) */
-@media (min-width: 1025px) {
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
 }
