@@ -22,7 +22,7 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000); // Перезапуск каждую секунду
 
-// Базовая точка старта:
+// Базовая точка старта: 3 января 2021 года (Воскресенье, P1:W1:D1)
 const START_DATE = new Date('2021-01-03T00:00:00'); 
 
 function updatePeriodCalendar() {
@@ -252,30 +252,12 @@ window.openDetailsModalByTimestamp = function(timestamp) {
 // =========================================================================
 // 4. ТРЕКЕР МЫШИ ПО ВСЕМУ ЭКРАНУ
 // =========================================================================
-function initCardMouseTracker() {
-  document.addEventListener('DOMContentLoaded', () => {
-    // Находим все карточки на странице
-    const cards = document.querySelectorAll('.act-card, .card');
-    
-    cards.forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        // Получаем координаты карточки на экране
-        const rect = card.getBoundingClientRect();
-        
-        // Вычисляем координаты мыши именно ВНУТРИ этой карточки
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        // Записываем переменные локально для этой карточки
-        card.style.setProperty('--screen-mouse-x', `${x}px`);
-        card.style.setProperty('--screen-mouse-y', `${y}px`);
-      });
+function initGlobalMouseTracker() {
+    window.addEventListener('mousemove', (e) => {
+        document.documentElement.style.setProperty('--screen-mouse-x', `${e.clientX}px`);
+        document.documentElement.style.setProperty('--screen-mouse-y', `${e.clientY}px`);
     });
-  });
 }
-
-// Запускаем трекер
-initCardMouseTracker();
 
 // =========================================================================
 // 5. ОСНОВНОЙ ЕДИНЫЙ БЛОК ИНИЦИАЛИЗАЦИИ КОНТЕНТА
@@ -460,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName = localStorage.getItem('userLastName') || '';
         const company = localStorage.getItem('userCompany') || '';
         const shift = localStorage.getItem('userShift') || '';
-        const plot = (localStorage.getItem('userPlot') || '').trim();
+        const plot = (localStorage.getItem('userPlot') || '').trim(); // Удаляет лишние пробелы из базы сотрудников
 
         const shortLastName = lastName ? ` ${lastName.charAt(0)}.` : '';
         const displayName = `${firstName}${shortLastName}` || 'Пользователь';
@@ -583,6 +565,7 @@ tabButtons.forEach(btn => {
     const ROLES = {
         ADMIN: "Admin",
         SYSADMIN: "SysAdmin",
+        LAB: "Лаборатория",
         USER: "User"
     };
 
@@ -728,6 +711,7 @@ tabButtons.forEach(btn => {
     const ROLES = {
         ADMIN: "Admin",
         SYSADMIN: "SysAdmin",
+        LAB: "Laboratory",
         USER: "User"
     };
 
