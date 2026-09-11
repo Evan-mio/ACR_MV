@@ -848,3 +848,168 @@ tabButtons.forEach(btn => {
         }
     });
 })();
+
+// ===========================
+// 7. WHATCHAT
+// ===========================
+let currentRoom = 'group'; // Активная комната по умолчанию ('group' или 'private')
+let privateReplyCount = 0; // Счетчик личных ответов Васильева для симуляции диалога
+
+// Элементы DOM
+const chatBtn = document.getElementById('demo-chat-btn');
+const chatWindow = document.getElementById('demo-chat-window');
+const closeBtn = document.getElementById('demo-chat-close');
+const sendBtn = document.getElementById('demo-chat-send');
+const chatInput = document.getElementById('demo-chat-input');
+const groupBtn = document.getElementById('tab-group-btn');
+const privateBtn = document.getElementById('tab-private-btn');
+
+// --- 1. СИНТЕЗ ЗВУКА КОЛОКОЛЬЧИКА «ДЗИНЬ» ---
+function playNotificationSound() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(880, audioCtx.currentTime);
+        gain1.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc1.connect(gain1); gain1.connect(audioCtx.destination);
+        osc1.start(); osc1.stop(audioCtx.currentTime + 0.4);
+
+        setTimeout(() => {
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(1318.51, audioCtx.currentTime);
+            gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+            osc2.connect(gain2); gain2.connect(audioCtx.destination);
+            osc2.start(); osc2.stop(audioCtx.currentTime + 0.6);
+        }, 80);
+    } catch (e) { console.error("Звук не поддерживается", e); }
+}
+
+// --- 2. МЕХАНИКА ИНТЕРФЕЙСА (ОТКРЫТИЕ И ТАБЫ) ---
+function toggleDemoChat() {
+    const currentBox = document.getElementById(`room-${currentRoom}`);
+    if (chatWindow.style.display === 'none' || !chatWindow.style.display) {
+        chatWindow.style.display = 'flex';
+        chatBtn.innerText = '×';
+        chatBtn.style.background = '#ef4444';
+        chatBtn.style.boxShadow = '0 4px 15px rgba(239, 68, 68, 0.4)';
+        setTimeout(() => { currentBox.scrollTop = currentBox.scrollHeight; }, 50);
+    } else {
+        chatWindow.style.display = 'none';
+        chatBtn.innerText = '💬';
+        chatBtn.style.background = '#2563eb';
+        chatBtn.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.4)';
+    }
+}
+
+function switchChatRoom(room) {
+    currentRoom = room;
+    const groupRoom = document.getElementById('room-group');
+    const privateRoom = document.getElementById('room-private');
+
+    if (room === 'group') {
+        groupRoom.style.display = 'flex'; privateRoom.style.display = 'none';
+        groupBtn.style.cssText = 'flex: 1; padding: 8px; border: none; background: #ffffff; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #1e293b; box-shadow: 0 1px 2px rgba(0,0,0,0.05);';
+        privateBtn.style.cssText = 'flex: 1; padding: 8px; border: none; background: transparent; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #64748b;';
+        groupRoom.scrollTop = groupRoom.scrollHeight;
+    } else {
+        groupRoom.style.display = 'none'; privateRoom.style.display = 'flex';
+        privateBtn.style.cssText = 'flex: 1; padding: 8px; border: none; background: #ffffff; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #1e293b; box-shadow: 0 1px 2px rgba(0,0,0,0.05);';
+        groupBtn.style.cssText = 'flex: 1; padding: 8px; border: none; background: transparent; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #64748b;';
+        privateRoom.scrollTop = privateRoom.scrollHeight;
+    }
+}
+
+// --- 3. ОТПРАВКА И СИМУЛЯЦИЯ СУПЕР-ОТВЕТОВ ---
+function sendDemoMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    const lastName = localStorage.getItem('userLastName') || 'Лаборант';
+    const firstName = localStorage.getItem('userFirstName') || 'ОТК';
+    const currentUserName = firstName ? lastName + ' ' + firstName.charAt(0) + '.' : lastName;
+
+    const now = new Date();
+    const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+    // Отображаем сообщение пользователя на экране
+    appendMessage(currentRoom, currentUserName + ' (Вы)', text, timeStr, true);
+    chatInput.value = '';
+
+    // СЦЕНАРИЙ ДЛЯ ЛИЧНОГО ЧАТА (ВАСИЛЬЕВ К.)
+    if (currentRoom === 'private') {
+        privateReplyCount++;
+        
+        setTimeout(() => {
+            playNotificationSound(); // Колокольчик "Дзинь!"
+            
+            let responseText = "";
+            if (privateReplyCount === 1) {
+                responseText = "Отлично, вижу! Спасибо за оперативность. Сейчас запущу термостат для инкубации смывов.";
+            } else if (privateReplyCount === 2) {
+                responseText = "Принято. Кстати, загляни в общий чат смены, там робот выдал отчет по логам фабрики.";
+            } else {
+                responseText = "Да, я на связи. Если возникнут вопросы по батчам, пиши сюда прямо в личку.";
+            }
+            
+            appendMessage('private', 'Васильев К. (Микробиолог)', responseText, timeStr, false);
+        }, 2200); // Ответ через 2.2 секунды
+    }
+
+    // СЦЕНАРИЙ ДЛЯ ОБЩЕГО ЧАТА (РОБОТ)
+    if (currentRoom === 'group') {
+        setTimeout(() => {
+            playNotificationSound(); 
+            appendMessage('group', 'Система верификации (Робот)', 'Уведомление отправлено дежурному инженеру смены.', timeStr, false, true);
+        }, 1800);
+    }
+}
+
+function appendMessage(room, sender, text, time, isUser, isSystemLog = false) {
+    const targetBox = document.getElementById(`room-${room}`);
+    const msgDiv = document.createElement('div');
+    
+    if (isSystemLog) {
+        msgDiv.style.cssText = "background: #fef3c7; padding: 8px 12px; border-radius: 8px; border: 1px solid #fde68a; max-width: 95%; align-self: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); text-align: center; margin: 5px 0; font-size: 12px; color: #92400e; font-weight: 500; animation: chatFadeIn 0.2s ease;";
+        msgDiv.innerHTML = `⚙️ <b>${sender}:</b> ${text} <span style="color:#b45309; font-size:10px; margin-left:6px;">${time}</span>`;
+    } else {
+        msgDiv.style.cssText = isUser 
+            ? "background: #eff6ff; padding: 10px 14px; border-radius: 12px; border: 1px solid #bfdbfe; max-width: 80%; align-self: flex-end; box-shadow: 0 1px 3px rgba(0,0,0,0.02); font-size: 13px; animation: chatFadeIn 0.2s ease;"
+            : "background: #ffffff; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 80%; align-self: flex-start; box-shadow: 0 1px 3px rgba(0,0,0,0.02); font-size: 13px; animation: chatFadeIn 0.2s ease;";
+        
+        msgDiv.innerHTML = `
+            <div style="font-weight: 700; color: ${isUser ? '#2563eb':'#059669'}; font-size: 11px; margin-bottom: 3px;">${sender} <span style="font-weight: 400; color: #94a3b8; margin-left: 6px;">${time}</span></div>
+            <div style="color: #334155; line-height: 1.4; word-break: break-word;">${text}</div>
+        `;
+    }
+
+    targetBox.appendChild(msgDiv);
+    targetBox.scrollTop = targetBox.scrollHeight;
+}
+
+// --- 4. ПРОСЛУШИВАНИЕ СИСТЕМНЫХ АКТОВ ИЗ БЛАНКОВ ФОРМЫ ---
+window.addEventListener('storage', (e) => {
+    if (e.key === 'sys_act_created_trigger' && e.newValue) {
+        const logData = JSON.parse(e.newValue);
+        playNotificationSound(); 
+        appendMessage('group', 'СИСТЕМА БЛАНКОВ', logData.message, logData.time, false, true);
+    }
+});
+
+// Слушатели событий
+chatBtn.addEventListener('click', toggleDemoChat);
+closeBtn.addEventListener('click', toggleDemoChat);
+sendBtn.addEventListener('click', sendDemoMessage);
+groupBtn.addEventListener('click', () => switchChatRoom('group'));
+privateBtn.addEventListener('click', () => switchChatRoom('private'));
+chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendDemoMessage(); });
+
+const chatStyle = document.createElement('style');
+chatStyle.innerHTML = `@keyframes chatFadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }`;
+document.head.appendChild(chatStyle);
+
