@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Акт микробиологической верификации: Смывы</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="act-notstandart.css"/>
+</head>
+<body>
+    <!-- Шапка сайта с корректно закрытыми тегами -->
+    <div class="header">
+        <div class="header-container">
+            <div class="header-title-block">
+                <div style="display: flex; gap: 12px; align-items: center; font-family: system-ui, -apple-system, sans-serif;"> 
+                    <!-- 🖨️ Кнопка печати -->
+                    <button type="button" onclick="window.print();" class="nav-print-link">
+                        <span style="font-size: 1rem; line-height: 1;">🖨️</span> Распечатать акт
+                    </button>   
+                    <!-- 🏠 Кнопка На главную -->
+                    <a href="/menu/index.html" class="nav-home-link">
+                        <span style="font-size: 1.05rem; line-height: 1;">🏠</span> На главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="wash-sd-form" onsubmit="handleSubmit(event)">
+            <div class="main-title">Акт нестандартных проб.</div>
+            
+            <!-- ШАПКА АКТА -->
+            <div class="meta-grid">
+                <!-- Блок параметров смены -->
+                <div class="meta-card" style="border-left: 4px solid #10b981;">
+                    <!-- СТРОКА 1: Фабрика и Статус фабрики -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;">Фабрика</label>
+                                        <select name="gorod" id="cyti" style="font-size: 0.85rem; font-weight: 600; width: 100%;  padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ЛУЖНИКИ">ЛУЖНИКИ</option>
+                                            <option value="НОВОСИБИРСК">НОВОСИБИРСК</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Статус фабрики</label>
+                                        <input type="text" name="status" value="Золотой и платиновый" required 
+                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; 
+                                        background: #f1f5f9">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 2: shift Сменa -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Shift</label>
+                                        <select id="shift-color" name="shiftColor" style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 0.85rem; font-weight: 600; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="WHITE">WHITE</option>
+                                            <option value="BROWN">BROWN</option>
+                                            <option value="GREEN">GREEN</option>
+                                            <option value="VIOLET">VIOLET</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">План отбора</label>
+                                        <select id="plan" name="otbor" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">СТАНДАРТНЫЙ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">РАСШИРЕНЫЙ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 3: Кто проводил отбор проб (ФИО) -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Смена</label>
+                                        <select name="sutki" id="day" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">ДЕНЬ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">НОЧЬ</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box;">(ФИО) Техника</label>
+                                        <input type="text" id="controller-name" name="controllerName" value="NAME" placeholder="Введите фамилию" style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 4: Дата отбора проб и Batch Code (LOT) -->
+                                <div class="form-group" style="display: flex; gap: 15px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Дата отбора проб</label>
+                                        <input type="date" id="doc-date" name="docDate" value="2026-05-29" required style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Batch Code (LOT)</label>
+                                        <input type="text" id="batch-code-field" name="batchCode" value="" style="font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; font-family: monospace; font-weight: 700; background-color: #f1f5f9; color: #000;" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                <!-- Регламент отбора -->
+                <div class="meta-card meta-card-gray" id="dop" style="border-left: 4px solid #10b981; border-radius: 12px;">
+                    <div style="font-weight: 700; font-size: 1.5rem;padding-bottom: 10px; color: #000;">📋 Инструкция к заполнению:</div>
+                    <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">1. Смывы отбираются только в дневную смену во время производства ДНЕМ.</p>
+                    <p style="margin-bottom: 5px; font-size: 1rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">2. На каждый отобранный смыв приклеивается этикетка со штрихкодом.</p>
+                    <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">3. Если смыв не отобран, неиспользованная этикетка клеится на оборот чеклиста.</p>
+                    <p style="margin-bottom: 5px; font-size: 1rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">4. Все образцы собираются в отдельную емкость или пакетик-маечку.</p>
+                </div>
+                <!-- Информация по типам смывов с исправленной flex-сеткой и уникальными ID -->
+                <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
+                    <div style="font-weight: 700; font-size: 1.5rem; margin-bottom: 4px; color: #1e293b;">🔬 Спецификация Сальмонелла / Энтеро:</div>
+                    <p style="margin-bottom: 2px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Сальмонелла:</strong> Каждая дневная смена. 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    <p style="margin-bottom: 12px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Энтеро/Дрожжи/Плесень:</strong> Только в понедельник! 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    
+                    <!-- Корректный Flex-контейнер для полей лаборатории -->
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="form-group">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Фамилия лаборанта</label>
+                            <input type="text" name="lab-name" id="lab-controller-name" value="name" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                        </div>
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Дата получения</label>
+                                <input type="date" name="lab-doc-date" id="lab-doc-date" value="2026-05-29" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Время получения</label>
+                                <input type="time" name="lab-time" class="table-input tm-l" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Пример правильной верстки кнопок в вашей HTML-странице -->
+<button type="button" class="btn btn-secondary" onclick="window.addNewSheet()">➕ Добавить лист</button>
+<button type="button" class="btn btn-secondary" onclick="editSheetName()">✏️ Редактировать название листа</button>
+
+<!-- Сюда JS будет вставлять вкладки (Лист 1, Лист 2...) -->
+<div id="tab-list" style="display: flex; gap: 6px; margin: 10px 0;"></div>
+
+
+            <!-- ТАБЛИЦА СМЫВОВ -->
+                <div class="table-scroll" >
+                    <table>
+                        <colgroup>
+                            <col style="width: 3%;">
+                            <col style="width: 40%;">
+                            <col style="width: 6%;">
+                            <col style="width: 6%;">
+                            <col style="width: 6%;">
+                            <col style="width: 6%;">
+                            <col style="width: 8%;">
+                            <col style="width: 8%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Номер образца</th>
+                                <th>Наименование образца</th>
+                                <th>Место отбора</th>
+                                <th>Время отбора</th>
+                                <th>Тип образца</th>
+                                <th>Показатель</th>
+                                <th>№ лаборатории</th>
+                                <th>IL если есть</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wash-table-body">
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">1</td>
+                                <td><input type="text" name="name-1" class="table-input nm-1"></td>
+                                <td><input type="text" name="plot-1" class="table-input pt-1"></td>
+                                <td><input type="time" name="time-1" class="table-input tm-l"></td>
+                                <td><input type="text" name="type-1" class="table-input tp-1"></td>
+                                <td><input type="text" name="pocaz-1" class="table-input pc-l"></td>
+                                <td><input type="text" name="lb-1" class="table-input lb-l"></td>
+                                <td><input type="text" name="il-1" class="table-input il-1"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">2</td>
+                                <td><input type="text" name="name-2" class="table-input nm-2"></td>
+                                <td><input type="text" name="plot-2" class="table-input pt-2"></td>
+                                <td><input type="time" name="time-2" class="table-input tm-2"></td>
+                                <td><input type="text" name="type-2" class="table-input tp-2"></td>
+                                <td><input type="text" name="pocaz-2" class="table-input pc-2"></td>
+                                <td><input type="text" name="lb-2" class="table-input lb-2"></td>
+                                <td><input type="text" name="il-2" class="table-input il-2"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">3</td>
+                                <td><input type="text" name="name-3" class="table-input nm-3"></td>
+                                <td><input type="text" name="plot-3" class="table-input pt-3"></td>
+                                <td><input type="time" name="time-3" class="table-input tm-3"></td>
+                                <td><input type="text" name="type-3" class="table-input tp-3"></td>
+                                <td><input type="text" name="pocaz-3" class="table-input pc-3"></td>
+                                <td><input type="text" name="lb-3" class="table-input lb-3"></td>
+                                <td><input type="text" name="il-3" class="table-input il-3"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">4</td>
+                                <td><input type="text" name="name-4" class="table-input nm-4"></td>
+                                <td><input type="text" name="plot-4" class="table-input pt-4"></td>
+                                <td><input type="time" name="time-4" class="table-input tm-4"></td>
+                                <td><input type="text" name="type-4" class="table-input tp-4"></td>
+                                <td><input type="text" name="pocaz-4" class="table-input pc-4"></td>
+                                <td><input type="text" name="lb-4" class="table-input lb-4"></td>
+                                <td><input type="text" name="il-4" class="table-input il-4"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">5</td>
+                                <td><input type="text" name="name-5" class="table-input nm-5"></td>
+                                <td><input type="text" name="plot-5" class="table-input pt-5"></td>
+                                <td><input type="time" name="time-5" class="table-input tm-5"></td>
+                                <td><input type="text" name="type-5" class="table-input tp-5"></td>
+                                <td><input type="text" name="pocaz-5" class="table-input pc-5"></td>
+                                <td><input type="text" name="lb-5" class="table-input lb-5"></td>
+                                <td><input type="text" name="il-5" class="table-input il-5"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">6</td>
+                                <td><input type="text" name="name-6" class="table-input nm-6"></td>
+                                <td><input type="text" name="plot-6" class="table-input pt-6"></td>
+                                <td><input type="time" name="time-6" class="table-input tm-6"></td>
+                                <td><input type="text" name="type-6" class="table-input tp-6"></td>
+                                <td><input type="text" name="pocaz-6" class="table-input pc-6"></td>
+                                <td><input type="text" name="lb-6" class="table-input lb-6"></td>
+                                <td><input type="text" name="il-6" class="table-input il-6"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">7</td>
+                                <td><input type="text" name="name-7" class="table-input nm-7"></td>
+                                <td><input type="text" name="plot-7" class="table-input pt-7"></td>
+                                <td><input type="time" name="time-7" class="table-input tm-7"></td>
+                                <td><input type="text" name="type-7" class="table-input tp-7"></td>
+                                <td><input type="text" name="pocaz-7" class="table-input pc-7"></td>
+                                <td><input type="text" name="lb-7" class="table-input lb-7"></td>
+                                <td><input type="text" name="il-7" class="table-input il-7"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">8</td>
+                                <td><input type="text" name="name-8" class="table-input nm-8"></td>
+                                <td><input type="text" name="plot-8" class="table-input pt-8"></td>
+                                <td><input type="time" name="time-8" class="table-input tm-8"></td>
+                                <td><input type="text" name="type-8" class="table-input tp-8"></td>
+                                <td><input type="text" name="pocaz-8" class="table-input pc-8"></td>
+                                <td><input type="text" name="lb-8" class="table-input lb-8"></td>
+                                <td><input type="text" name="il-8" class="table-input il-8"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">9</td>
+                                <td><input type="text" name="name-9" class="table-input nm-9"></td>
+                                <td><input type="text" name="plot-9" class="table-input pt-9"></td>
+                                <td><input type="time" name="time-9" class="table-input tm-9"></td>
+                                <td><input type="text" name="type-9" class="table-input tp-9"></td>
+                                <td><input type="text" name="pocaz-9" class="table-input pc-9"></td>
+                                <td><input type="text" name="lb-9" class="table-input lb-9"></td>
+                                <td><input type="text" name="il-9" class="table-input il-9"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">10</td>
+                                <td><input type="text" name="name-10" class="table-input nm-10"></td>
+                                <td><input type="text" name="plot-10" class="table-input pt-10"></td>
+                                <td><input type="time" name="time-10" class="table-input tm-l0"></td>
+                                <td><input type="text" name="type-10" class="table-input tp-10"></td>
+                                <td><input type="text" name="pocaz-10" class="table-input pc-l0"></td>
+                                <td><input type="text" name="lb-10" class="table-input lb-l0"></td>
+                                <td><input type="text" name="il-10" class="table-input il-10"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">11</td>
+                                <td><input type="text" name="name-11" class="table-input nm-11"></td>
+                                <td><input type="text" name="plot-11" class="table-input pt-11"></td>
+                                <td><input type="time" name="time-11" class="table-input tm-l1"></td>
+                                <td><input type="text" name="type-11" class="table-input tp-11"></td>
+                                <td><input type="text" name="pocaz-11" class="table-input pc-l1"></td>
+                                <td><input type="text" name="lb-11" class="table-input lb-l1"></td>
+                                <td><input type="text" name="il-11" class="table-input il-11"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">12</td>
+                                <td><input type="text" name="name-12" class="table-input nm-12"></td>
+                                <td><input type="text" name="plot-12" class="table-input pt-12"></td>
+                                <td><input type="time" name="time-12" class="table-input tm-l2"></td>
+                                <td><input type="text" name="type-12" class="table-input tp-12"></td>
+                                <td><input type="text" name="pocaz-12" class="table-input pc-l2"></td>
+                                <td><input type="text" name="lb-12" class="table-input lb-l2"></td>
+                                <td><input type="text" name="il-12" class="table-input il-12"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">13</td>
+                                <td><input type="text" name="name-13" class="table-input nm-13"></td>
+                                <td><input type="text" name="plot-13" class="table-input pt-13"></td>
+                                <td><input type="time" name="time-13" class="table-input tm-l3"></td>
+                                <td><input type="text" name="type-13" class="table-input tp-13"></td>
+                                <td><input type="text" name="pocaz-13" class="table-input pc-l3"></td>
+                                <td><input type="text" name="lb-13" class="table-input lb-l3"></td>
+                                <td><input type="text" name="il-13" class="table-input il-13"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">14</td>
+                                <td><input type="text" name="name-14" class="table-input nm-14"></td>
+                                <td><input type="text" name="plot-14" class="table-input pt-14"></td>
+                                <td><input type="time" name="time-14" class="table-input tm-l4"></td>
+                                <td><input type="text" name="type-14" class="table-input tp-14"></td>
+                                <td><input type="text" name="pocaz-14" class="table-input pc-l4"></td>
+                                <td><input type="text" name="lb-14" class="table-input lb-l4"></td>
+                                <td><input type="text" name="il-14" class="table-input il-14"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">15</td>
+                                <td><input type="text" name="name-15" class="table-input nm-15"></td>
+                                <td><input type="text" name="plot-15" class="table-input pt-15"></td>
+                                <td><input type="time" name="time-15" class="table-input tm-l5"></td>
+                                <td><input type="text" name="type-15" class="table-input tp-15"></td>
+                                <td><input type="text" name="pocaz-15" class="table-input pc-l5"></td>
+                                <td><input type="text" name="lb-15" class="table-input lb-l5"></td>
+                                <td><input type="text" name="il-15" class="table-input il-15"></td>
+                            </tr>
+                            <tr><td class="section-row-header" colspan="8"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- КНОПКИ ДЕЙСТВИЙ -->
+            <div class="actions-bar">
+                <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
+                <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
+                <button type="button" class="btn btn-warning" id="btnCollapse">📦 Свернуть акт (сохранить как черновик)</button>
+            </div>
+        </form>
+        <div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
+                    <span>W: 01 от 22.08..2024</span>
+        </div>
+    </div>
+    <script src="act-notstandart.js"></script>
+</body>
+</html>
