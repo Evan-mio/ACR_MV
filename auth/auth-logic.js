@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof mockUserBase !== 'undefined') {
                 
                 
-                const user = mockUserBase[idInput];
+                const user = mockUserBase.find(u => String(u.id) === idInput);
                 
                 //  проверяем переменную user 
                 if (user && user.password === passwordInput) {
