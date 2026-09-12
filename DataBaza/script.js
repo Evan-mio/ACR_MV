@@ -94,47 +94,38 @@ const AppState = {
     dbSessions: {},     // Хранилище всех сессий баз данных
     activeFileId: null, // Текущий выбранный ключ сессии
 
-    // Добавление новой строки в таблицу
-    addRow: function(rowData) {
-        if (!this.activeFileId) return false;
-        const currentDb = this.dbSessions[this.activeFileId];
-
-        // Создаем новый объект на основе колонок
-        const newRow = {};
-        currentDb.columns.forEach(col => {
-            // Если в CAR_GRD_DATABASA добавляется массив PacCars, парсим его из строки ввода [71, 72]
-            if (col === 'PacCars') {
-                try {
-                    newRow[col] = rowData[col] ? JSON.parse(rowData[col]) : [];
-                } catch {
-                    newRow[col] = rowData[col].split(',').map(num => parseInt(num.trim())).filter(n => !isNaN(n));
-                }
-            } else {
-                // Пытаемся сохранить числа как числа, null как null, остальное как текст
-                let val = rowData[col] !== undefined ? rowData[col].trim() : "";
-                if (val.toLowerCase() === 'null') newRow[col] = null;
-                else if (val !== '' && !isNaN(val)) newRow[col] = Number(val);
-                else newRow[col] = val;
-            }
-        });
-
-        currentDb.rows.push(newRow);
-        return true;
+    // Вспомогательная функция генерации случайного имени константы
+    generateRandomConstantName: function() {
+        return 'CONST_' + Math.random().toString(36).substring(2, 6);
     },
 
-    // Удаление последней строки
-    deleteLastRow: function() {
-        if (!this.activeFileId) return false;
-        const currentDb = this.dbSessions[this.activeFileId];
-        if (currentDb.rows.length === 0) {
-            alert('В таблице больше нет строк!');
-            return false;
+    // Создание новой пустой базы данных
+    createDatabase: function(dbName) {
+        const cleanName = dbName.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+        const fileName = `${cleanName}_database.js`;
+
+        if (this.dbSessions[fileName]) {
+            alert('База с таким именем уже открыта!');
+            return null;
         }
-        currentDb.rows.pop();
+
+        this.dbSessions[fileName] = {
+            constantName: this.generateRandomConstantName(),
+            columns: ["id"],
+            rows: []
+        };
+        return fileName;
+    },
+
+    // Удаление базы данных из памяти приложения
+    deleteCurrentDatabase: function() {
+        if (!this.activeFileId) return false;
+        delete this.dbSessions[this.activeFileId];
+        this.activeFileId = null;
         return true;
     },
 
-    // Динамическое добавление нового столбца в структуру
+    // Добавление нового столбца и инициализация его пустой строкой во всех рядах
     addColumn: function(colName) {
         if (!this.activeFileId) return false;
         const cleanColName = colName.trim().replace(/[^a-zA-Z0-9_]/g, '');
@@ -142,7 +133,7 @@ const AppState = {
 
         const currentDb = this.dbSessions[this.activeFileId];
         if (currentDb.columns.includes(cleanColName)) {
-            alert('Столбец уже существует!');
+            alert('Такой столбец уже существует!');
             return false;
         }
 
@@ -151,7 +142,7 @@ const AppState = {
         return true;
     },
 
-    // Удаление столбца из структуры
+    // Удаление пользовательского столбца из структуры
     deleteColumn: function(colToDelete) {
         if (!this.activeFileId) return false;
         const currentDb = this.dbSessions[this.activeFileId];
@@ -163,6 +154,58 @@ const AppState = {
 
         currentDb.columns = currentDb.columns.filter(c => c !== colToDelete);
         currentDb.rows.forEach(row => delete row[colToDelete]);
+        return true;
+    },
+
+    // Добавление новой строки с автоматическим приведением типов данных
+    addRow: function(rowData) {
+        if (!this.activeFileId) return false;
+        const currentDb = this.dbSessions[this.activeFileId];
+
+        const newRow = {};
+        currentDb.columns.forEach(col => {
+            if (col === 'PacCars') {
+                try {
+                    newRow[col] = rowData[col] ? JSON.parse(rowData[col]) : [];
+                } catch {
+                    newRow[col] = rowData[col].split(',').map(num => parseInt(num.trim())).filter(n => !isNaN(n));
+                }
+            } else {
+                let val = rowData[col] !== undefined ? rowData[col].trim() : "";
+                if (val.toLowerCase() === 'null') newRow[col] = null;
+                else if (val !== '' && !isNaN(val)) newRow[col] = Number(val);
+                else newRow[col] = val;
+            }
+        });
+
+        currentDb.rows.push(newRow);
+        return true;
+    },
+
+    // УДАЛЕНИЕ ВЫБРАННОЙ СТРОКИ: Точечное удаление элемента из массива по его индексу
+    deleteRowByIndex: function(index) {
+        if (!this.activeFileId) return false;
+        const currentDb = this.dbSessions[this.activeFileId];
+
+        if (index < 0 || index >= currentDb.rows.length) {
+            alert('Ошибка: Строка с таким индексом не найдена.');
+            return false;
+        }
+
+        // Вырезаем ровно 1 элемент на позиции index
+        currentDb.rows.splice(index, 1);
+        return true;
+    },
+
+    // Удаление последней строки (оставлено для совместимости со старыми кнопками, если они есть)
+    deleteLastRow: function() {
+        if (!this.activeFileId) return false;
+        const currentDb = this.dbSessions[this.activeFileId];
+        if (currentDb.rows.length === 0) {
+            alert('В таблице больше нет строк!');
+            return false;
+        }
+        currentDb.rows.pop();
         return true;
     }
 };
@@ -182,6 +225,7 @@ const AppUI = {
         });
     },
 
+    // Управление доступностью элементов интерфейса
     toggleControls: function(activeFileId) {
         const elements = ['btnCol', 'btnDelCol', 'btnRow', 'btnDelRow'];
         const btnDownload = document.getElementById('btnDownload');
@@ -194,10 +238,10 @@ const AppUI = {
         });
 
         btnDownload.style.display = activeFileId ? 'block' : 'none';
-        currentFileName.innerText = activeFileId ? activeFileId.split(' -> ')[0] : "База не выбрана";
+        currentFileName.innerText = activeFileId ? activeFileId.split(' -> ') : "База не выбрана";
     },
 
-    // Генерирует поля ввода НА ОСНОВЕ СТОЛБЦОВ вашей базы данных
+    // Генерирует поля ввода на основе структуры столбцов вашей базы
     renderInputFields: function(activeFileId, sessions) {
         const container = document.getElementById('dynamicInputsForm');
         container.innerHTML = '';
@@ -220,8 +264,7 @@ const AppUI = {
             input.type = 'text';
             input.id = `input_${col}`;
             
-            // Подсказка для сложных полей типа массивов
-            if (col === 'PacCars') input.placeholder = 'Например: [71, 72, 81]';
+            if (col === 'PacCars') input.placeholder = 'Например: 71, 72, 81';
             else input.placeholder = 'Значение...';
 
             group.appendChild(label);
@@ -230,7 +273,7 @@ const AppUI = {
         });
     },
 
-    // ОТРИСОВКА ВАШИХ ДАННЫХ В КРАСИВУЮ HTML-ТАБЛИЦУ
+    // СБОРОЧНЫЙ ЦЕХ ТАБЛИЦЫ: Полная перерисовка HTML-таблицы с функциональными кнопками удаления строк
     renderTableData: function(activeFileId, sessions) {
         const container = document.getElementById('htmlTableContainer');
         container.innerHTML = '';
@@ -244,36 +287,46 @@ const AppUI = {
         const table = document.createElement('table');
         table.className = 'data-table';
 
-        // 1. Строим заголовки th на основе ключей вашей базы
+        // 1. Создаем шапку таблицы (TH генерируются из ключей базы) + столбец управления
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
+        
         currentDb.columns.forEach(col => {
             const th = document.createElement('th');
             th.innerText = col;
             headerRow.appendChild(th);
         });
+
+        // Добавляем служебную колонку для кнопок в конец шапки
+        const actionTh = document.createElement('th');
+        actionTh.innerText = "Действие";
+        actionTh.style.textAlign = "center";
+        headerRow.appendChild(actionTh);
+
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // 2. Строим строки td из значений объектов
+        // 2. Заполняем тело таблицы строками данных (TD)
         const tbody = document.createElement('tbody');
         if (currentDb.rows.length === 0) {
             const tr = document.createElement('tr');
             const td = document.createElement('td');
-            td.setAttribute('colspan', currentDb.columns.length);
+            td.setAttribute('colspan', currentDb.columns.length + 1); // +1 для ячейки действия
             td.className = 'placeholder-text';
             td.style.textAlign = 'center';
             td.innerText = 'База данных пуста';
             tr.appendChild(td);
             tbody.appendChild(tr);
         } else {
-            currentDb.rows.forEach(row => {
+            // Перебираем элементы, используя второй параметр index для точного позиционирования
+            currentDb.rows.forEach((row, index) => {
                 const tr = document.createElement('tr');
+                
+                // Наполняем строку ячейками с данными
                 currentDb.columns.forEach(col => {
                     const td = document.createElement('td');
                     let value = row[col];
                     
-                    // Если значение — это массив (как PacCars в вашей базе)
                     if (Array.isArray(value)) {
                         td.innerText = `[ ${value.join(', ')} ]`;
                     } else {
@@ -281,6 +334,33 @@ const AppUI = {
                     }
                     tr.appendChild(td);
                 });
+
+                // Создаем и стилизуем интерактивную ячейку удаления
+                const actionTd = document.createElement('td');
+                actionTd.style.textAlign = "center";
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerText = "🗑 Удалить";
+                deleteBtn.style.background = "#ef4444";
+                deleteBtn.style.color = "#fff";
+                deleteBtn.style.border = "none";
+                deleteBtn.style.padding = "6px 12px";
+                deleteBtn.style.borderRadius = "4px";
+                deleteBtn.style.cursor = "pointer";
+                deleteBtn.style.fontSize = "12px";
+                deleteBtn.style.fontWeight = "600";
+                deleteBtn.style.transition = "background 0.2s";
+                
+                deleteBtn.onmouseover = () => deleteBtn.style.background = "#dc2626";
+                deleteBtn.onmouseout = () => deleteBtn.style.background = "#ef4444";
+
+                // При клике передаем индекс именно этой конкретной строки в обработчик событий
+                deleteBtn.onclick = () => {
+                    mockDeleteSelectedRow(index);
+                };
+
+                actionTd.appendChild(deleteBtn);
+                tr.appendChild(actionTd);
                 tbody.appendChild(tr);
             });
         }
@@ -288,7 +368,7 @@ const AppUI = {
         container.appendChild(table);
     },
 
-    // Конвертирует измененные данные обратно в исходный текстовый формат .js файлов
+    // Синхронизация кода в текстовом поле терминала
     refreshCodeViewer: function(activeFileId, sessions) {
         const display = document.getElementById('codeOutput');
         if (!activeFileId || !sessions[activeFileId]) {
@@ -299,7 +379,6 @@ const AppUI = {
         const currentDb = sessions[activeFileId];
         let outputCode = "";
 
-        // Если база изначально была словарем (как пользователи)
         if (currentDb.isDictionary) {
             const originalFormatObj = {};
             currentDb.rows.forEach(row => {
@@ -307,9 +386,7 @@ const AppUI = {
                 if (User_ID) originalFormatObj[User_ID] = rest;
             });
             outputCode = `const ${currentDb.constantName} = ${JSON.stringify(originalFormatObj, null, 4)};`;
-        } 
-        // Если база была обычным массивом (как продукты, линии, машины)
-        else {
+        } else {
             outputCode = `const ${currentDb.constantName} = ${JSON.stringify(currentDb.rows, null, 2)};`;
         }
 
@@ -357,5 +434,23 @@ function downloadRealJsFile() {
     link.href = URL.createObjectURL(blob);
     link.download = AppState.activeFileId.split(' -> ')[0] || "database.js";
     link.click();
+}
+
+// НОВАЯ ФУНКЦИЯ: Посредник между кликом в HTML и изменением данных в AppState
+function mockDeleteSelectedRow(index) {
+    if (!AppState.activeFileId) return;
+    
+    // Безопасное модальное окно, чтобы пользователь случайно не стёр нужные логи
+    const isConfirmed = confirm("Вы действительно хотите безвозвратно удалить эту строку для оптимизации веса файла?");
+    
+    if (isConfirmed) {
+        // Удаляем из памяти данных
+        const isDeleted = AppState.deleteRowByIndex(index);
+        
+        if (isDeleted) {
+            // Заставляем интерфейс полностью перерисоваться (таблица очистится, а код внизу пересчитается без этой строки)
+            selectDatabase(AppState.activeFileId);
+        }
+    }
 }
 
