@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор и Визуализатор Баз Данных JS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Верхняя панель -->
+    <header class="top-navbar">
+        <a href="/menu/index.html" class="nav-home-link">
+                            <span style="font-size: 1.05rem; line-height: 1;">🏠</span> На главную
+                        </a>
+        <h1 class="page-title">Прототип: Конструктор баз данных (Интерактивный)</h1>
+    </header>
+
+    <!-- Основной рабочий макет -->
+    <div class="workspace-wrapper">
+        <div class="main-layout">
+            
+            <!-- Боковое меню (Сайдбар) -->
+            <aside class="sidebar">
+                <button class="btn-create-db" onclick="mockCreateDatabaseFile()">➕ Создать базу (JS)</button>
+                
+                <!-- Загрузчик существующих JS файлов -->
+                <div class="upload-container">
+                    <label for="fileLoader" class="btn-upload-db">📥 Открыть JS-файл базы</label>
+                    <input type="file" id="fileLoader" accept=".js" onchange="handleFileSelect(event)">
+                </div>
+
+                <div class="active-db-info">
+                    <span id="currentFileName">База не выбрана</span>
+                </div>
+                
+                <button id="btnDeleteDb" class="btn-danger-sidebar" disabled onclick="mockDeleteDatabaseFile()">🗑 Удалить файл</button>
+                
+                <hr class="divider">
+                <p class="sidebar-title">Список открытых баз:</p>
+                <ul id="sidebarDbList" class="db-list">
+                    <!-- Сюда динамически рендерятся открытые базы -->
+                </ul>
+            </aside>
+
+            <!-- Центральная рабочая зона -->
+            <main class="content-area">
+                
+                <!-- Панель управления столбцами -->
+                <section class="top-action-bar">
+                    <button id="btnCol" class="btn-add-col" disabled onclick="mockAddColumn()">➕ Добавить столбец</button>
+                    <button id="btnDelCol" class="btn-delete-col" disabled onclick="mockDeleteColumn()">❌ Удалить столбец</button>
+                </section>
+
+                <!-- Блок ввода данных (Инпуты генерируются динамически) -->
+                <section class="inputs-container-card">
+                    <h3 class="card-title">Заполнение новой строки данных</h3>
+                    <div id="dynamicInputsForm" class="inputs-grid">
+                        <p class="placeholder-text">Создайте базу данных или откройте существующий JS-файл, чтобы начать ввод.</p>
+                    </div>
+                    <div class="interactive-row-layout">
+                        <button id="btnRow" class="btn-add-row-aside" disabled onclick="mockSubmitRowData()">➕ Добавить строку в таблицу</button>
+                        <button id="btnDelRow" class="btn-delete-row-aside" disabled onclick="mockDeleteRow()">❌ Удалить последнюю строку</button>
+                    </div>
+                </section>
+
+                <!-- Живое отображение HTML таблицы с данными -->
+                <section class="inputs-container-card">
+                    <h3 class="card-title">📊 Живой просмотр таблицы данных</h3>
+                    <div id="htmlTableContainer" class="table-scroll-box">
+                        <p class="placeholder-text">Таблица пуста или база не выбрана.</p>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- Нижнее окно мониторинга кода -->
+        <footer class="code-viewer-bottom">
+            <div class="code-header">
+                <span>🖥 Монитор файла скрипта (Live в реальном времени)</span>
+                <button id="btnDownload" class="btn-download-code" style="display: none;" onclick="downloadRealJsFile()">💾 Скачать JS-файл</button>
+            </div>
+            <pre id="codeOutput" class="code-display">// Здесь будет отображаться сгенерированный JS-код вашего скрипта...</pre>
+        </footer>
+    </div>
+
+    <script src="baza/database.js"></script>
+    <script src="baza/users.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
