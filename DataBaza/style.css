@@ -347,7 +347,7 @@ body {
 
 /* Монитор кода */
 .code-viewer-bottom { 
-    height: 220px; 
+    height: 350px; 
     background: #1e1e1e; 
     border-top: 1px solid #333; 
     display: flex; 
