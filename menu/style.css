@@ -31,7 +31,7 @@ body {
 }
 
 /* Эффект матового стекла (Glassmorphism) */
-.top-bar, .sidebar, .card, .drafts-panel {
+.top-bar, .sidebar, .sidebarR, .card, .drafts-panel {
     background: var(--glass-bg);
     backdrop-filter: blur(15px); /* Размытие фона */
     -webkit-backdrop-filter: blur(15px);
@@ -74,6 +74,13 @@ body {
 .sidebar.forced-active,
 .sidebar.mouse-left-active {
     left: 0 !important;
+}
+
+/* бок панель: выдвигается при наведении на саму себя или по классам от JS */
+.sidebarR:hover,
+.sidebarR.forced-active,
+.sidebarR.mouse-right-active {
+    right: 0 !important;
 }
 
 /* ==========================================================================
@@ -234,7 +241,8 @@ body {
 }
 
 /* левая боковая панель */
-.sidebar { 
+.sidebar,
+.sidebarR { 
     grid-area: sidebar; 
     padding: 30px 15px; 
     display: flex; 
@@ -243,11 +251,13 @@ body {
     overflow-y: auto; 
 }
 
-.sidebar .logo { 
+.sidebar .logo,
+.sidebarR .logo { 
     margin-bottom: 20px; 
 }
 
-.menu { 
+.menu,
+.menu-1 { 
     display: flex; 
     flex-direction: column;
     gap: 15px; 
@@ -628,6 +638,16 @@ a {
     height: 100vh;
     z-index: 9999; /* Поверх контента */
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4);
+}
+.sidebarR {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 330px;
+    height: 100vh;
+    z-index: 9999; /* Поверх контента */
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4);
 }
 
