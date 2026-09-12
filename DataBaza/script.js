@@ -33,7 +33,6 @@ function handleFileSelect(event) {
                 const constName = match[1];
                 let rawData = match[2];
 
-                // Превращаем текст в реальный объект JS
                 // Заменяем одинарные кавычки на двойные для корректного JSON-парсинга
                 let sanitizedData = rawData.replace(/'/g, '"');
                 // Удаляем висящие запятые перед закрывающими скобками, если они есть
@@ -436,7 +435,7 @@ function downloadRealJsFile() {
     link.click();
 }
 
-// НОВАЯ ФУНКЦИЯ: Посредник между кликом в HTML и изменением данных в AppState
+//  Посредник между кликом в HTML и изменением данных в AppState
 function mockDeleteSelectedRow(index) {
     if (!AppState.activeFileId) return;
     
