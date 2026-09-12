@@ -1,4 +1,4 @@
-/// =========================================================================
+// =========================================================================
 // 1. ПРОВЕРКА АВТОРИЗАЦИИ
 // =========================================================================
 if (localStorage.getItem('isAuth') !== 'true') {
@@ -51,9 +51,13 @@ function updatePeriodCalendar() {
     const currentDay = (diffDays % DAYS_IN_WEEK) + 1;
 
     // Выводим данные в ваши HTML-элементы
-    document.getElementById('pereaud').textContent = `P${currentPeriod}`;
-    document.getElementById('wek').textContent = `:W${currentWeek}`;
-    document.getElementById('day').textContent = `:D${currentDay}`;
+    const perEl = document.getElementById('pereaud');
+    const wekEl = document.getElementById('wek');
+    const dayEl = document.getElementById('day');
+
+    if (perEl) perEl.textContent = `P${currentPeriod}`;
+    if (wekEl) wekEl.textContent = `:W${currentWeek}`;
+    if (dayEl) dayEl.textContent = `:D${currentDay}`;
 }
 
 // Запускаем расчет при загрузке страницы
@@ -121,7 +125,6 @@ window.handleNewsSubmit = function(event) {
 
     let isValid = true;
 
-    // Сброс предыдущих ошибок валидации
     if (titleEl) titleEl.style.borderColor = '';
     if (descEl) descEl.style.borderColor = '';
 
@@ -156,80 +159,10 @@ window.handleNewsSubmit = function(event) {
         type: "info" // По умолчанию вешается бирюзовый неоновый стиль
     });
 
-    // Синхронизируем базу данных с localStorage
     localStorage.setItem('qa_news_data_store', JSON.stringify(newsData));
 
-    // Обновляем отображение и закрываем окно
     if (typeof window.renderNews === 'function') window.renderNews();
     window.closeAddModal();
-};
-
-// Функция (отрисовки) карточек на экране
-window.renderNews = function() {
-    const newsContainer = document.getElementById('news-container');
-    if (!newsContainer) return; 
-
-    const now = Date.now();
-
-  // Проверка прав: Администраторы видят все отложенные публикации, пользователи — только текущие
-    const currentPosition = localStorage.getItem('userPosition') || 'User';
-    const hasManagerRights = (currentPosition === "Admin" || currentPosition === "SysAdmin");
-
-    const visibleNews = newsData.filter(news => {
-        if (hasManagerRights) return true; // админы видят отложенные посты заранее
-        return !news.publishAt || news.publishAt <= now;
-    });
-
-    if (visibleNews.length === 0) {
-        newsContainer.innerHTML = '<p style="color: var(--text-secondary); text-align: center; width: 100%;">Нет доступных новостей</p>';
-        return;
-    }
-
-  // Сортируем: свежие новости выводим в самом начале списка
-    visibleNews.sort((a, b) => b.timestamp - a.timestamp);
-
-    newsContainer.innerHTML = visibleNews.map((news) => {
-        const isFuture = news.publishAt > now;
-      // Если новость запланирована на будущее, добавляем фиолетовые CSS-классы
-        const scheduleClass = isFuture ? 'scheduled-card' : '';
-        const badgeHTML = isFuture 
-            ? `<div class="schedule-badge">⏱ Отложено: ${new Date(news.publishAt).toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}</div>`
-            : '';
-
-        return `
-            <div class="card act-card ${news.type || ''} ${scheduleClass}">
-            ${badgeHTML}
-            <div>
-                <div class="card-name">${escapeHTML(news.title)}</div>
-                <div class="card-desc">${escapeHTML(news.desc)}</div>
-            </div>
-            <div class="card-actions-row">
-                ${hasManagerRights ? `<button class="btn-delete-card" onclick="window.deleteNewsCard(${news.timestamp})">Удалить</button>` : ''}
-                <div class="card-btn" onclick="openDetailsModalByTimestamp(${news.timestamp})">Подробнее &rarr;</div>
-            </div>
-        </div>
-        `;
-    }).join('');
-};
-
-// Функция удаления карточки новости по её ID с гарантированным сохранением
-window.deleteNewsCard = function(timestamp) {
-    const currentPosition = localStorage.getItem('userPosition') || 'User';
-    if (currentPosition !== "Admin" && currentPosition !== "SysAdmin") {
-        alert("Критическая ошибка доступа: Ваша должность не позволяет удалять публикации!");
-        return;
-    }
-
-    if (confirm("Вы уверены, что хотите удалить эту публикацию?")) {
-        // Фильтруем массив, исключая удаляемую новость
-        newsData = newsData.filter(news => news.timestamp !== timestamp);
-        
-        // Гарантированная синхронизация с localStorage
-        localStorage.setItem('qa_news_data_store', JSON.stringify(newsData));
-        
-        // Перерисовываем актуальный список на экране
-        window.renderNews();
-    }
 };
 
 // Кастомное модальное окно подробностей
@@ -244,7 +177,6 @@ window.openDetailsModalByTimestamp = function(timestamp) {
         modalText.textContent = news.details || "Подробное описание отсутствует.";
         modal.style.display = 'flex'; // Открываем модалку
     } else {
-        // Фоллбек-защита: если HTML-разметка модалки не найдена, покажется alert
         if (news) alert(`ЗАГОЛОВОК: ${news.title}\n\nПОДРОБНОСТИ: ${news.details}`);
     }
 };
@@ -252,23 +184,45 @@ window.openDetailsModalByTimestamp = function(timestamp) {
 // =========================================================================
 // 4. ТРЕКЕР МЫШИ ПО ВСЕМУ ЭКРАНУ
 // =========================================================================
-// JS: Отслеживаем движение мыши по всей странице
 function initGlobalMouseTracker() {
     window.addEventListener('mousemove', (e) => {
-        // Записываем переменные в root (подходят для эффектов на фоне страницы)
         document.documentElement.style.setProperty('--screen-mouse-x', `${e.clientX}px`);
         document.documentElement.style.setProperty('--screen-mouse-y', `${e.clientY}px`);
         
-        // Для карточек: лучше обновлять координаты относительно самой карточки
         const cards = document.querySelectorAll('.act-card, .card');
         cards.forEach(card => {
             const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left; // Координата X относительно края карточки
-            const y = e.clientY - rect.top;  // Координата Y относительно края карточки
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
             
             card.style.setProperty('--mouse-x', `${x}px`);
             card.style.setProperty('--mouse-y', `${y}px`);
         });
+    });
+}
+
+function initCardMouseTracker() {
+    const observeContainer = (containerId) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        container.addEventListener('mousemove', (e) => {
+            const card = e.target.closest('.card, .act-card');
+            if (!card) return;
+            
+            const rect = card.getBoundingClientRect();
+            const localX = e.clientX - rect.left;
+            const localY = e.clientY - rect.top;
+            
+            card.style.setProperty('--mouse-x', `${localX}px`);
+            card.style.setProperty('--mouse-y', `${localY}px`);
+        });
+    };
+    
+    observeContainer('news-container');
+    const views = document.querySelectorAll('.view');
+    views.forEach(view => { 
+        if (view.id) observeContainer(view.id); 
     });
 }
 
@@ -294,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- ПОДБЛОК 5.2. УПРАВЛЕНИЕ ОКНОМ СОЗДАНИЯ НОВОСТЕЙ (Интерфейс + Валидация) ---
+    // --- ПОДБЛОК 5.2. УПРАВЛЕНИЕ ОКНОМ СОЗДАНИЯ НОВОСТЕЙ ---
     const currentNewsForm = document.getElementById('news-form');
     if (currentNewsForm) {
         currentNewsForm.addEventListener('submit', (e) => {
@@ -358,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ПОДБЛОК 5.3. ЗАКРЫТИЕ МОДАЛЬНОГО ОКНА ПОДРОБНОСТЕЙ НОВОСТИ ---
+    // --- ПОДБЛОК 5.3. ЗАКРЫТИЕ МОДАЛЬНОГО ОКНА ПОДРОБНОСТЕЙ ---
     const detailsModal = document.getElementById('details-news-modal');
     const closeX = document.getElementById('details-close-btn');
     const closeBtn = document.getElementById('details-ok-btn');
@@ -448,14 +402,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ПОДБЛОК 5.5. КРАСИВОЕ ЗАПОЛНЕНИЕ КАРТОЧКИ С ИМЕНЕМ, КОМПАНИЕЙ, СМЕНОЙ И УЧАСТКОМ ---
+    // --- ПОДБЛОК 5.5. ЗАПОЛНЕНИЕ КАРТОЧКИ ПОЛЬЗОВАТЕЛЯ ---
     const mainPageUserField = document.getElementById('mainPageUserField');
     if (mainPageUserField) {
         const firstName = localStorage.getItem('userFirstName') || '';
         const lastName = localStorage.getItem('userLastName') || '';
         const company = localStorage.getItem('userCompany') || '';
         const shift = localStorage.getItem('userShift') || '';
-        const plot = (localStorage.getItem('userPlot') || '').trim(); // Удаляет лишние пробелы из базы сотрудников
+        const plot = (localStorage.getItem('userPlot') || '').trim();
 
         const shortLastName = lastName ? ` ${lastName.charAt(0)}.` : '';
         const displayName = `${firstName}${shortLastName}` || 'Пользователь';
@@ -480,242 +434,78 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-// --- ПОДБЛОК 5.6. ВСПЛЫВАЮЩЕЕ БОКОВОЕ И ВЕРХНЕЕ МЕНЮ (Интерфейс анимации) ---
-const toggleMenuBtn = document.getElementById('btn-toggle-topmenu');
-const sidebar = document.querySelector('.sidebar');
-const topBar = document.querySelector('.top-bar');
-
-if (sidebar && topBar) {
-    if (toggleMenuBtn) {
-        toggleMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();sidebar.classList.toggle('forced-active');
-        });
-    }
+    // --- ПОДБЛОК 5.6. ВСПЛЫВАЮЩЕЕ БОКОВОЕ И ВЕРХНЕЕ МЕНЮ ---
+    const toggleMenuBtn = document.getElementById('btn-toggle-topmenu');
+    const sidebar = document.querySelector('.sidebar');
+    const topBar = document.querySelector('.top-bar');
+    const sidebarR = document.querySelector('.sidebarR');
     
-    document.addEventListener('mousemove', (e) => {
-        if (e.clientY <= 20) {
-            topBar.classList.add('mouse-top-active');
-        } else if (e.clientY > 110 && !topBar.contains(e.target)) {
-            topBar.classList.remove('mouse-top-active');
+    if (sidebar && topBar && sidebarR) {
+        if (toggleMenuBtn) {
+            toggleMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('forced-active');
+            });
         }
         
-        if (e.clientX <= 20) {
-            sidebar.classList.add('mouse-left-active');
-        } else if (e.clientX > 290 && !sidebar.contains(e.target)) {
-            sidebar.classList.remove('mouse-left-active');
-        }
-    });
-    
-    document.addEventListener('click', (e) => {
-        if (!sidebar.contains(e.target) && e.target !== toggleMenuBtn) {
-            sidebar.classList.remove('forced-active');
-            sidebar.classList.remove('mouse-left-active');
-        }
-        if (!topBar.contains(e.target)) {
-            topBar.classList.remove('forced-active');
-            topBar.classList.remove('mouse-top-active');
-        }
-    });
-}
-
-// --- ПОДБЛОК 5.7. ОБРАБОТЧИК КНОПКИ БЕЗОПАСНОГО ВЫХОДА (Logout) ---
-const logoutButton = document.getElementById('logoutBtn');
-if (logoutButton) {
-    logoutButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Выборочно чистим сессию авторизации, не ломая локальную базу черновиков фабрики
-        const keysToRemove = ['isAuth', 'userFirstName', 'userLastName', 'userPosition', 'userPlot', 'userShift', 'userCompany', 'userEmpType', 'userId'];
-        keysToRemove.forEach(key => localStorage.removeItem(key));
-        window.location.href = '/auth/index.html';
-    });
-}
-
-// --- ПОДБЛОК 5.8. СТАРТОВАЯ ИНИЦИАЛИЗАЦИЯ СЛУЖБ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ---
-if (typeof window.renderNews === 'function') window.renderNews();
-initGlobalMouseTracker();
-
-// --- ПОДБЛОК 5.9. ЛОКАЛЬНЫЙ НЕОНОВЫЙ ТРЕКИНГ КУРСОРA НА КАРТОЧКАХ ---
-function initCardMouseTracker() {
-    const observeContainer = (containerId) => {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        
-        container.addEventListener('mousemove', (e) => {
-            const card = e.target.closest('.card, .act-card');
-            if (!card) return;
-            
-            const rect = card.getBoundingClientRect();
-            const localX = e.clientX - rect.left;
-            const localY = e.clientY - rect.top;
-            
-            card.style.setProperty('--mouse-x', `${localX}px`);
-            card.style.setProperty('--mouse-y', `${localY}px`);
-        });
-    };
-    
-    observeContainer('news-container');
-    const views = document.querySelectorAll('.view');
-    views.forEach(view => { if (view.id) observeContainer(view.id); 
-    });
-}
-
-initCardMouseTracker();
-
-const tabButtons = document.querySelectorAll('.menu-item');
-tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        setTimeout(initCardMouseTracker, 50);
-    });
-});
-});
-
-// =========================================================================
-// 6. СИСТЕМА РАЗГРАНИЧЕНИЯ ПРАВ ДОСТУПА ПО ДОЛЖНОСТЯМ (RBAC)
-// =========================================================================
-(function() {
-    // 1. Конфигурация прав доступа
-    const ROLES = {
-        ADMIN: "Admin",
-        SYSADMIN: "SysAdmin",
-        LAB: "Лаборатория",
-        USER: "User"
-    };
-
-    // Вспомогательная функция для проверки прав администратора (создание/удаление)
-    function isAuthorizedManager() {
-        const currentPosition = localStorage.getItem('userPosition') || ROLES.USER;
-        return currentPosition === ROLES.ADMIN || currentPosition === ROLES.SYSADMIN;
-    }
-
-    // 2. Модификация функции рендеринга новостей (Декоратор/Перехватчик)
-    window.renderNews = function() {
-        const newsContainer = document.getElementById('news-container');
-        if (!newsContainer) return; 
-        
-        const now = Date.now();
-        const visibleNews = newsData.filter(news => !news.publishAt || news.publishAt <= now);
-        
-        if (visibleNews.length === 0) {
-            newsContainer.innerHTML = '<p style="color: var(--text-secondary); text-align: center; width: 100%;">Нет доступных новостей</p>';
-            return;
-        }
-
-        // Кнопку "Удалить" увидят только Админ и СиСАдмин. Лаборатория и Пользователь её не увидят.
-        const hasManagerRights = isAuthorizedManager();
-
-        newsContainer.innerHTML = visibleNews.map((news) => `
-          <div class="card act-card ${news.type || ''}">
-            <div>
-              <div class="card-name">${news.title}</div>
-              <div class="card-desc">${news.desc}</div>
-            </div>
-            <div class="card-actions-row">
-              ${hasManagerRights ? `<button class="btn-delete-card" onclick="window.deleteNewsCard(${news.timestamp})">Удалить</button>` : ''}
-              <div class="card-btn" onclick="openDetailsModalByTimestamp(${news.timestamp})">Подробнее &rarr;</div>
-            </div>
-          </div>
-        `).join('');
-    };
-
-    // 3. Защита функции удаления новостей на уровне вызова
-    window.deleteNewsCard = function(timestamp) {
-        if (!isAuthorizedManager()) {
-            alert("Критическая ошибка доступа: Ваша должность не позволяет удалять публикации!");
-            return;
-        }
-        
-        if (confirm("Вы уверены, что хотите удалить эту публикацию?")) {
-            newsData = newsData.filter(news => news.timestamp !== timestamp);
-            localStorage.setItem('qa_news_data_store', JSON.stringify(newsData));
-            window.renderNews();
-        }
-    };
-
-    // 4. Управление элементами интерфейса (Скрытие вкладок и кнопок создания)
-    function enforceInterfaceRestrictions() {
-        const currentPosition = localStorage.getItem('userPosition') || ROLES.USER;
-        const hasManagerRights = isAuthorizedManager();
-
-        // Поиск кнопки создания новостей
-        const addNewsBtn = document.getElementById('add-news-btn') || 
-                           document.querySelector('button[onclick*="openAddModal"]') || 
-                           document.querySelector('.btn-content');
-        
-        // Кнопка создания новостей доступна ТОЛЬКО Админу и СиСАдмину
-        if (addNewsBtn) {
-            if (!hasManagerRights) {
-                addNewsBtn.style.setProperty('display', 'none', 'important');
-            } else {
-                addNewsBtn.style.display = 'flex';
+        document.addEventListener('mousemove', (e) => {
+            if (e.clientY <= 20) {
+                topBar.classList.add('mouse-top-active');
+            } else if (e.clientY > 110 && !topBar.contains(e.target)) {
+                topBar.classList.remove('mouse-top-active');
             }
-        }
-
-        // Фильтрация вкладок бокового меню
-        const menuItems = document.querySelectorAll('.menu-item');
-        
-        menuItems.forEach(item => {
-            const viewTarget = item.getAttribute('data-view') || '';
-            const itemText = item.textContent.trim().toLowerCase();
-
-            if (currentPosition === ROLES.LAB) {
-                // Логика для Лаборатории: разрешены ТОЛЬКО новости, архив и библиотека
-                // Проверяем как по data-view атрибуту, так и по тексту (для надежности)
-                const isAllowedTab = 
-                    viewTarget === 'news' || itemText.includes('новост') || 
-                    viewTarget === 'archive' || itemText.includes('архив') || 
-                    viewTarget === 'library' || itemText.includes('библиот');
-
-                if (!isAllowedTab) {
-                    item.style.setProperty('display', 'none', 'important');
-                } else {
-                    item.style.setProperty('display', 'block', 'important');
-                }
-            } else if (currentPosition === ROLES.USER) {
-                // Логика для обычного Пользователя: скрываем только Базу данных
-                const isDbTab = viewTarget === 'db' || itemText.includes('база данных');
-                if (isDbTab) {
-                    item.style.setProperty('display', 'none', 'important');
-                } else {
-                    item.style.setProperty('display', 'block', 'important');
-                }
-            } else {
-                // Для Админа и СиСАдмина показываем абсолютно все вкладки меню
-                item.style.setProperty('display', 'block', 'important');
+            
+            if (e.clientX <= 20) {
+                sidebar.classList.add('mouse-left-active');
+            } else if (e.clientX > 290 && !sidebar.contains(e.target)) {
+                sidebar.classList.remove('mouse-left-active');
+            }
+            
+            if (e.clientX <= 20) {
+                sidebarR.classList.add('mouse-left-active');
+            } else if (e.clientX > 290 && !sidebar.contains(e.target)) {
+                sidebarR.classList.remove('mouse-right-active');
             }
         });
-
-        // Защита от прямого ручного перехода к запрещенным экранам (через консоль)
-        const dbView = document.getElementById('db');
-        if (!hasManagerRights && dbView) {
-            dbView.innerHTML = `
-                <div style="padding: 40px; text-align: center; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; border-radius: 12px; margin-top: 50px;">
-                    <h2 style="color: #ef4444; margin-bottom: 10px; background: none; -webkit-text-fill-color: #ef4444;">Доступ ограничен</h2>
-                    <p style="color: var(--text-secondary);">У вашей роли нет прав для работы с базой данных.</p>
-                </div>
-            `;
-        }
-    }
-
-    // 5. Автоматический запуск при инициализации страницы и переключении вкладок
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            enforceInterfaceRestrictions();
-            window.renderNews();
+        
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && e.target !== toggleMenuBtn) {
+                sidebar.classList.remove('forced-active');
+                sidebar.classList.remove('mouse-left-active');
+            }
+            if (!topBar.contains(e.target)) {
+                topBar.classList.remove('forced-active');
+                topBar.classList.remove('mouse-top-active');
+            }
+            if (!sidebarR.contains(e.target)) {
+                sidebarR.classList.remove('forced-active');
+                sidebarR.classList.remove('mouse-right-active');
+            }
+        });}
+        
+    // --- ПОДБЛОК 5.7. ОБРАБОТЧИК КНОПКИ ВЫХОДА ---
+    const logoutButton = document.getElementById('logoutBtn');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const keysToRemove = ['isAuth', 'userFirstName', 'userLastName', 'userPosition', 'userPlot', 'userShift', 'userCompany', 'userEmpType', 'userId'];
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            window.location.href = '/auth/index.html';
         });
-    } else {
-        enforceInterfaceRestrictions();
-        window.renderNews();
     }
-
-    // Повторная проверка при кликах для пресечения попыток обойти разметку
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('menu-item')) {
-            setTimeout(enforceInterfaceRestrictions, 30);
-        }
+    
+    // --- ПОДБЛОК 5.8. СТАРТОВАЯ ИНИЦИАЛИЗАЦИЯ СЛУЖБ ---
+    if (typeof window.renderNews === 'function') window.renderNews();
+    initGlobalMouseTracker();
+    initCardMouseTracker();
+    
+    const tabButtons = document.querySelectorAll('.menu-item');
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            setTimeout(initCardMouseTracker, 50);
+        });
     });
-
-})();
+});
 
 // =========================================================================
 // 6. СИСТЕМА РАЗГРАНИЧЕНИЯ ПРАВ ДОСТУПА ПО ДОЛЖНОСТЯМ (RBAC)
@@ -733,7 +523,7 @@ tabButtons.forEach(btn => {
         return currentPosition === ROLES.ADMIN || currentPosition === ROLES.SYSADMIN;
     }
 
-    // Декоратор/Перехватчик рендеринга новостей (управляет видимостью кнопки Удалить)
+    // Рендеринг новостей (контроль кнопки удаления)
     window.renderNews = function() {
         const newsContainer = document.getElementById('news-container');
         if (!newsContainer) return; 
@@ -749,20 +539,20 @@ tabButtons.forEach(btn => {
         const hasManagerRights = isAuthorizedManager();
 
         newsContainer.innerHTML = visibleNews.map((news) => `
-          <div class="card act-card ${news.type || ''}">
-            <div>
-              <div class="card-name">${news.title}</div>
-              <div class="card-desc">${news.desc}</div>
+            <div class="card act-card ${news.type || ''}">
+                <div>
+                    <div class="card-name">${escapeHTML(news.title)}</div>
+                    <div class="card-desc">${escapeHTML(news.desc)}</div>
+                </div>
+                <div class="card-actions-row">
+                    ${hasManagerRights ? `<button class="btn-delete-card" onclick="window.deleteNewsCard(${news.timestamp})">Удалить</button>` : ''}
+                    <div class="card-btn" onclick="openDetailsModalByTimestamp(${news.timestamp})">Подробнее &rarr;</div>
+                </div>
             </div>
-            <div class="card-actions-row">
-              ${hasManagerRights ? `<button class="btn-delete-card" onclick="window.deleteNewsCard(${news.timestamp})">Удалить</button>` : ''}
-              <div class="card-btn" onclick="openDetailsModalByTimestamp(${news.timestamp})">Подробнее &rarr;</div>
-            </div>
-          </div>
         `).join('');
     };
 
-    // Защита обработчика удаления
+    // Защита удаления новостей
     window.deleteNewsCard = function(timestamp) {
         if (!isAuthorizedManager()) {
             alert("Критическая ошибка доступа: Ваша должность не позволяет удалять публикации!");
@@ -775,23 +565,35 @@ tabButtons.forEach(btn => {
         }
     };
 
-    // Главная функция контроля видимости элементов интерфейса смены
+    // Контроль видимости интерфейса
     function enforceInterfaceRestrictions() {
         const currentPosition = localStorage.getItem('userPosition') || ROLES.USER;
         const hasManagerRights = isAuthorizedManager();
 
+        // 1. Защита правой панели менеджера
+        const managerSidebar = document.getElementById('manager-sidebar');
+        if (managerSidebar) {
+            if (!hasManagerRights) {
+                managerSidebar.style.setProperty('display', 'none', 'important');
+            } else {
+                managerSidebar.style.setProperty('display', 'flex', 'important');
+            }
+        }
+
+        // 2. Защита кнопки добавления новостей
         const addNewsBtn = document.getElementById('add-news-btn') || 
-                           document.querySelector('button[onclick*="openAddModal"]') || 
-                           document.querySelector('.btn-content');
+                            document.querySelector('button[onclick*="openAddModal"]') || 
+                            document.querySelector('.btn-content');
         
         if (addNewsBtn) {
             if (!hasManagerRights) {
                 addNewsBtn.style.setProperty('display', 'none', 'important');
             } else {
-                addNewsBtn.style.display = 'flex';
+                addNewsBtn.style.setProperty('display', 'flex', 'important');
             }
         }
 
+        // 3. Фильтрация пунктов основного меню
         const menuItems = document.querySelectorAll('.menu-item');
         menuItems.forEach(item => {
             const viewTarget = item.getAttribute('data-view') || '';
@@ -820,6 +622,7 @@ tabButtons.forEach(btn => {
             }
         });
 
+        // 4. Заглушка экрана базы данных
         const dbView = document.getElementById('db');
         if (!hasManagerRights && dbView) {
             dbView.innerHTML = `
@@ -849,13 +652,12 @@ tabButtons.forEach(btn => {
     });
 })();
 
-// ===========================
+// =========================================================================
 // 7. WHATCHAT
-// ===========================
-let currentRoom = 'group'; // Активная комната по умолчанию ('group' или 'private')
-let privateReplyCount = 0; // Счетчик личных ответов Васильева для симуляции диалога
+// =========================================================================
+let currentRoom = 'group'; 
+let privateReplyCount = 0; 
 
-// Элементы DOM
 const chatBtn = document.getElementById('demo-chat-btn');
 const chatWindow = document.getElementById('demo-chat-window');
 const closeBtn = document.getElementById('demo-chat-close');
@@ -864,7 +666,6 @@ const chatInput = document.getElementById('demo-chat-input');
 const groupBtn = document.getElementById('tab-group-btn');
 const privateBtn = document.getElementById('tab-private-btn');
 
-// --- 1. СИНТЕЗ ЗВУКА КОЛОКОЛЬЧИКА «ДЗИНЬ» ---
 function playNotificationSound() {
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -890,20 +691,23 @@ function playNotificationSound() {
     } catch (e) { console.error("Звук не поддерживается", e); }
 }
 
-// --- 2. МЕХАНИКА ИНТЕРФЕЙСА (ОТКРЫТИЕ И ТАБЫ) ---
 function toggleDemoChat() {
     const currentBox = document.getElementById(`room-${currentRoom}`);
-    if (chatWindow.style.display === 'none' || !chatWindow.style.display) {
+    if (chatWindow && (chatWindow.style.display === 'none' || !chatWindow.style.display)) {
         chatWindow.style.display = 'flex';
-        chatBtn.innerText = '×';
-        chatBtn.style.background = '#ef4444';
-        chatBtn.style.boxShadow = '0 4px 15px rgba(239, 68, 68, 0.4)';
-        setTimeout(() => { currentBox.scrollTop = currentBox.scrollHeight; }, 50);
-    } else {
+        if (chatBtn) {
+            chatBtn.innerText = '×';
+            chatBtn.style.background = '#ef4444';
+            chatBtn.style.boxShadow = '0 4px 15px rgba(239, 68, 68, 0.4)';
+        }
+        if (currentBox) setTimeout(() => { currentBox.scrollTop = currentBox.scrollHeight; }, 50);
+    } else if (chatWindow) {
         chatWindow.style.display = 'none';
-        chatBtn.innerText = '💬';
-        chatBtn.style.background = '#2563eb';
-        chatBtn.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.4)';
+        if (chatBtn) {
+            chatBtn.innerText = '💬';
+            chatBtn.style.background = '#2563eb';
+            chatBtn.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.4)';
+        }
     }
 }
 
@@ -912,12 +716,12 @@ function switchChatRoom(room) {
     const groupRoom = document.getElementById('room-group');
     const privateRoom = document.getElementById('room-private');
 
-    if (room === 'group') {
+    if (room === 'group' && groupRoom && privateRoom && groupBtn && privateBtn) {
         groupRoom.style.display = 'flex'; privateRoom.style.display = 'none';
         groupBtn.style.cssText = 'flex: 1; padding: 8px; border: none; background: #ffffff; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #1e293b; box-shadow: 0 1px 2px rgba(0,0,0,0.05);';
         privateBtn.style.cssText = 'flex: 1; padding: 8px; border: none; background: transparent; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #64748b;';
         groupRoom.scrollTop = groupRoom.scrollHeight;
-    } else {
+    } else if (groupRoom && privateRoom && groupBtn && privateBtn) {
         groupRoom.style.display = 'none'; privateRoom.style.display = 'flex';
         privateBtn.style.cssText = 'flex: 1; padding: 8px; border: none; background: #ffffff; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #1e293b; box-shadow: 0 1px 2px rgba(0,0,0,0.05);';
         groupBtn.style.cssText = 'flex: 1; padding: 8px; border: none; background: transparent; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #64748b;';
@@ -925,8 +729,8 @@ function switchChatRoom(room) {
     }
 }
 
-// --- 3. ОТПРАВКА И СИМУЛЯЦИЯ СУПЕР-ОТВЕТОВ ---
 function sendDemoMessage() {
+    if (!chatInput) return;
     const text = chatInput.value.trim();
     if (!text) return;
 
@@ -937,17 +741,13 @@ function sendDemoMessage() {
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
-    // Отображаем сообщение пользователя на экране
     appendMessage(currentRoom, currentUserName + ' (Вы)', text, timeStr, true);
     chatInput.value = '';
 
-    // СЦЕНАРИЙ ДЛЯ ЛИЧНОГО ЧАТА (ВАСИЛЬЕВ К.)
     if (currentRoom === 'private') {
         privateReplyCount++;
-        
         setTimeout(() => {
-            playNotificationSound(); // Колокольчик "Дзинь!"
-            
+            playNotificationSound(); 
             let responseText = "";
             if (privateReplyCount === 1) {
                 responseText = "Отлично, вижу! Спасибо за оперативность. Сейчас запущу термостат для инкубации смывов.";
@@ -956,12 +756,10 @@ function sendDemoMessage() {
             } else {
                 responseText = "Да, я на связи. Если возникнут вопросы по батчам, пиши сюда прямо в личку.";
             }
-            
             appendMessage('private', 'Васильев К. (Микробиолог)', responseText, timeStr, false);
-        }, 2200); // Ответ через 2.2 секунды
+        }, 2200); 
     }
 
-    // СЦЕНАРИЙ ДЛЯ ОБЩЕГО ЧАТА (РОБОТ)
     if (currentRoom === 'group') {
         setTimeout(() => {
             playNotificationSound(); 
@@ -972,6 +770,7 @@ function sendDemoMessage() {
 
 function appendMessage(room, sender, text, time, isUser, isSystemLog = false) {
     const targetBox = document.getElementById(`room-${room}`);
+    if (!targetBox) return;
     const msgDiv = document.createElement('div');
     
     if (isSystemLog) {
@@ -984,7 +783,7 @@ function appendMessage(room, sender, text, time, isUser, isSystemLog = false) {
         
         msgDiv.innerHTML = `
             <div style="font-weight: 700; color: ${isUser ? '#2563eb':'#059669'}; font-size: 11px; margin-bottom: 3px;">${sender} <span style="font-weight: 400; color: #94a3b8; margin-left: 6px;">${time}</span></div>
-            <div style="color: #334155; line-height: 1.4; word-break: break-word;">${text}</div>
+            <div style="color: #334155; line-height: 1.4; word-break: break-word;">${escapeHTML(text)}</div>
         `;
     }
 
@@ -992,7 +791,6 @@ function appendMessage(room, sender, text, time, isUser, isSystemLog = false) {
     targetBox.scrollTop = targetBox.scrollHeight;
 }
 
-// --- 4. ПРОСЛУШИВАНИЕ СИСТЕМНЫХ АКТОВ ИЗ БЛАНКОВ ФОРМЫ ---
 window.addEventListener('storage', (e) => {
     if (e.key === 'sys_act_created_trigger' && e.newValue) {
         const logData = JSON.parse(e.newValue);
@@ -1001,15 +799,13 @@ window.addEventListener('storage', (e) => {
     }
 });
 
-// Слушатели событий
-chatBtn.addEventListener('click', toggleDemoChat);
-closeBtn.addEventListener('click', toggleDemoChat);
-sendBtn.addEventListener('click', sendDemoMessage);
-groupBtn.addEventListener('click', () => switchChatRoom('group'));
-privateBtn.addEventListener('click', () => switchChatRoom('private'));
-chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendDemoMessage(); });
+if (chatBtn) chatBtn.addEventListener('click', toggleDemoChat);
+if (closeBtn) closeBtn.addEventListener('click', toggleDemoChat);
+if (sendBtn) sendBtn.addEventListener('click', sendDemoMessage);
+if (groupBtn) groupBtn.addEventListener('click', () => switchChatRoom('group'));
+if (privateBtn) privateBtn.addEventListener('click', () => switchChatRoom('private'));
+if (chatInput) chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendDemoMessage(); });
 
 const chatStyle = document.createElement('style');
 chatStyle.innerHTML = `@keyframes chatFadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }`;
 document.head.appendChild(chatStyle);
-
