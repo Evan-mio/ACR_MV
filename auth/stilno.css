@@ -272,7 +272,7 @@ input[readonly] {
 /* Красный неоновый блок ошибки */
 .error { 
     color: #ff3838; 
-    font-size: 1ren; 
+    font-size: 1rem; 
     margin-top: 12px; 
     text-align: center; 
     display: none; 
