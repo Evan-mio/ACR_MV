@@ -92,10 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (foundData) {
                 const targetData = foundData.meta ? foundData.meta : foundData;
+                const reasonInput = getReasonSelectElement(); 
                 
                 // Заполняем Шапку (исключая инпуты внутри таблиц)
                 mainForm.querySelectorAll('input, select, textarea').forEach((field, index) => {
                     if (field.closest('.act-table') || field.closest('table')) return;
+                    if (reasonInput && field === reasonInput) return; 
 
                     const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
                     const savedValue = targetData[name];
@@ -178,10 +180,16 @@ window.addNewSheet = function() {
 
     sheetsData[id] = {
         name: `Лист ${id}`,
+        reason: '--Укажите причину отбора--',
         rows: []
     };
     renderTabElement(id);
 };
+
+// Вспомогательная функция для поиска поля "Причина отбора"
+function getReasonSelectElement() {
+    return document.getElementById('text-coment'); 
+}
 
 function renderTabElement(id) {
     if (!tabList) return;
@@ -239,6 +247,11 @@ function editSheetName() {
 function saveCurrentSheetData() {
     if (!activeTabId || !sheetsData[activeTabId]) return;
 
+    const reasonInput = getReasonSelectElement();
+    if (reasonInput) {
+        sheetsData[activeTabId].reason = reasonInput.value;
+    }
+
     const tableRows = document.querySelectorAll('.act-table tbody tr, table tbody tr');
     const rowsData = [];
 
@@ -257,6 +270,11 @@ function saveCurrentSheetData() {
 
 function loadSheetData(id) {
     if (!sheetsData[id]) return;
+
+    const reasonInput = getReasonSelectElement();
+    if (reasonInput) {
+        reasonInput.value = sheetsData[id].reason || '--Укажите причину отбора--';
+    }
 
     const tableRows = document.querySelectorAll('.act-table tbody tr, table tbody tr');
     const savedRows = sheetsData[id].rows;
@@ -287,8 +305,12 @@ function collectFormData() {
     saveCurrentSheetData(); 
     
     const data = {};
+    const reasonInput = getReasonSelectElement();
+
     mainForm.querySelectorAll('input, select, textarea').forEach((field, index) => {
-        if (field.closest('.act-table') || field.closest('table')) return; 
+        if (field.closest('.act-table') || field.closest('table')) return;
+        if (reasonInput && field === reasonInput) return;
+        
         const name = field.getAttribute('name') || field.getAttribute('id') || `field_auto_${index}`;
         data[name] = field.type === 'checkbox' ? field.checked : field.value;
     });
