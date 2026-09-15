@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName = localStorage.getItem('userLastName') || '';
         const company = localStorage.getItem('userCompany') || '';
         const shift = localStorage.getItem('userShift') || '';
-        const plot = (localStorage.getItem('userPlot') || '').trim();
+        const branch = (localStorage.getItem('userBranch') || '').trim();
 
         const shortLastName = lastName ? ` ${lastName.charAt(0)}.` : '';
         const displayName = `${firstName}${shortLastName}` || 'Пользователь';
@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </span>
                 </div>
                 <div style="color: #bdc3c7; font-size: 0.85rem; font-style: italic;">
-                    ${plot || 'Участок не назначен'}
+                    ${branch || 'Участок не назначен'}
                 </div>
             </div>
         `;
