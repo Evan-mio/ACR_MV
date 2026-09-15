@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('userFirstName', user.firstName);
                     localStorage.setItem('userLastName', user.lastName);
                     localStorage.setItem('userPosition', user.position);
-                    localStorage.setItem('userPlot', user.plot);
+                    localStorage.setItem('userBranch', user.branch);
                     localStorage.setItem('userShift', user.shift);
                     localStorage.setItem('userCompany', user.company); // Синхронизировано под главную страницу!
                     
