@@ -673,7 +673,7 @@ a {
 .sidebar {
     position: fixed !important;
     top: 0;
-    left: 0; /* Спрятано */
+    left: -320px; /* Спрятано */
     width: 330px;
     height: 100vh;
     z-index: 9999; /* Поверх контента */
@@ -683,7 +683,7 @@ a {
 .sidebarR {
     position: fixed;
     top: 0;
-    right: 0;
+    right: -320px;
     width: 330px;
     height: 100vh;
     z-index: 9999; /* Поверх контента */
