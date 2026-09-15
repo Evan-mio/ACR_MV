@@ -535,6 +535,46 @@ a {
     background: rgba(233, 0, 254, 0.03); 
 }
 
+#archive .act-card {
+    border-left: 4px solid #e000fe; 
+    padding-bottom: 40px; 
+}
+
+#archive .act-card h2 { 
+    background: #fff; 
+    -webkit-background-clip: unset; 
+    background-clip: unset; 
+    -webkit-text-fill-color: initial; 
+    color: #fff; 
+    font-size: 1.5rem; 
+}
+
+#archive .act-card:hover { 
+    border-color: #f80de5; 
+    box-shadow: 0 0 30px rgba(254, 0, 254, 0.445); 
+    background: rgba(233, 0, 254, 0.03); 
+}
+
+#liberti .act-card {
+    border-left: 4px solid #0011fe; 
+    padding-bottom: 40px; 
+}
+
+#liberti .act-card h2 { 
+    background: #fff; 
+    -webkit-background-clip: unset; 
+    background-clip: unset; 
+    -webkit-text-fill-color: initial; 
+    color: #fff; 
+    font-size: 1.5rem; 
+}
+
+#liberti .act-card:hover { 
+    border-color: #0011fe; 
+    box-shadow: 0 0 30px rgba(47, 0, 254, 0.445); 
+    background: rgba(233, 0, 254, 0.03); 
+}
+
 #news-container .card, 
 #news-container .act-card { 
     border-left: 4px solid #00f2fe; 
@@ -633,7 +673,7 @@ a {
 .sidebar {
     position: fixed !important;
     top: 0;
-    left: -320px; /* Спрятано */
+    left: 0; /* Спрятано */
     width: 330px;
     height: 100vh;
     z-index: 9999; /* Поверх контента */
@@ -643,7 +683,7 @@ a {
 .sidebarR {
     position: fixed;
     top: 0;
-    right: -320px;
+    right: 0;
     width: 330px;
     height: 100vh;
     z-index: 9999; /* Поверх контента */
