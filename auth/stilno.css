@@ -1,281 +1,334 @@
-/* ==========================================================================
-   1. БАЗОВЫЕ НАСТРОЙКИ И ФОН СИСТЕМЫ
-   ========================================================================== */
-:root {
-    --neon-blue: #00f2fe;
-    --neon-purple: #7928ca;
-    --neon-cyan: rgba(20, 240, 240, 0.9);
+// =========================================================================
+// БЛОК 1: КОНСТАНТЫ СЕССИИ И НАМЕРТВО ФИКСИРОВАННОЕ ХРАНИЛИЩЕ ПАРОЛЕЙ
+// =========================================================================
+
+// Защитный редирект Vercel: если сессия уже активна — отправляем в меню автоматически
+if (localStorage.getItem('isAuth') === 'true') {
+    window.location.href = '../menu/'; 
 }
 
-body {
-    background-color: #040b14;
-    background-image: url('fonz.jpg');
-    background-position: center center; 
-    background-repeat: no-repeat; 
-    background-attachment: fixed; 
-    min-height: 100vh; 
-    margin: 0; 
-    display: flex;
-    justify-content: center; 
-    align-items: center;     
-    padding: 20px; 
-    box-sizing: border-box;
+const USERS_STORAGE_KEY = 'qa_platform_modified_users';
+let activeUserBase = [];
+
+// Инициализация базы данных: проверяем, менял ли кто-то пароли ранее на этом устройстве
+if (typeof mockUserBase !== 'undefined') {
+    const savedModifiedUsers = localStorage.getItem(USERS_STORAGE_KEY);
+    if (savedModifiedUsers) {
+        // Если в браузере есть сохраненный массив с новыми паролями — берем его
+        activeUserBase = JSON.parse(savedModifiedUsers);
+    } else {
+        // Если запуск первый раз — берем исходный массив сотрудников
+        activeUserBase = mockUserBase;
+    }
+} else {
+    console.error("Критическая ошибка: Файл базы данных mockUserBase (users.js) не подключен!");
 }
 
-/* ==========================================================================
-   2. 3D-КОНТЕЙНЕР И ЛОГИКА ПЕРЕВОРОТА (FLIP)
-   ========================================================================== */
-.card-container {
-    perspective: 1000px;
-    width: 100%;
-    max-width: 360px;
-    margin: 0 auto;
-}
-
-.card-flipper {
-    position: relative;
-    width: 100%;
-    height: 540px;
-    transform-style: preserve-3d; 
-    -webkit-transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
-}
-
-/* Класс активации поворота карточки через JS */
-.card-flipper.flipped {
-    transform: rotateY(180deg);
-}
-
-/* ==========================================================================
-   3. СТИЛИЗАЦИЯ КАРТОЧЕК (МАТОВОЕ СТЕКЛО И ЗАЩИТА ОТ ПРОСВЕЧИВАНИЯ)
-   ========================================================================== */
-.login-card { 
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+// =========================================================================
+// БЛОК 2: ИНИЦИАЛИЗАЦИЯ ИНТЕРФЕЙСА И УПРАВЛЕНИЕ 3D FLIP КАРТОЧКОЙ
+// =========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const flipper = document.getElementById('flipper') || document.querySelector('.card-flipper');
+    const toResetBtn = document.getElementById('to-reset');
+    const toLoginBtn = document.getElementById('to-login');
     
-    /* Скрытие изнанки карточки при перевороте для всех браузеров */
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden; 
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    // Элементы формы Входа (Лицевая сторона)
+    const userIdInput = document.getElementById('userId');
+    const passwordInput = document.getElementById('password');
+    const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Элементы формы Смены пароля (Изнаночная сторона)
+    const resetUserIdInput = document.getElementById('user-id') || document.getElementById('resetUserId') || document.querySelector('input[readonly]');
+    const currentPasswordInput = document.getElementById('current-password');
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const resetForm = document.getElementById('resetForm') || document.querySelector('.card-back form');
+    const resetErrorMessage = document.getElementById('resetErrorMessage') || document.getElementById('errorMessageBack');
+
+    // Анимация перехода на смену пароля (Поворот на 180 градусов по оси Y)
+    if (toResetBtn && flipper) {
+        toResetBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            flipper.classList.add('flipped');
+            
+            // Дублируем введенный ID на скрытую сторону в заблокированный инпут
+            if (userIdInput && userIdInput.value.trim() !== "") {
+                if (resetUserIdInput) resetUserIdInput.value = userIdInput.value.trim();
+            } else {
+                if (resetUserIdInput) resetUserIdInput.value = "НЕ УКАЗАН";
+            }
+        });
+    }
+
+    // Возврат к стандартному окну входа (Лицо карточки)
+    if (toLoginBtn && flipper) {
+        toLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            flipper.classList.remove('flipped');
+            if (resetErrorMessage) resetErrorMessage.style.display = 'none';
+        });
+    }
+
+        // =========================================================================
+    // БЛОК 3: ЛОГИКА АВТОРИЗАЦИИ ПОЛЬЗОВАТЕЛЕЙ (ВХОД В СИСТЕМУ)
+    // =========================================================================
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!userIdInput || !passwordInput) return;
+            const idInput = userIdInput.value.trim();
+            const enteredPassword = passwordInput.value;
+            
+            if (activeUserBase.length > 0) {
+                // Ищем сотрудника в живой базе данных (учитывая измененные пароли)
+                const user = activeUserBase.find(u => String(u.id) === idInput);
+                
+                if (user && user.password === enteredPassword) {
+                    // Записываем сессию и параметры сотрудника фабрики в localStorage
+                    localStorage.setItem('isAuth', 'true');
+                    localStorage.setItem('userId', idInput);
+                    localStorage.setItem('userFirstName', user.firstName);
+                    localStorage.setItem('userLastName', user.lastName);
+                    localStorage.setItem('userPosition', user.position); // Admin / SysAdmin / User
+                    localStorage.setItem('userBranch', user.branch);
+                    localStorage.setItem('userShift', user.shift);
+                    localStorage.setItem('userCompany', user.company);
+                    
+                    if (errorMessage) errorMessage.style.display = 'none';
+                    
+                    // Безопасный относительный путь роутинга для серверов Vercel (без .html)
+                    window.location.href = '../menu/';
+                } else {
+                    // Включаем красную неоновую лампу ошибки
+                    if (errorMessage) errorMessage.style.display = 'block';
+                }
+            } else {
+                alert("Системная ошибка: База данных сотрудников пуста или недоступна.");
+            }
+        });
+    }
+
+        // =========================================================================
+    // БЛОК 4: ИСТИННАЯ СМЕНА ПАРОЛЯ В РЕАЛЬНОМ ВРЕМЕНИ ДЛЯ VERCEL
+    // =========================================================================
+    if (resetForm) {
+        resetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!resetUserIdInput || !currentPasswordInput || !newPasswordInput || !confirmPasswordInput) return;
+            
+            const idInput = resetUserIdInput.value.trim();
+            const currentPass = currentPasswordInput.value;
+            const newPass = newPasswordInput.value;
+            const confirmPass = confirmPasswordInput.value;
+
+            if (activeUserBase.length > 0) {
+                const user = activeUserBase.find(u => String(u.id) === idInput);
+
+                // Проверка 1: Существует ли пользователь и совпадает ли текущий пароль
+                if (!user || user.password !== currentPass) {
+                    showResetError("Текущий пароль введен неверно!");
+                    return;
+                }
+
+                // Проверка 2: Совпадают ли новые пароли между собой
+                if (newPass !== confirmPass) {
+                    showResetError("Пароли не совпадают!");
+                    return;
+                }
+
+                // Проверка 3: Защита от дублирования старого пароля
+                if (currentPass === newPass) {
+                    showResetError("Новый пароль совпадает с текущим!");
+                    return;
+                }
+
+                // ПЕРЕЗАПИСЫВАЕМ ПАРОЛЬ ПО-НАСТОЯЩЕМУ:
+                user.password = newPass; // Меняем внутри текущего массива в памяти
+                
+                // Фиксируем измененную базу сотрудников в локальной памяти браузера намертво
+                localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(activeUserBase));
+                
+                if (resetErrorMessage) resetErrorMessage.style.display = 'none';
+                alert("🎉 Пароль успешно изменен навсегда!\nКарточка возвращается на форму входа.");
+                
+                // Сбрасываем поля и разворачиваем карточку обратно на форму логина
+                resetForm.reset();
+                if (flipper) flipper.classList.remove('flipped');
+
+            } else {
+                alert("Ошибка модификации: база данных заблокирована.");
+            }
+        });
+    }
+
+    // Хелпер вывода неоновых ошибок на стороне смены пароля
+    function showResetError(text) {
+        if (resetErrorMessage) {
+            resetErrorMessage.innerText = text;
+            resetErrorMessage.style.display = 'block';
+        }
+    }
+}); // Конец обработчика DOMContentLoaded
+
+// =========================================================================
+// ЧАСТЬ 2.1: ДИНАМИЧЕСКИЙ ИНЖЕКТОР ФОРМЫ РЕГИСТРАЦИИ В APP.JS
+// =========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const flipper = document.getElementById('flipper') || document.querySelector('.card-flipper');
+    if (!flipper) return;
+
+    // 1. Внедряем кнопку переключения на лицевую сторону
+    const cardNav = document.querySelector('.card-front .card-nav');
+    if (cardNav && !document.getElementById('to-register')) {
+        const regLink = document.createElement('span');
+        regLink.id = 'to-register';
+        regLink.className = 'register-trigger-link';
+        regLink.innerText = 'Регистрация';
+        cardNav.appendChild(regLink);
+    }
+
+    // 2. Создаем структуру изнаночной стороны регистрации
+    const registerCard = document.createElement('div');
+    registerCard.className = 'login-card card-back';
+    registerCard.style.transform = 'rotateY(-180deg)';
     
-    /* Эффект легкого футуристичного стекла */
-    background: rgba(255, 255, 255, 0.18); 
-    backdrop-filter: blur(15px); 
-    -webkit-backdrop-filter: blur(15px); 
-    border: 1px solid rgba(255, 255, 255, 0.25); 
-    padding: 30px; 
-    border-radius: 12px; 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
-    box-sizing: border-box; 
-    display: flex;
-    flex-direction: column;
-    
-    /* Плавное исчезновение неактивной стороны, чтобы стекло не конфликтовало */
-    transition: opacity 0.4s ease, visibility 0.4s;
-}
+    registerCard.innerHTML = `
+        <h2 class="register-title">Регистрация</h2>
+        <form id="registerForm">
+            <div class="register-scroll-area">
+                <div style="margin-bottom:10px;">
+                    <label>Табельный ID (Числа)</label>
+                    <input type="number" id="reg-userId" placeholder="Например: 10010060" required>
+                </div>
+                <div style="margin-top:8px; margin-bottom:10px;">
+                    <label>Имя сотрудника</label>
+                    <input type="text" id="reg-firstName" placeholder="Имя..." required>
+                </div>
+                <div style="margin-top:8px; margin-bottom:10px;">
+                    <label>Фамилия</label>
+                    <input type="text" id="reg-lastName" placeholder="Фамилия..." required>
+                </div>
+                <div style="margin-top:8px; margin-bottom:10px;">
+                    <label>Должность (Роль)</label>
+                    <select id="reg-position" style="width:100%; padding:10px; background:rgba(0,0,0,0.45); color:#fff; border:1px solid rgba(16, 185, 129, 0.3); border-radius:6px; font-weight:700; outline:none;">
+                        <option value="User">🧑‍🏭 Оператор линии</option>
+                        <option value="Admin">👑 Главный технолог</option>
+                        <option value="SysAdmin">⚙️ Помощник технолога</option>
+                    </select>
+                </div>
+                <div style="margin-top:8px; margin-bottom:10px;">
+                    <label>Фабрика</label>
+                    <select id="reg-company" style="width:100%; padding:10px; background:rgba(0,0,0,0.45); color:#fff; border:1px solid rgba(16, 185, 129, 0.3); border-radius:6px; font-weight:700; outline:none;">
+                        <option value="Mars">Mars</option>
+                        <option value="Gradus">Gradus</option>
+                    </select>
+                </div>
+                <div style="margin-top:8px; margin-bottom:10px;">
+                    <label>Придумайте пароль</label>
+                    <input type="password" id="reg-password" placeholder="Пароль..." required>
+                </div>
+            </div>
+            <div id="registerErrorMessage" style="color:#ff3838; font-size:0.9rem; text-align:center; margin-bottom:10px; display:none; font-weight:700;"></div>
+            <div class="neon-wrapper" style="box-shadow:0 0 15px rgba(16, 185, 129, 0.3); margin-top:5px;">
+                <button type="submit" style="color:#10b981;">Создать аккаунт</button>
+            </div>
+            <div class="card-nav" style="padding-top:10px;">
+                <span id="reg-to-login" style="font-size:1.1rem; color:rgba(16, 185, 129, 0.6);">← Вернуться ко входу</span>
+            </div>
+        </form>
+    `;
+    flipper.appendChild(registerCard);
+});
 
-/* Начальное состояние сторон (Лицо видимое, Изнанка скрыта) */
-.card-front {
-    opacity: 1;
-    visibility: visible;
-    z-index: 2;
-}
+// =========================================================================
+// ЧАСТЬ 2.2: АНИМАЦИЯ ПЕРЕХОДОВ МЕЖДУ СТОРОНАМИ РЕГИСТРАЦИИ И ВХОДА
+// =========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const flipper = document.getElementById('flipper') || document.querySelector('.card-flipper');
+    if (!flipper) return;
 
-.card-back {
-    transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    z-index: 1;
-}
+    // Ждём микропаузу, чтобы инжектированные элементы гарантированно появились в памяти
+    setTimeout(() => {
+        const toRegisterBtn = document.getElementById('to-register');
+        const regToLoginBtn = document.getElementById('reg-to-login');
+        const registerErrorMessage = document.getElementById('registerErrorMessage');
 
-/* Переключение видимости сторон при активном классе flipped */
-.card-flipper.flipped .card-front {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
+        if (toRegisterBtn) {
+            toRegisterBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Разворачиваем карточку в противоположную сторону по оси Y
+                flipper.style.transform = 'rotateY(-180deg)'; 
+            });
+        }
 
-.card-flipper.flipped .card-back {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
+        if (regToLoginBtn) {
+            regToLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                flipper.style.transform = ''; // Сбрасываем поворот в исходное положение (Лицо)
+                if (registerErrorMessage) registerErrorMessage.style.display = 'none';
+            });
+        }
+    }, 100);
+});
 
-/* ==========================================================================
-   4. ТЕКСТОВЫЕ ЭЛЕМЕНТЫ (МАССИВНЫЕ, ПЛОТНЫЕ И КОНТРАСТНЫЕ)
-   ========================================================================== */
-h2 { 
-    font-size: 1.8rem;
-    font-weight: 800;
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 25px; 
-    color: #ffffff;
-    filter: drop-shadow(0 0 2px var(--neon-blue))                    
-            drop-shadow(0 0 10px var(--neon-blue))
-            drop-shadow(0 0 25px rgba(0, 242, 254, 0.8));
-    letter-spacing: 0.5px;
-}
+// =========================================================================
+// ЧАСТЬ 2.3: СЛУШАТЕЛЬ ФОРМЫ И ЖЕСТКАЯ ЗАПИСЬ СОТРУДНИКА В LOCALSTORAGE
+// =========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const registerForm = document.getElementById('registerForm');
+        const registerErrorMessage = document.getElementById('registerErrorMessage');
+        const flipper = document.getElementById('flipper') || document.querySelector('.card-flipper');
 
-.form-group { 
-    margin-bottom: 50px; 
-}
+        if (registerForm) {
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
 
-label { 
-    display: block; 
-    margin-bottom: 6px; 
-    color: #ffffff; 
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    filter: drop-shadow(0 0 3px var(--neon-cyan))
-            drop-shadow(0 0 8px rgba(20, 240, 240, 0.6));
-}
+                const regId = document.getElementById('reg-userId').value.trim();
+                const regFirstName = document.getElementById('reg-firstName').value.trim();
+                const regLastName = document.getElementById('reg-lastName').value.trim();
+                const regPosition = document.getElementById('reg-position').value;
+                const regCompany = document.getElementById('reg-company').value;
+                const regPassword = document.getElementById('reg-password').value;
 
-/* ==========================================================================
-   5. ПОЛЯ ВВОДА (INPUT) С НЕОНОВЫМ ФОКУСОМ
-   ========================================================================== */
-input { 
-    width: 100%; 
-    padding: 12px;
-    font-size: 15px; 
-    font-weight: 700; 
-    background: rgba(0, 0, 0, 0.25);
-    color: white;
-    border: 1px solid rgba(0, 242, 254, 0.3); 
-    border-radius: 6px;
-    cursor: text;
-    box-sizing: border-box;
-    outline: none;
-    transition: all 0.3s ease; 
-}
+                // Защита: проверяем, нет ли уже на заводе сотрудника с таким же табельным ID
+                const isUserExists = activeUserBase.find(u => String(u.id) === regId);
+                if (isUserExists) {
+                    if (registerErrorMessage) {
+                        registerErrorMessage.innerText = "❌ Данный ID уже зарегистрирован!";
+                        registerErrorMessage.style.display = 'block';
+                    }
+                    return;
+                }
 
-input:hover {
-    border-color: rgba(0, 242, 254, 0.6);
-}
+                // Собираем объект сотрудника под стандарты mockUserBase
+                const newEmployee = {
+                    "id": parseInt(regId),
+                    "password": regPassword,
+                    "firstName": regFirstName,
+                    "lastName": regLastName,
+                    "position": regPosition,  
+                    "branch": regPosition === 'User' ? 'Production' : 'Office',
+                    "company": regCompany,
+                    "shift": "White"
+                };
 
-input:focus {
-    background: rgba(0, 0, 0, 0.45);
-    border-color: var(--neon-blue); 
-    box-shadow: 0 0 15px rgba(0, 242, 254, 0.6), 
-                inset 0 0 5px rgba(0, 242, 254, 0.4);
-}
+                // Вкладываем в активную базу данных приложения
+                activeUserBase.push(newEmployee);
 
-/*  стиль для заблокированного поля ID на второй стороне */
-input[readonly] {
-    background: rgba(20, 240, 240, 0.1);
-    border-color: rgba(20, 240, 240, 0.45);
-    color: var(--neon-blue);
-    font-family: 'Courier New', monospace;
-    font-weight: 700;
-    cursor: default;
-}
+                // Фиксируем обновленный массив в LocalStorage для Vercel продакшена
+                localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(activeUserBase));
 
-/* ==========================================================================
-   6. ЭФФЕКТ: БЕГУЩАЯ НЕОНОВАЯ ДОРОЖКА ПО КОНТУРУ КНОПКИ
-   ========================================================================== */
-.neon-wrapper {
-    position: relative;
-    width: 100%;
-    height: 46px;
-    border-radius: 6px;
-    overflow: hidden;
-    margin-top: 15px;
-    box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
-}
+                if (registerErrorMessage) registerErrorMessage.style.display = 'none';
+                alert(`🎉 Аккаунт сотрудника ${regFirstName} ${regLastName} успешно создан!\nТеперь можно выполнить вход под ID: ${regId}`);
 
-/* Вращающийся диск под кнопкой */
-.neon-wrapper::before {
-    content: '';
-    position: absolute;
-    width: 160%;
-    height: 300%; 
-    top: -100%;
-    left: -30%;
-    background: conic-gradient(
-        transparent 70%, 
-        var(--neon-blue) 90%, 
-        var(--neon-purple) 98%, 
-        transparent 100%
-    );
-    animation: rotateNeon 2.5s linear infinite;
-}
-
-/* Сама кнопка, которая перекрывает диск и создает зазор для дорожки толщиной в 2px */
-.neon-wrapper button {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    background: #15181f; 
-    color: var(--neon-blue);
-    border: none;
-    border-radius: 5px;
-    font-size: 15px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-
-/* Эффект полного включения лампы при наведении */
-.neon-wrapper button:hover {
-    background: var(--neon-blue);
-    color: #000000; 
-    box-shadow: 0 0 20px var(--neon-blue);
-}
-
-.neon-wrapper button:active {
-    transform: scale(0.98);
-}
-
-@keyframes rotateNeon {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ==========================================================================
-   7. ССЫЛКИ НАВИГАЦИИ И ОШИБКИ
-   ========================================================================== */
-.card-nav {
-    margin-top: auto;
-    text-align: center;
-    padding-top: 20px;
-}
-
-.card-nav span {
-    color: rgba(0, 242, 254, 0.5);
-    font-size: 1.5rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    filter: drop-shadow(0 0 5px var(--neon-blue));
-    border-bottom: 1px dashed rgba(0, 242, 254, 0.5);
-}
-
-.card-nav span:hover {
-    color: var(--neon-blue);
-    border-bottom-color: var(--neon-blue);
-    filter: drop-shadow(0 0 5px var(--neon-blue));
-}
-
-/* Красный неоновый блок ошибки */
-.error { 
-    color: #ff3838; 
-    font-size: 1rem; 
-    margin-top: 12px; 
-    text-align: center; 
-    display: none; 
-    font-weight: 700;
-    filter: drop-shadow(0 0 5px rgba(255, 56, 56, 0.6));
-}
+                // Обнуляем форму и возвращаем карточку на экран логина
+                registerForm.reset();
+                if (flipper) flipper.style.transform = ''; 
+            });
+        }
+    }, 150);
+});
