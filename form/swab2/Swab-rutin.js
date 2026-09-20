@@ -1157,3 +1157,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// =========================================================================
+// 22. ПОДСВЕТКА СТРОК ПРИ НАВЕДЕНИИ И АКТИВНОЙ ЯЧЕЙКЕ
+// =========================================================================
+(function() {
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!document.getElementById('dynamic-hover-rules')) {
+            const style = document.createElement('style');
+            style.id = 'dynamic-hover-rules';
+            style.textContent = `
+                /* Эффект при наведении курсора на строку */
+                #table-body tr:hover {
+                    background-color: #f1f5f9 !important; /* Легкий серо-голубой оттенок */
+                }
+                #table-body tr:hover input:not([readonly]) {
+                    background-color: #f1f5f9 !important; /* Синхронизируем фон полей ввода */
+                }
+
+                /* Эффект, когда строка становится активной (внутри есть фокус) */
+                #table-body tr:focus-within {
+                    background-color: #e2e8f0 !important; /* Более насыщенный цвет для активной строки */
+                    border-left: 3px solid #2563eb !important; /* Синий маркер слева */
+                }
+                #table-body tr:focus-within input {
+                    background-color: transparent !important; /* Убираем внутренний фон инпутов для плавной заливки */
+                }
+                #table-body tr:focus-within input:focus {
+                    background-color: #ffffff !important; /* Белый фон только для ячейки в фокусе */
+                    box-shadow: inset 0 0 0 2px #2563eb !important; /* Синяя рамка вокруг активного инпута */
+                }
+            `;
+            document.head.appendChild(style);
+            console.log('[Подсветка]: Стили для hover и focus-within успешно привязаны.');
+        }
+    });
+})();
