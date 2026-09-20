@@ -545,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="card-desc">${escapeHTML(news.desc)}</div>
                 </div>
                 <div class="card-actions-row">
-                    ${hasManagerRights ? `<button class="btn-delete-card" onclick="window.deleteNewsCard(${news.timestamp})">Удалить</button>` : ''}
+                    ${hasManagerRights ? `<button class="btn-delete-card" onclick="window.deleteNewsCard(\${news.timestamp})">Удалить</button>` : ''}
                     <div class="card-btn" onclick="openDetailsModalByTimestamp(${news.timestamp})">Подробнее &rarr;</div>
                 </div>
             </div>
@@ -569,6 +569,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function enforceInterfaceRestrictions() {
         const currentPosition = localStorage.getItem('userPosition') || ROLES.USER;
         const hasManagerRights = isAuthorizedManager();
+
+        // 0. Защита фрагмента id="block" (Только для Admin и SysAdmin)
+        const secretBlock = document.getElementById('block');
+        if (secretBlock) {
+            if (!hasManagerRights) {
+                // Если пользователь НЕ админ и НЕ сисадмин — полностью удаляем блок из DOM для безопасности
+                secretBlock.remove();
+            } else {
+                // Если права есть — принудительно отображаем блок
+                secretBlock.style.setProperty('display', 'block', 'important');
+            }
+        }
 
         // 1. Защита правой панели менеджера
         const managerSidebar = document.getElementById('manager-sidebar');
@@ -651,6 +663,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 })();
+
 
 // =========================================================================
 // 7. WHATCHAT
