@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления базами данных</title>
+    
+    <!-- ПОДКЛЮЧЕНИЕ ВАШИХ ИСХОДНЫХ ФАЙЛОВ С БАЗАМИ ДАННЫХ -->
+    <!-- Замените имена файлов на ваши реальные файлы с массивами -->
+    <script src="baza/database.js"></script>
+    <script src="baza/users.js"></script>
+
+    <!-- Стили и логика приложения -->
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1 id="db-title">Панель управления БД</h1>
+        <p>Просмотр, редактирование и фильтрация массивов данных</p>
+    </header>
+
+    <div class="layout">
+        <!-- Левое меню переключения баз -->
+        <div class="sidebar">
+            <h3>Таблицы продуктов</h3>
+            <button class="db-menu-btn active" data-table="NAKE_PRODUCT">Общие продукты (Nake)</button>
+            <button class="db-menu-btn" data-table="FG_PRODUCKT">Готовая продукция (FG)</button>
+            <button class="db-menu-btn" data-table="BB_PRODUCKT">БД На Ссыпку (Big Bag)</button>
+            
+            <br>
+            <h3>Линии и структуры</h3>
+            <button class="db-menu-btn" data-table="CAR_GRD">Проверка CAR_GRD</button>
+            <button class="db-menu-btn" data-table="FG_LINES">Линии упаковки (FG)</button>
+            <button class="db-menu-btn" data-table="FG_PAC_CAR">Вагоны / Машины (FG)</button>
+            <button class="db-menu-btn" data-table="BB_LINE">Линии Ссыпки</button>
+            <button class="db-menu-btn" data-table="BB_PAC_CAR">Машины Ссыпки</button>
+
+            <br>
+            <h3>Пользователи</h3>
+            <button class="db-menu-btn" data-table="USERS">База Пользователей</button>
+            
+            <div class="raw-actions">
+                <button class="btn btn-secondary btn-sm" id="export-btn">Экспорт JS в консоль</button>
+            </div>
+        </div>
+
+        <!-- Основная рабочая зона -->
+        <div class="main-content">
+            <div class="toolbar">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Поиск по таблице...">
+                </div>
+                <button class="btn" id="add-record-btn">+ Добавить запись</button>
+            </div>
+
+            <div class="table-container">
+                <table id="data-table">
+                    <thead id="table-head"></thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования / добавления -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Редактировать запись</h2>
+            </div>
+            <form id="modal-form">
+                <div id="form-fields"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="close-modal-btn">Отмена</button>
+                    <button type="submit" class="btn">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

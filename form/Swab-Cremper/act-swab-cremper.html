@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Акт микробиологической верификации: Смывы</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="act-swab-cremper.css"/>
+</head>
+<body>
+    <!-- Шапка сайта с корректно закрытыми тегами -->
+    <div class="header">
+        <div class="header-container">
+            <div class="header-title-block">
+                <div style="display: flex; gap: 12px; align-items: center; font-family: system-ui, -apple-system, sans-serif;"> 
+                    <!-- 🖨️ Кнопка печати -->
+                    <button type="button" onclick="window.print();" class="nav-print-link">
+                        <span style="font-size: 1rem; line-height: 1;">🖨️</span> Распечатать акт
+                    </button>   
+                    <!-- 🏠 Кнопка На главную -->
+                    <a href="/menu/index.html" class="nav-home-link">
+                        <span style="font-size: 1.05rem; line-height: 1;">🏠</span> На главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="wash-sd-form" onsubmit="handleSubmit(event)">
+            <div class="main-title">СМЫВЫ: Акт микробиологической верификации.</div>
+            
+            <!-- ШАПКА АКТА -->
+            <div class="meta-grid">
+                <!-- Блок параметров смены -->
+                <div class="meta-card" style="border-left: 4px solid #10b981;">
+                    <!-- СТРОКА 1: Фабрика и Статус фабрики -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;">Фабрика</label>
+                                        <select name="gorod" id="cyti" style="font-size: 0.85rem; font-weight: 600; width: 100%;  padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ЛУЖНИКИ">ЛУЖНИКИ</option>
+                                            <option value="НОВОСИБИРСК">НОВОСИБИРСК</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Статус фабрики</label>
+                                        <input type="text" name="status" value="Золотой и платиновый" required 
+                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; 
+                                        background: #f1f5f9">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 2: shift Сменa -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Shift</label>
+                                        <select id="shift-color" name="shiftColor" style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 0.85rem; font-weight: 600; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="WHITE">WHITE</option>
+                                            <option value="BROWN">BROWN</option>
+                                            <option value="GREEN">GREEN</option>
+                                            <option value="VIOLET">VIOLET</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">План отбора</label>
+                                        <select id="plan" name="otbor" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">СТАНДАРТНЫЙ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">РАСШИРЕНЫЙ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 3: Кто проводил отбор проб (ФИО) -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Смена</label>
+                                        <select name="sutki" id="day" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">ДЕНЬ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">НОЧЬ</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box;">(ФИО) Техника</label>
+                                        <input type="text" id="controller-name" name="controllerName" value="NAME" placeholder="Введите фамилию" style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 4: Дата отбора проб и Batch Code (LOT) -->
+                                <div class="form-group" style="display: flex; gap: 15px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Дата отбора проб</label>
+                                        <input type="date" id="doc-date" name="docDate" value="2026-05-29" required style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Batch Code (LOT)</label>
+                                        <input type="text" id="batch-code-field" name="batchCode" value="" style="font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; font-family: monospace; font-weight: 700; background-color: #f1f5f9; color: #000;" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                <!-- Регламент отбора -->
+                <div class="meta-card meta-card-gray" id="dop" style="border-left: 4px solid #10b981; border-radius: 12px;">
+                    <div style="font-weight: 700; font-size: 1.5rem;padding-bottom: 10px; color: #000;">📋 Инструкция к заполнению:</div>
+                    <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">1. Смывы отбираются только в дневную смену во время производства ДНЕМ.</p>
+                    <p style="margin-bottom: 5px; font-size: 1rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">2. На каждый отобранный смыв приклеивается этикетка со штрихкодом.</p>
+                    <p style="margin-bottom: 5px; font-size: 0.9rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">3. Если смыв не отобран, неиспользованная этикетка клеится на оборот чеклиста.</p>
+                    <p style="margin-bottom: 5px; font-size: 1rem; border: 1px solid silver;padding: 2px; border-radius: 10px;">4. Все образцы собираются в отдельную емкость или пакетик-маечку.</p>
+                </div>
+                <!-- Информация по типам смывов с исправленной flex-сеткой и уникальными ID -->
+                <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
+                    <div style="font-weight: 700; font-size: 1.5rem; margin-bottom: 4px; color: #1e293b;">🔬 Спецификация Сальмонелла / Энтеро:</div>
+                    <p style="margin-bottom: 2px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Сальмонелла:</strong> Каждая дневная смена. 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    <p style="margin-bottom: 12px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Энтеро/Дрожжи/Плесень:</strong> Только в понедельник! 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    
+                    <!-- Корректный Flex-контейнер для полей лаборатории -->
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="form-group">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Фамилия лаборанта</label>
+                            <input type="text" name="lab-name" id="lab-controller-name" value="name" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                        </div>
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Дата получения</label>
+                                <input type="date" name="lab-doc-date" id="lab-doc-date" value="2026-05-29" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Время получения</label>
+                                <input type="time" name="lab-time" class="table-input tm-l" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ТАБЛИЦА СМЫВОВ -->
+                <div class="table-scroll" >
+                    <table>
+                        <colgroup>
+                            <col style="width: 8%;">
+                            <col style="width: 9%;">
+                            <col style="width: 40%;">
+                            <col style="width: 8%;">
+                            <col style="width: 3%;">
+                            <col style="width: 15%;">
+                            <col style="width: 15%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>атла чтота</th>
+                                <th>атлас какта</th>
+                                <th>Место отбора (русское название)</th>
+                                <th>Время смыва</th>
+                                <th>№ смыва</th>
+                                <th>Лаб. №</th>
+                                <th>IL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wash-table-body">
+                            <tr>
+                                <td class="text-static">атла чтота</td>
+                                <td class="text-static">атлас какта</td>
+                                <td class="text-static">ковейер верх</td>
+                                <td><input type="time" name="time_1" class="table-input tm-l"></td>
+                                <td class="text-center-bold">1</td>
+                                <td><input type="text" name="lab_num_1" class="table-input lb-l"></td>
+                                <td><input type="text" name="il_1" class="table-input lb-l"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static">атла чтота</td>
+                                <td class="text-static">атлас какта</td>
+                                <td class="text-static">ковейер середина</td>
+                                <td><input type="time" name="time_2" class="table-input tm-l"></td>
+                                <td class="text-center-bold">2</td>
+                                <td><input type="text" name="lab_num_2" class="table-input lb-l"></td>
+                                <td><input type="text" name="il_2" class="table-input lb-l"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static">атла чтота</td>
+                                <td class="text-static">атлас какта</td>
+                                <td class="text-static">ковейер низ</td>
+                                <td><input type="time" name="time_3" class="table-input tm-l"></td>
+                                <td class="text-center-bold">3</td>
+                                <td><input type="text" name="lab_num_3" class="table-input lb-l"></td>
+                                <td><input type="text" name="il_3" class="table-input lb-l"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static">атла чтота</td>
+                                <td class="text-static">атлас какта</td>
+                                <td class="text-static">вал зубчатый</td>
+                                <td><input type="time" name="time_4" class="table-input tm-l"></td>
+                                <td class="text-center-bold">4</td>
+                                <td><input type="text" name="lab_num_4" class="table-input lb-l"></td>
+                                <td><input type="text" name="il_4" class="table-input lb-l"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static">атла чтота</td>
+                                <td class="text-static">атлас какта</td>
+                                <td class="text-static">вал гладкий</td>
+                                <td><input type="time" name="time_5" class="table-input tm-l"></td>
+                                <td class="text-center-bold">5</td>
+                                <td><input type="text" name="lab_num_5" class="table-input lb-l"></td>
+                                <td><input type="text" name="il_5" class="table-input lb-l"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static">атла чтота</td>
+                                <td class="text-static">атлас какта</td>
+                                <td class="text-static">вакумный лифт со строны кремпера</td>
+                                <td><input type="time" name="time_6" class="table-input tm-l"></td>
+                                <td class="text-center-bold">6</td>
+                                <td><input type="text" name="lab_num_6" class="table-input lb-l"></td>
+                                <td><input type="text" name="il_6" class="table-input lb-l"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-static">атла чтота</td>
+                                <td class="text-static">атлас какта</td>
+                                <td class="text-static">вакумный лифт со строны ворот</td>
+                                <td><input type="time" name="time_7" class="table-input tm-l"></td>
+                                <td class="text-center-bold">7</td>
+                                <td><input type="text" name="lab_num_7" class="table-input lb-l"></td>
+                                <td><input type="text" name="il_7" class="table-input lb-l"></td>
+                            </tr>
+                            <tr><td class="section-row-header" colspan="7"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- КНОПКИ ДЕЙСТВИЙ (ИСПРАВЛЕНО: Кнопка Сохранить теперь имеет тип submit) -->
+            <div class="actions-bar">
+                <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
+                <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
+                <button type="button" class="btn btn-warning" id="btnCollapse">📦 Свернуть акт (сохранить как черновик)</button>
+            </div>
+        </form>
+        <div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
+                    <span>W: 01 от 22.08..2024</span>
+        </div>
+    </div>
+    <script src="act-swab-cremper.js"></script>
+</body>
+</html>
