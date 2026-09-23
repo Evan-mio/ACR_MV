@@ -1,22 +1,20 @@
-// Конфигурация соответствия кнопок меню и глобальных переменных баз данных
 const DB_MAP = {
     'NAKE_PRODUCT': 'NAKE_PRODUCT_DATABASE',
     'FG_PRODUCKT': 'FG_PRODUCKT_DATABASE',
-    'BB_PRODUCKT': 'BB_PRODUCKT_DATABASE',
     'CAR_GRD': 'CAR_GRD_DATABASA',
+    'BB_PRODUCKT': 'BB_PRODUCKT_DATABASE',
     'FG_LINES': 'FG_LINES_DATABASE',
     'FG_PAC_CAR': 'FG_PAC_CAR_DATABASE',
     'BB_LINE': 'BB_LINE_DATABASE',
     'BB_PAC_CAR': 'BB_PAC_CAR_DATABASE',
-    'USERS': 'mockUserBase' // Имя переменной из второго файла
+    'USERS': 'mockUserBase'
 };
 
-// Схемы полей для генерации таблиц и форм редактирования
 const TABLE_SCHEMAS = {
     'NAKE_PRODUCT': ['Nake', 'NakeName'],
     'FG_PRODUCKT': ['Nake', 'NakeName', 'GRD', 'GRDName', 'Type'],
-    'BB_PRODUCKT': ['Nake', 'NakeName', 'GRD', 'GRDName', 'Type'],
     'CAR_GRD': ['GRD', 'PacCars'],
+    'BB_PRODUCKT': ['Nake', 'NakeName', 'GRD', 'GRDName', 'Type'],
     'FG_LINES': ['PacLine'],
     'FG_PAC_CAR': ['PacCar'],
     'BB_LINE': ['PacLine'],
@@ -29,32 +27,48 @@ let currentEditingIndex = null;
 let searchQuery = "";
 let db = {};
 
-// Инициализация приложения
+// Инициализация стартует только когда ВСЕ скрипты гарантированно сидят в памяти
 document.addEventListener('DOMContentLoaded', () => {
     initDatabases();
     setupEventListeners();
     renderTable();
 });
 
-// Безопасное чтение оригинальных баз данных из глобальной области видимости window
 function initDatabases() {
+    // Чистим старый кэш, если он мешает разработке
     const cachedData = localStorage.getItem('v_database_store');
-    
-    if (cachedData) {
-        db = JSON.parse(cachedData);
-    } else {
-        // Если кэша нет, берем массивы «как есть» прямо из ваших JS-файлов
-        Object.keys(DB_MAP).forEach(key => {
-            const globalVarName = DB_MAP[key];
-            db[key] = window[globalVarName] ? JSON.parse(JSON.stringify(window[globalVarName])) : [];
-        });
-        saveToStorage();
-    }
+    let localStore = cachedData ? JSON.parse(cachedData) : {};
+
+    Object.keys(DB_MAP).forEach(key => {
+        const globalVarName = DB_MAP[key];
+        
+        // Поиск переменной в глобальном контексте window
+        const sourceData = window[globalVarName];
+
+        if (sourceData && Array.isArray(sourceData)) {
+            // Если в локальном хранилище уже есть сохраненные сессии изменений — используем их, 
+            // но если хранилище пустое — берем полный массив из файла
+            db[key] = localStore[key] && localStore[key].length > 0 ? localStore[key] : JSON.parse(JSON.stringify(sourceData));
+        } else {
+            // Если window не видит переменную, пробуем достучаться напрямую по имени
+            try {
+                const directData = eval(globalVarName);
+                if (Array.isArray(directData)) {
+                    db[key] = localStore[key] && localStore[key].length > 0 ? localStore[key] : JSON.parse(JSON.stringify(directData));
+                } else {
+                    db[key] = localStore[key] ? localStore[key] : [];
+                }
+            } catch(e) {
+                db[key] = localStore[key] ? localStore[key] : [];
+                console.error(`Ошибка: Не удалось найти массив данных "${globalVarName}". Проверьте правильность пути к файлу в index.html.`);
+            }
+        }
+    });
+
+    saveToStorage();
 }
 
-// Настройка обработчиков событий (кнопки, инпуты)
 function setupEventListeners() {
-    // Переключение таблиц по клику на сайдбар
     document.querySelectorAll('.db-menu-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.db-menu-btn').forEach(b => b.classList.remove('active'));
@@ -66,32 +80,27 @@ function setupEventListeners() {
         });
     });
 
-    // Живой поиск
     document.getElementById('search-input').addEventListener('input', (e) => {
         searchQuery = e.target.value;
         renderTable();
     });
 
-    // Модальные окна
     document.getElementById('add-record-btn').addEventListener('click', openAddModal);
     document.getElementById('close-modal-btn').addEventListener('click', closeModal);
     document.getElementById('modal-form').addEventListener('submit', saveForm);
     document.getElementById('export-btn').addEventListener('click', exportToConsole);
 }
 
-// Отрисовка таблицы на странице
 function renderTable() {
     const schema = TABLE_SCHEMAS[currentTable];
     const data = db[currentTable] || [];
     
-    // Рендер шапки таблицы
     const thead = document.getElementById('table-head');
     let headHtml = '<tr>';
     schema.forEach(field => headHtml += `<th>${field}</th>`);
     headHtml += `<th style="text-align: right;">Действия</th></tr>`;
     thead.innerHTML = headHtml;
 
-    // Фильтрация данных по поисковому запросу
     const filteredData = data.filter(item => {
         if (!searchQuery) return true;
         return schema.some(field => {
@@ -100,7 +109,6 @@ function renderTable() {
         });
     });
 
-    // Рендер строк таблицы
     const tbody = document.getElementById('table-body');
     let bodyHtml = '';
     
@@ -128,7 +136,6 @@ function renderTable() {
     tbody.innerHTML = bodyHtml;
 }
 
-// Удаление записи
 window.deleteRecord = function(index) {
     if (confirm('Вы уверены, что хотите удалить эту запись?')) {
         db[currentTable].splice(index, 1);
@@ -137,7 +144,6 @@ window.deleteRecord = function(index) {
     }
 };
 
-// Модалка добавления
 function openAddModal() {
     currentEditingIndex = null;
     document.getElementById('modal-title').innerText = 'Добавить новую запись';
@@ -145,7 +151,6 @@ function openAddModal() {
     document.getElementById('modal-overlay').classList.add('active');
 }
 
-// Модалка редактирования
 window.openEditModal = function(index) {
     currentEditingIndex = index;
     document.getElementById('modal-title').innerText = 'Редактировать запись';
@@ -154,7 +159,6 @@ window.openEditModal = function(index) {
     document.getElementById('modal-overlay').classList.add('active');
 };
 
-// Генерация формы на основе схемы открытой таблицы
 function generateFormFields(data) {
     const schema = TABLE_SCHEMAS[currentTable];
     const container = document.getElementById('form-fields');
@@ -185,7 +189,6 @@ function closeModal() {
     document.getElementById('modal-overlay').classList.remove('active');
 }
 
-// Обработка отправки формы
 function saveForm(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -194,11 +197,9 @@ function saveForm(e) {
     TABLE_SCHEMAS[currentTable].forEach(field => {
         let value = formData.get(field).trim();
         
-        // Обработка числовых полей
         if (value && !isNaN(value) && ['Nake', 'GRD', 'id', 'PacCar'].includes(field)) {
             value = Number(value);
         }
-        // Специальная обработка для массива вагонов PacCars
         if (field === 'PacCars') {
             value = value ? value.split(',').map(item => isNaN(item.trim()) ? item.trim() : Number(item.trim())) : [];
         }
@@ -221,12 +222,11 @@ function saveToStorage() {
     localStorage.setItem('v_database_store', JSON.stringify(db));
 }
 
-// Генерация готового JS-кода
 function exportToConsole() {
     console.log("%c=== ВАШ ОБНОВЛЕННЫЙ JS КОД ДЛЯ ПОДСТАНОВКИ В ФАЙЛ ===", "color: #3b82f6; font-weight: bold; font-size: 14px;");
     Object.keys(db).forEach(key => {
         const globalVarName = DB_MAP[key];
         console.log(`const ${globalVarName} = ${JSON.stringify(db[key], null, 2)};\n`);
     });
-    alert('Готово! Обновленный код для ваших файлов сгенерирован в исходном формате. Откройте консоль (F12), чтобы скопировать массивы.');
+    alert('Массивы данных сгенерированы! Откройте консоль браузера (F12), чтобы скопировать обновленный код в файлы.');
 }
