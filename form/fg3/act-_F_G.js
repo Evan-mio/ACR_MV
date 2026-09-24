@@ -1935,3 +1935,119 @@ if (lineSelect && lineSelect.children.length === 0 && typeof FG_LINES_DATABASE !
         }
     });
 })();
+
+// =========================================================================
+// 23. ВАЛИДАЦИЯ ШАПКИ НАЙКА ПО NAKE_PRODUCT_DATABASE С КРАСНОЙ ПУЛЬСАЦИЕЙ
+// =========================================================================
+(function() {
+    // 1. Динамически внедряем стили анимации пульсации в тег head бланка
+    if (!document.getElementById('nake-pulse-styles')) {
+        const style = document.createElement('style');
+        style.id = 'nake-pulse-styles';
+        style.textContent = `
+            @keyframes redPulse {
+                0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); border-color: rgb(239, 68, 68); }
+                70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); border-color: rgb(239, 68, 68); }
+                100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); border-color: rgb(239, 68, 68); }
+            }
+            .invalid-nake-pulse {
+                animation: redPulse 1.5s infinite !important;
+                background-color: #fee2e2 !important; /* Мягкий красный фон */
+                color: #b91c1c !important;            /* Темно-красный текст */
+                font-weight: bold !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const nake1Input = document.getElementById('sheet-nake-1');
+        const nake2Input = document.getElementById('sheet-nake-2');
+        const tBody = document.getElementById('table-body');
+
+        if (!nake1Input || !nake2Input) return;
+
+        /**
+         * Функция комплексной проверки соответствия полей Найка справочнику NAKE_PRODUCT_DATABASE
+         */
+        function checkNakeInputsValidity() {
+            // Если глобальная база данных еще не загрузилась — пропускаем шаг
+            if (typeof NAKE_PRODUCT_DATABASE === 'undefined') return;
+
+            const val1 = nake1Input.value.trim();
+            const val2 = nake2Input.value.trim();
+
+            // Если оба поля пустые (например, лист только что очищен) — убираем предупреждения
+            if (val1 === "" && val2 === "") {
+                nake1Input.classList.remove('invalid-nake-pulse');
+                nake2Input.classList.remove('invalid-nake-pulse');
+                return;
+            }
+
+            const codeNake = parseInt(val1, 10);
+
+            // Ищем совпадение в общей базе данных продуктов по коду Nake
+            const recordByCode = NAKE_PRODUCT_DATABASE.find(item => item.Nake === codeNake);
+
+            let isNake1Valid = false;
+            let isNake2Valid = false;
+
+            if (recordByCode) {
+                // Если код найден в базе, проверяем текстовое описание на строгое соответствие
+                isNake1Valid = true; 
+                isNake2Valid = (recordByCode.NakeName === val2);
+            } else {
+                // Если код не найден, проверяем, может быть совпадает имя (на случай ручного ввода)
+                const recordByName = NAKE_PRODUCT_DATABASE.find(item => item.NakeName === val2);
+                if (recordByName) {
+                    isNake1Valid = (recordByName.Nake === codeNake);
+                    isNake2Valid = true;
+                }
+            }
+
+            // Управляем анимацией пульсации инпута Nake (id="sheet-nake-1")
+            if (isNake1Valid) {
+                nake1Input.classList.remove('invalid-nake-pulse');
+            } else {
+                nake1Input.classList.add('invalid-nake-pulse');
+            }
+
+            // Управляем анимацией пульсации инпута Названия (id="sheet-nake-2")
+            if (isNake2Valid) {
+                nake2Input.classList.remove('invalid-nake-pulse');
+            } else {
+                nake2Input.classList.add('invalid-nake-pulse');
+            }
+        }
+
+        // Перехватываем ввод данных напрямую в поля шапки
+        nake1Input.addEventListener('input', checkNakeInputsValidity);
+        nake2Input.addEventListener('change', checkNakeInputsValidity);
+        nake2Input.addEventListener('input', checkNakeInputsValidity);
+        nake2Input.addEventListener('change', checkNakeInputsValidity);
+
+        // Интеграция с вашей табличной логикой: отслеживаем автоподстановку Найка из строк
+        if (tBody) {
+            tBody.addEventListener('input', () => {
+                // Небольшой таймаут дает вашей функции "validateTableNakeConsistency"
+                // отработать первой и записать значения в шапку листа
+                setTimeout(checkNakeInputsValidity, 100);
+            });
+            tBody.addEventListener('change', () => {
+                setTimeout(checkNakeInputsValidity, 100);
+            });
+        }
+
+        // Интеграция с механизмом переключения вкладок: проверяем Найк при открытии листа
+        const originalLoadSheetData = window.loadSheetData;
+        if (typeof originalLoadSheetData === 'function') {
+            window.loadSheetData = function(sheetId) {
+                originalLoadSheetData(sheetId);
+                setTimeout(checkNakeInputsValidity, 120); // Сквозная проверка при загрузке таба
+            };
+        }
+
+        // Первичный запуск проверки при загрузке страницы бланка
+        setTimeout(checkNakeInputsValidity, 500);
+    });
+})();
