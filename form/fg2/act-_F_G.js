@@ -1856,8 +1856,10 @@ function deleteTableRowWithShift(rowToDelete) {
             document.head.appendChild(style);
             console.log('[Подсветка]: Стили для hover и focus-within успешно привязаны.');
         }
+    });
+})();
 
-        // =========================================================================
+// =========================================================================
 // 23. ВАЛИДАЦИЯ ШАПКИ НАЙКА ПО NAKE_PRODUCT_DATABASE С КРАСНОЙ ПУЛЬСАЦИЕЙ
 // =========================================================================
 (function() {
@@ -1970,8 +1972,5 @@ function deleteTableRowWithShift(rowToDelete) {
 
         // Первичный запуск проверки при загрузке страницы бланка
         setTimeout(checkNakeInputsValidity, 500);
-    });
-})();
-
     });
 })();
