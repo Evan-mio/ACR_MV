@@ -407,7 +407,7 @@ const FG_PRODUCKT_DATABASE = [
 { "Nake": 4033387, "NakeName": 'CoPack PFT Hair&Skin Sm 2025', "GRD": 60011611, "GRDName": 'Perfect Fit Hair n Skin Slm 10*650g', "Type": 'F_G' },
 { "Nake": 4033218, "NakeName": 'CoPack PFT Kidney Care Tk 2025', "GRD": 60011615, "GRDName": 'Perfect Fit Kid Health Tk 10*650g', "Type": 'F_G' },
 { "Nake": 1655946, "NakeName": 'KEK Veal kibble mix 2025', "GRD": 60013171, "GRDName": 'Kitekat dry veal 7*1.3kg', "Type": 'F_G' },
-{ "Nake": 1655942, "NakeName": '#Meat Feast kibble mix 2025', "GRD": 60013173, "GRDName": 'Kitekat dry meat feast 7*1.3kg', "Type": 'F_G' },
+{ "Nake": 1655942, "NakeName": 'Meat Feast kibble mix 2025', "GRD": 60013173, "GRDName": 'Kitekat dry meat feast 7*1.3kg', "Type": 'F_G' },
 { "Nake": 1655952, "NakeName": 'KEK Fish kibble mix 2025', "GRD": 60013175, "GRDName": 'Kitekat dry fish 7*1.3kg', "Type": 'F_G' },
 { "Nake": 1214724, "NakeName": 'Chappi Meat Profusion Kibble Mix 2011', "GRD": 60044340, "GRDName": 'CHAPPI MEAT PROFUSION 3*2.5KG', "Type": 'F_G' },
 { "Nake": 1214716, "NakeName": 'Chappi Beef Home Mix Kibble 2011', "GRD": 60044342, "GRDName": 'CHAPPI BEEF HOME-STYLE 3*2.5kg', "Type": 'F_G' },
