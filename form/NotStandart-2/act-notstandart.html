@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Акт микробиологической верификации: Смывы</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="act-notstandart.css"/>
+</head>
+<body>
+    <!-- Шапка сайта с корректно закрытыми тегами -->
+    <div class="header">
+        <div class="header-container">
+            <div class="header-title-block">
+                <div style="display: flex; gap: 12px; align-items: center; font-family: system-ui, -apple-system, sans-serif;"> 
+                    <!-- 🖨️ Кнопка печати -->
+                    <button type="button" onclick="window.print();" class="nav-print-link">
+                        <span style="font-size: 1rem; line-height: 1;">🖨️</span> Распечатать акт
+                    </button>   
+                    <!-- 🏠 Кнопка На главную -->
+                    <a href="/menu/index.html" class="nav-home-link">
+                        <span style="font-size: 1.05rem; line-height: 1;">🏠</span> На главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="wash-sd-form" onsubmit="handleSubmit(event)">
+            <div class="main-title">Акт нестандартных проб.</div>
+            
+            <!-- ШАПКА АКТА -->
+            <div class="meta-grid">
+                <!-- Блок параметров смены -->
+                <div class="meta-card" style="border-left: 4px solid #10b981;">
+                    <!-- СТРОКА 1: Фабрика и Статус фабрики -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600;">Фабрика</label>
+                                        <select name="gorod" id="cyti" style="font-size: 0.85rem; font-weight: 600; width: 100%;  padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ЛУЖНИКИ">ЛУЖНИКИ</option>
+                                            <option value="НОВОСИБИРСК">НОВОСИБИРСК</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Статус фабрики</label>
+                                        <input type="text" name="status" value="Золотой и платиновый" required 
+                                        style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; 
+                                        background: #f1f5f9">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 2: shift Сменa -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Shift</label>
+                                        <select id="shift-color" name="shiftColor" style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 0.85rem; font-weight: 600; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="WHITE">WHITE</option>
+                                            <option value="BROWN">BROWN</option>
+                                            <option value="GREEN">GREEN</option>
+                                            <option value="VIOLET">VIOLET</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">План отбора</label>
+                                        <select id="plan" name="otbor" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">СТАНДАРТНЫЙ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">РАСШИРЕНЫЙ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 3: Кто проводил отбор проб (ФИО) -->
+                                <div class="form-group" style="display: flex; gap: 10px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Смена</label>
+                                        <select name="sutki" id="day" style=" font-size: 0.85rem; font-weight: 600;width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                            <option value="ВЫБОР">--ВЫБЕРИТЕ--</option>
+                                            <option value="ДЕНЬ" style="background-color: #f1f5f9;">ДЕНЬ</option>
+                                            <option value="НОЧЬ" style="background-color: #f1f5f9;">НОЧЬ</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box;">(ФИО) Техника</label>
+                                        <input type="text" id="controller-name" name="controllerName" value="NAME" placeholder="Введите фамилию" style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                </div>
+                                <!-- СТРОКА 4: Дата отбора проб и Batch Code (LOT) -->
+                                <div class="form-group" style="display: flex; gap: 15px; padding-bottom: 10px; border-radius: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Дата отбора проб</label>
+                                        <input type="date" id="doc-date" name="docDate" value="2026-05-29" required style=" font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; background-color: #f1f5f9;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem;">Batch Code (LOT)</label>
+                                        <input type="text" id="batch-code-field" name="batchCode" value="" style="font-size: 0.85rem; font-weight: 600; width: 100%; padding: 8px; box-sizing: border-box; font-family: monospace; font-weight: 700; background-color: #f1f5f9; color: #000;" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Регламент отбора -->
+                            <!-- Заголовок блока -->
+                            <div class="schedule-card" style="border-left: 4px solid #10b981;">
+                                <div class="card-title">📋 График отбора проб</div>
+                                <!-- ТАБЫ ПЕРЕКЛЮЧЕНИЯ -->
+                                <div class="tabs-header">
+                                    <button class="tab-btn active" data-tab="day">☀️ Дневная смена</button>
+                                    <button class="tab-btn" data-tab="night">🌙 Ночная смена</button>
+                                </div>
+                                <!-- КОНТЕНТ: ДНЕВНАЯ СМЕНА -->
+                                <div class="tab-content active" data-tab-content="day">
+                                    <div style="background: #fffded; border-left: 4px solid #ce8122; border-radius: 6px; padding: 12px 16px;">
+                                        <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #b45309; margin-bottom: 8px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <div class="time-grid">
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px;  border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">1</button>
+                                                <button  class="time-button">07:35</button>
+                                                <button  class="time-button">07:40</button>
+                                                <button  class="time-button">07:45</button>
+                                                <button  class="time-button">07:50</button>
+                                                <button  class="time-button">07:55</button>
+                                                <button  class="time-button">08:00</button>
+                                                <button  class="time-button">08:05</button>
+                                                <button  class="time-button">08:10</button>
+                                                <button  class="time-button">08:15</button>
+                                                <button  class="time-button">08:20</button>
+                                                <button  class="time-button">08:25</button>
+                                                <button  class="time-button">08:30</button>
+                                                <button  class="time-button">08:35</button>
+                                                <button  class="time-button">08:40</button>
+                                                <button  class="time-button">08:45</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">2</button>
+                                                <button  class="time-button">08:50</button>
+                                                <button  class="time-button">08:55</button>
+                                                <button  class="time-button">09:00</button>
+                                                <button  class="time-button">09:05</button>
+                                                <button  class="time-button">09:10</button>
+                                                <button  class="time-button">09:15</button>
+                                                <button  class="time-button">09:20</button>
+                                                <button  class="time-button">09:25</button>
+                                                <button  class="time-button">09:30</button>
+                                                <button  class="time-button">09:35</button>
+                                                <button  class="time-button">09:40</button>
+                                                <button  class="time-button">09:45</button>
+                                                <button  class="time-button">09:50</button>
+                                                <button  class="time-button">09:55</button>
+                                                <button  class="time-button">10:00</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">3</button>
+                                                <button  class="time-button">10:05</button>
+                                                <button  class="time-button">10:10</button>
+                                                <button  class="time-button">10:15</button>
+                                                <button  class="time-button">10:20</button>
+                                                <button  class="time-button">10:25</button>
+                                                <button  class="time-button">10:30</button>
+                                                <button  class="time-button">10:35</button>
+                                                <button  class="time-button">10:40</button>
+                                                <button  class="time-button">10:45</button>
+                                                <button  class="time-button">10:50</button>
+                                                <button  class="time-button">10:55</button>
+                                                <button  class="time-button">11:00</button>
+                                                <button  class="time-button">11:05</button>
+                                                <button  class="time-button">11:10</button>
+                                                <button  class="time-button">11:15</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">4</button>
+                                                <button  class="time-button">11:20</button>
+                                                <button  class="time-button">11:25</button>
+                                                <button  class="time-button">11:30</button>
+                                                <button  class="time-button">11:35</button>
+                                                <button  class="time-button">11:40</button>
+                                                <button  class="time-button">11:45</button>
+                                                <button  class="time-button">11:50</button>
+                                                <button  class="time-button">11:55</button>
+                                                <button  class="time-button">12:00</button>
+                                                <button  class="time-button">12:05</button>
+                                                <button  class="time-button">12:10</button>
+                                                <button  class="time-button">12:15</button>
+                                                <button  class="time-button">12:20;</button>
+                                                <button  class="time-button">12:25</button>
+                                                <button  class="time-button">12:30;</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">5</button>
+                                                <button  class="time-button">12:35</button>
+                                                <button  class="time-button">12:40</button>
+                                                <button  class="time-button">12:45</button>
+                                                <button  class="time-button">12:50</button>
+                                                <button  class="time-button">12:55</button>
+                                                <button  class="time-button">13:00</button>
+                                                <button  class="time-button">13:05</button>
+                                                <button  class="time-button">13:10</button>
+                                                <button  class="time-button">13:15</button>
+                                                <button  class="time-button">13:20</button>
+                                                <button  class="time-button">13:25</button>
+                                                <button  class="time-button">13:30</button>
+                                                <button  class="time-button">13:35</button>
+                                                <button  class="time-button">13:40</button>
+                                                <button  class="time-button">13:45</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">6</button>
+                                                <button  class="time-button">13:50</button>
+                                                <button  class="time-button">13:55</button>
+                                                <button  class="time-button">14:00</button>
+                                                <button  class="time-button">14:05</button>
+                                                <button  class="time-button">14:10</button>
+                                                <button  class="time-button">14:15</button>
+                                                <button  class="time-button">14:20</button>
+                                                <button  class="time-button">14:25</button>
+                                                <button  class="time-button">14:30</button>
+                                                <button  class="time-button">14:35</button>
+                                                <button  class="time-button">14:40</button>
+                                                <button  class="time-button">14:45</button>
+                                                <button  class="time-button">14:50</button>
+                                                <button  class="time-button">14:55</button>
+                                                <button  class="time-button">15:00</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">7</button>
+                                                <button  class="time-button">15:05</button>
+                                                <button  class="time-button">15:10</button>
+                                                <button  class="time-button">15:15</button>
+                                                <button  class="time-button">15:20</button>
+                                                <button  class="time-button">15:25</button>
+                                                <button  class="time-button">15:30</button>
+                                                <button  class="time-button">15:35</button>
+                                                <button  class="time-button">15:40</button>
+                                                <button  class="time-button">15:45</button>
+                                                <button  class="time-button">15:50</button>
+                                                <button  class="time-button">15:55</button>
+                                                <button  class="time-button">16:00</button>
+                                                <button  class="time-button">16:05</button>
+                                                <button  class="time-button">16:10</button>
+                                                <button  class="time-button">16:15</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">8</button>
+                                                <button  class="time-button">16:20</button>
+                                                <button  class="time-button">16:25</button>
+                                                <button  class="time-button">16:30</button>
+                                                <button  class="time-button">16:35</button>
+                                                <button  class="time-button">16:40</button>
+                                                <button  class="time-button">16:45</button>
+                                                <button  class="time-button">16:50</button>
+                                                <button  class="time-button">16:55</button>
+                                                <button  class="time-button">17:00</button>
+                                                <button  class="time-button">17:05</button>
+                                                <button  class="time-button">17:10</button>
+                                                <button  class="time-button">17:15</button>
+                                                <button  class="time-button">17:20</button>
+                                                <button  class="time-button">17:25</button>
+                                                <button  class="time-button">17:30</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">9</button>
+                                                <button  class="time-button">17:35</button>
+                                                <button  class="time-button">17:40</button>
+                                                <button  class="time-button">17:45</button>
+                                                <button  class="time-button">17:50</button>
+                                                <button  class="time-button">17:55</button>
+                                                <button  class="time-button">18:00</button>
+                                                <button  class="time-button">18:05</button>
+                                                <button  class="time-button">18:10</button>
+                                                <button  class="time-button">18:15</button>
+                                                <button  class="time-button">18:20</button>
+                                                <button  class="time-button">18:25</button>
+                                                <button  class="time-button">18:30</button>
+                                                <button  class="time-button">18:35</button>
+                                                <button  class="time-button">18:40</button>
+                                                <button  class="time-button">18:45</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">10</button>
+                                                <button  class="time-button">18:50</button>
+                                                <button  class="time-button">18:55</button>
+                                                <button  class="time-button">19:00</button>
+                                                <button  class="time-button">19:05</button>
+                                                <button  class="time-button">19:10</button>
+                                                <button  class="time-button">19:15</button>
+                                                <button  class="time-button">19:20</button>
+                                                <button  class="time-button">19:25</button>
+                                                <button  class="time-button">19:30</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                <!-- КОНТЕНТ: НОЧНАЯ СМЕНА -->
+                                <div class="tab-content" data-tab-content="night">
+                                    <div style="background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 6px; padding: 12px 16px;">
+                                        <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #15803d; margin-bottom: 8px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <div class="time-grid">
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">1</button>
+                                                <button class="time-button">19:35</button>
+                                                <button class="time-button">19:40</button>
+                                                <button  class="time-button">19:45</button>
+                                                <button  class="time-button">19:50</button>
+                                                <button  class="time-button">19:55</button>
+                                                <button  class="time-button">20:00</button>
+                                                <button  class="time-button">20:05</button>
+                                                <button  class="time-button">20:10</button>
+                                                <button  class="time-button">20:15</button>
+                                                <button  class="time-button">20:20</button>
+                                                <button  class="time-button">20:25</button>
+                                                <button  class="time-button">20:30</button>
+                                                <button  class="time-button">20:35</button>
+                                                <button  class="time-button">20:40</button>
+                                                <button  class="time-button">20:45</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">2</button>
+                                                <button  class="time-button">20:50</button>
+                                                <button  class="time-button">20:55</button>
+                                                <button  class="time-button">21:00</button>
+                                                <button  class="time-button">21:05</button>
+                                                <button  class="time-button">21:10</button>
+                                                <button  class="time-button">21:15</button>
+                                                <button  class="time-button">21:20</button>
+                                                <button  class="time-button">21:25</button>
+                                                <button  class="time-button">21:30</button>
+                                                <button  class="time-button">21:35</button>
+                                                <button  class="time-button">21:40</button>
+                                                <button  class="time-button">21:45</button>
+                                                <button  class="time-button">21:50</button>
+                                                <button  class="time-button">21:55</button>
+                                                <button  class="time-button">22:00</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">3</button>
+                                                <button  class="time-button">22:05</button>
+                                                <button  class="time-button">22:10</button>
+                                                <button  class="time-button">22:15</button>
+                                                <button  class="time-button">22:20</button>
+                                                <button  class="time-button">22:25</button>
+                                                <button  class="time-button">22:30</button>
+                                                <button  class="time-button">22:35</button>
+                                                <button  class="time-button">22:40</button>
+                                                <button  class="time-button">22:45</button>
+                                                <button  class="time-button">22:50</button>
+                                                <button  class="time-button">22:55</button>
+                                                <button  class="time-button">23:00;</button>
+                                                <button  class="time-button">23:05</button>
+                                                <button  class="time-button">23:10</button>
+                                                <button  class="time-button">23:15</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">4</button>
+                                                <button  class="time-button">23:20</button>
+                                                <button  class="time-button">23:25</button>
+                                                <button  class="time-button">23:30</button>
+                                                <button  class="time-button">23:35</button>
+                                                <button  class="time-button">23:40</button>
+                                                <button  class="time-button">23:45</button>
+                                                <button  class="time-button">23:50</button>
+                                                <button  class="time-button">23:55</button>
+                                                <button  class="time-button">00:00</button>
+                                                <button  class="time-button">00:05;</button>
+                                                <button  class="time-button">00:10</button>
+                                                <button  class="time-button">00:15</button>
+                                                <button  class="time-button">00:20</button>
+                                                <button  class="time-button">00:25</button>
+                                                <button  class="time-button">00:30</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">5</button>
+                                                <button  class="time-button">00:35</button>
+                                                <button  class="time-button">00:40</button>
+                                                <button  class="time-button">00:45</button>
+                                                <button  class="time-button">00:50</button>
+                                                <button  class="time-button">00:55</button>
+                                                <button  class="time-button">01:00</button>
+                                                <button  class="time-button">01:05</button>
+                                                <button  class="time-button">01:10</button>
+                                                <button  class="time-button">01:15</button>
+                                                <button  class="time-button">01:20</button>
+                                                <button  class="time-button">01:25</button>
+                                                <button  class="time-button">01:30</button>
+                                                <button  class="time-button">01:35</button>
+                                                <button  class="time-button">01:40</button>
+                                                <button  class="time-button">01:45</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">6</button>
+                                                <button  class="time-button">01:50</button>
+                                                <button  class="time-button">01:55</button>
+                                                <button  class="time-button">02:00</button>
+                                                <button  class="time-button">02:05</button>
+                                                <button  class="time-button">02:10</button>
+                                                <button  class="time-button">02:15</button>
+                                                <button  class="time-button">02:20</button>
+                                                <button  class="time-button">02:25</button>
+                                                <button  class="time-button">02:30</button>
+                                                <button  class="time-button">02:35</button>
+                                                <button  class="time-button">02:40</button>
+                                                <button  class="time-button">02:45</button>
+                                                <button  class="time-button">02:50</button>
+                                                <button  class="time-button">02:55</button>
+                                                <button  class="time-button">03:00</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">7</button>
+                                                <button  class="time-button">03:05</button>
+                                                <button  class="time-button">03:10</button>
+                                                <button  class="time-button">03:15</button>
+                                                <button  class="time-button">03:20</button>
+                                                <button  class="time-button">03:25</button>
+                                                <button  class="time-button">03:30</button>
+                                                <button  class="time-button">03:35</button>
+                                                <button  class="time-button">03:40</button>
+                                                <button  class="time-button">03:45</button>
+                                                <button  class="time-button">03:50</button>
+                                                <button  class="time-button">03:55</button>
+                                                <button  class="time-button">04:00</button>
+                                                <button  class="time-button">04:05</button>
+                                                <button  class="time-button">04:10</button>
+                                                <button  class="time-button">04:15</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">8</button>
+                                                <button  class="time-button">04:20</button>
+                                                <button  class="time-button">04:25</button>
+                                                <button  class="time-button">04:30</button>
+                                                <button  class="time-button">04:35</button>
+                                                <button  class="time-button">04:40</button>
+                                                <button  class="time-button">04:45</button>
+                                                <button  class="time-button">04:50</button>
+                                                <button  class="time-button">04:55</button>
+                                                <button  class="time-button">05:00</button>
+                                                <button  class="time-button">05:05</button>
+                                                <button  class="time-button">05:10</button>
+                                                <button  class="time-button">05:15</button>
+                                                <button  class="time-button">05:20</button>
+                                                <button  class="time-button">05:25</button>
+                                                <button  class="time-button">05:30</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">9</button>
+                                                <button  class="time-button">05:35</button>
+                                                <button  class="time-button">05:40</button>
+                                                <button  class="time-button">05:45</button>
+                                                <button  class="time-button">05:50</button>
+                                                <button  class="time-button">05:55</button>
+                                                <button  class="time-button">06:00</button>
+                                                <button  class="time-button">06:05</button>
+                                                <button  class="time-button">06:10</button>
+                                                <button  class="time-button">06:15</button>
+                                                <button  class="time-button">06:20</button>
+                                                <button  class="time-button">06:25</button>
+                                                <button  class="time-button">06:30</button>
+                                                <button  class="time-button">06:35</button>
+                                                <button  class="time-button">06:40</button>
+                                                <button  class="time-button">06:45</button>
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid silver;">
+                                                <input type="checkbox" class="row-badge">
+                                                <button class="row-badge">10</button>
+                                                <button  class="time-button">06:50</button>
+                                                <button  class="time-button">06:55</button>
+                                                <button  class="time-button">07:00</button>
+                                                <button  class="time-button">07:05</button>
+                                                <button  class="time-button">07:10</button>
+                                                <button  class="time-button">07:15</button>
+                                                <button  class="time-button">07:20</button>
+                                                <button  class="time-button">07:25</button>
+                                                <button  class="time-button">07:30</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                <!-- Информация по типам смывов с исправленной flex-сеткой и уникальными ID -->
+                <div class="meta-card meta-card-gray" style="border-left: 4px solid #10b981;">
+                    <div style="font-weight: 700; font-size: 1.5rem; margin-bottom: 4px; color: #1e293b;">🔬 Спецификация Сальмонелла / Энтеро:</div>
+                    <p style="margin-bottom: 2px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Сальмонелла:</strong> Каждая дневная смена. 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    <p style="margin-bottom: 12px; border: 1px solid silver;padding: 2px; border-radius: 10px;"><strong>Энтеро/Дрожжи/Плесень:</strong> Только в понедельник! 1. С пола губками (1м х 1м). 2. С оборудования палочками (10см х 10см).</p>
+                    
+                    <!-- Корректный Flex-контейнер для полей лаборатории -->
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="form-group">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Фамилия лаборанта</label>
+                            <input type="text" name="lab-name" id="lab-controller-name" value="name" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                        </div>
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Дата получения</label>
+                                <input type="date" name="lab-doc-date" id="lab-doc-date" value="2026-05-29" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 1rem;">Время получения</label>
+                                <input type="time" name="lab-time" class="table-input tm-l" required style="width: 100%; padding: 8px; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Пример правильной верстки кнопок в вашей HTML-странице -->
+<button type="button" class="btn btn-secondary" onclick="window.addNewSheet()">➕ Добавить лист</button>
+<button type="button" class="btn btn-secondary" onclick="editSheetName()">✏️ Редактировать название листа</button>
+
+<!-- Сюда JS будет вставлять вкладки (Лист 1, Лист 2...) -->
+<div id="tab-list" style="display: flex; gap: 6px; margin: 10px 0;"></div>
+
+
+            <!-- ТАБЛИЦА проб-->
+                <div id="coment" style="margin-bottom: 10px;  border: 1px solid silver; border-radius: 10px; padding: 10px; background-color: #f1f5f9;">
+                            <label id="title-coment" style="font-weight: 600; font-size: 1rem; padding-left: 10px;">Причина отбора</label>
+                            <input id="text-coment" type="text" value="--Укажите причину отбора--" style="margin-bottom: 10px;">
+                        </div>
+                <div class="table-scroll">
+                    <table>
+                        <colgroup>
+                            <col style="width: 3%;">
+                            <col style="width: 40%;">
+                            <col style="width: 6%;">
+                            <col style="width: 6%;">
+                            <col style="width: 6%;">
+                            <col style="width: 6%;">
+                            <col style="width: 6%;">
+                            <col style="width: 8%;">
+                            <col style="width: 8%;">
+                        </colgroup>
+                        <thead>
+                            <tr><td class="section-row-header" colspan="9"></td></tr>
+                            <tr>
+                                <th rowspan="2">Номер образца</th>
+                                <th rowspan="2">Наименование образца</th>
+                                <th rowspan="2">Место отбора</th>
+                                <th colspan="2">Время  отбора компазита</th>
+                                <th rowspan="2">Тип образца</th>
+                                <th rowspan="2">Показатель</th>
+                                <th rowspan="2">№ лаборатории</th>
+                                <th rowspan="2">IL если есть</th>
+                            </tr>
+                            <tr>
+                                <th>начало отбора</th>
+                                <th>окончание отбора</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wash-table-body">
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">1</td>
+                                <td><input type="text" name="name-1" class="table-input nm-1"></td>
+                                <td><input type="text" name="plot-1" class="table-input pt-1"></td>
+                                <td><input type="time" name="time-1" class="table-input tm-l"></td>
+                                <td><input type="time" name="time-1-2" class="table-input tm-1-2"></td>
+                                <td><input type="text" name="type-1" class="table-input tp-1"></td>
+                                <td><input type="text" name="pocaz-1" class="table-input pc-1"></td>
+                                <td><input type="text" name="lb-1" class="table-input lb-1"></td>
+                                <td><input type="text" name="il-1" class="table-input il-1"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">2</td>
+                                <td><input type="text" name="name-2" class="table-input nm-2"></td>
+                                <td><input type="text" name="plot-2" class="table-input pt-2"></td>
+                                <td><input type="time" name="time-2" class="table-input tm-2"></td>
+                                <td><input type="time" name="time-2-2" class="table-input tm-2-2"></td>
+                                <td><input type="text" name="type-2" class="table-input tp-2"></td>
+                                <td><input type="text" name="pocaz-2" class="table-input pc-2"></td>
+                                <td><input type="text" name="lb-2" class="table-input lb-2"></td>
+                                <td><input type="text" name="il-2" class="table-input il-2"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">3</td>
+                                <td><input type="text" name="name-3" class="table-input nm-3"></td>
+                                <td><input type="text" name="plot-3" class="table-input pt-3"></td>
+                                <td><input type="time" name="time-3" class="table-input tm-3"></td>
+                                <td><input type="time" name="time-3-2" class="table-input tm-3-2"></td>
+                                <td><input type="text" name="type-3" class="table-input tp-3"></td>
+                                <td><input type="text" name="pocaz-3" class="table-input pc-3"></td>
+                                <td><input type="text" name="lb-3" class="table-input lb-3"></td>
+                                <td><input type="text" name="il-3" class="table-input il-3"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">4</td>
+                                <td><input type="text" name="name-4" class="table-input nm-4"></td>
+                                <td><input type="text" name="plot-4" class="table-input pt-4"></td>
+                                <td><input type="time" name="time-4" class="table-input tm-4"></td>
+                                <td><input type="time" name="time-4-2" class="table-input tm-4-2"></td>
+                                <td><input type="text" name="type-4" class="table-input tp-4"></td>
+                                <td><input type="text" name="pocaz-4" class="table-input pc-4"></td>
+                                <td><input type="text" name="lb-4" class="table-input lb-4"></td>
+                                <td><input type="text" name="il-4" class="table-input il-4"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">5</td>
+                                <td><input type="text" name="name-5" class="table-input nm-5"></td>
+                                <td><input type="text" name="plot-5" class="table-input pt-5"></td>
+                                <td><input type="time" name="time-5" class="table-input tm-5"></td>
+                                <td><input type="time" name="time-5-2" class="table-input tm-5-2"></td>
+                                <td><input type="text" name="type-5" class="table-input tp-5"></td>
+                                <td><input type="text" name="pocaz-5" class="table-input pc-5"></td>
+                                <td><input type="text" name="lb-5" class="table-input lb-5"></td>
+                                <td><input type="text" name="il-5" class="table-input il-5"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">6</td>
+                                <td><input type="text" name="name-6" class="table-input nm-6"></td>
+                                <td><input type="text" name="plot-6" class="table-input pt-6"></td>
+                                <td><input type="time" name="time-6" class="table-input tm-6"></td>
+                                <td><input type="time" name="time-6-2" class="table-input tm-6-2"></td>
+                                <td><input type="text" name="type-6" class="table-input tp-6"></td>
+                                <td><input type="text" name="pocaz-6" class="table-input pc-6"></td>
+                                <td><input type="text" name="lb-6" class="table-input lb-6"></td>
+                                <td><input type="text" name="il-6" class="table-input il-6"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">7</td>
+                                <td><input type="text" name="name-7" class="table-input nm-7"></td>
+                                <td><input type="text" name="plot-7" class="table-input pt-7"></td>
+                                <td><input type="time" name="time-7" class="table-input tm-7"></td>
+                                <td><input type="time" name="time-7-2" class="table-input tm-7-2"></td>
+                                <td><input type="text" name="type-7" class="table-input tp-7"></td>
+                                <td><input type="text" name="pocaz-7" class="table-input pc-7"></td>
+                                <td><input type="text" name="lb-7" class="table-input lb-7"></td>
+                                <td><input type="text" name="il-7" class="table-input il-7"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">8</td>
+                                <td><input type="text" name="name-8" class="table-input nm-8"></td>
+                                <td><input type="text" name="plot-8" class="table-input pt-8"></td>
+                                <td><input type="time" name="time-8" class="table-input tm-8"></td>
+                                <td><input type="time" name="time-8-2" class="table-input tm-8-2"></td>
+                                <td><input type="text" name="type-8" class="table-input tp-8"></td>
+                                <td><input type="text" name="pocaz-8" class="table-input pc-8"></td>
+                                <td><input type="text" name="lb-8" class="table-input lb-8"></td>
+                                <td><input type="text" name="il-8" class="table-input il-8"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">9</td>
+                                <td><input type="text" name="name-9" class="table-input nm-9"></td>
+                                <td><input type="text" name="plot-9" class="table-input pt-9"></td>
+                                <td><input type="time" name="time-9" class="table-input tm-9"></td>
+                                <td><input type="time" name="time-9-2" class="table-input tm-9-2"></td>
+                                <td><input type="text" name="type-9" class="table-input tp-9"></td>
+                                <td><input type="text" name="pocaz-9" class="table-input pc-9"></td>
+                                <td><input type="text" name="lb-9" class="table-input lb-9"></td>
+                                <td><input type="text" name="il-9" class="table-input il-9"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">10</td>
+                                <td><input type="text" name="name-10" class="table-input nm-10"></td>
+                                <td><input type="text" name="plot-10" class="table-input pt-10"></td>
+                                <td><input type="time" name="time-10" class="table-input tm-l0"></td>
+                                <td><input type="time" name="time-10-2" class="table-input tm-10-2"></td>
+                                <td><input type="text" name="type-10" class="table-input tp-10"></td>
+                                <td><input type="text" name="pocaz-10" class="table-input pc-10"></td>
+                                <td><input type="text" name="lb-10" class="table-input lb-10"></td>
+                                <td><input type="text" name="il-10" class="table-input il-10"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">11</td>
+                                <td><input type="text" name="name-11" class="table-input nm-11"></td>
+                                <td><input type="text" name="plot-11" class="table-input pt-11"></td>
+                                <td><input type="time" name="time-11" class="table-input tm-11"></td>
+                                <td><input type="time" name="time-11-2" class="table-input tm-11-2"></td>
+                                <td><input type="text" name="type-11" class="table-input tp-11"></td>
+                                <td><input type="text" name="pocaz-11" class="table-input pc-11"></td>
+                                <td><input type="text" name="lb-11" class="table-input lb-11"></td>
+                                <td><input type="text" name="il-11" class="table-input il-11"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">12</td>
+                                <td><input type="text" name="name-12" class="table-input nm-12"></td>
+                                <td><input type="text" name="plot-12" class="table-input pt-12"></td>
+                                <td><input type="time" name="time-12" class="table-input tm-l2"></td>
+                                <td><input type="time" name="time-12-2" class="table-input tm-l2-2"></td>
+                                <td><input type="text" name="type-12" class="table-input tp-12"></td>
+                                <td><input type="text" name="pocaz-12" class="table-input pc-l2"></td>
+                                <td><input type="text" name="lb-12" class="table-input lb-l2"></td>
+                                <td><input type="text" name="il-12" class="table-input il-12"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">13</td>
+                                <td><input type="text" name="name-13" class="table-input nm-13"></td>
+                                <td><input type="text" name="plot-13" class="table-input pt-13"></td>
+                                <td><input type="time" name="time-13" class="table-input tm-l3"></td>
+                                <td><input type="time" name="time-13-2" class="table-input tm-l3-2"></td>
+                                <td><input type="text" name="type-13" class="table-input tp-13"></td>
+                                <td><input type="text" name="pocaz-13" class="table-input pc-l3"></td>
+                                <td><input type="text" name="lb-13" class="table-input lb-l3"></td>
+                                <td><input type="text" name="il-13" class="table-input il-13"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">14</td>
+                                <td><input type="text" name="name-14" class="table-input nm-14"></td>
+                                <td><input type="text" name="plot-14" class="table-input pt-14"></td>
+                                <td><input type="time" name="time-14" class="table-input tm-l4"></td>
+                                <td><input type="time" name="time-14-2" class="table-input tm-l4-2"></td>
+                                <td><input type="text" name="type-14" class="table-input tp-14"></td>
+                                <td><input type="text" name="pocaz-14" class="table-input pc-l4"></td>
+                                <td><input type="text" name="lb-14" class="table-input lb-l4"></td>
+                                <td><input type="text" name="il-14" class="table-input il-14"></td>
+                            </tr>
+                            <tr>
+                                <td class="text" style="text-align: center; font-size: 0.85rem; font-weight: 600;">15</td>
+                                <td><input type="text" name="name-15" class="table-input nm-15"></td>
+                                <td><input type="text" name="plot-15" class="table-input pt-15"></td>
+                                <td><input type="time" name="time-15" class="table-input tm-l5"></td>
+                                <td><input type="time" name="time-15-2" class="table-input tm-l5-2"></td>
+                                <td><input type="text" name="type-15" class="table-input tp-15"></td>
+                                <td><input type="text" name="pocaz-15" class="table-input pc-l5"></td>
+                                <td><input type="text" name="lb-15" class="table-input lb-l5"></td>
+                                <td><input type="text" name="il-15" class="table-input il-15"></td>
+                            </tr>
+                            <tr><td class="section-row-header" colspan="9"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- КНОПКИ ДЕЙСТВИЙ -->
+            <div class="actions-bar">
+                <button type="button" class="btn btn-secondary" id="btnCancel">❌ Отмена (без сохранения)</button>
+                <button type="button" class="btn btn-primary" id="btnSaveArchive">💾 Сохранить в архив</button>
+                <button type="button" class="btn btn-warning" id="btnCollapse">📦 Свернуть акт (сохранить как черновик)</button>
+            </div>
+        </form>
+        <div class="print-footer" style="padding: 10px; display: flex; justify-content: space-between; font-size: 0.65rem;">
+                    <span>W: 01 от 22.08..2024</span>
+        </div>
+    </div>
+    <script src="act-notstandart.js"></script>
+</body>
+</html>
