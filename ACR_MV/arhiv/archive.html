@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Control — Архив Документов</title>
+    <link rel="icon" href="data:,">
+    <style>
+        /* Базовые настройки темной промышленной темы */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0f172a; /* Глубокий темный фон */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #f1f5f9; /* Светлый текст */
+            line-height: 1.5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #1e293b; /* Умеренно-темный контейнер */
+            border: 1px solid #334155; /* Четкая серая граница */
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Шапка страницы */
+        .archive-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* Кнопка Назад (Исправлен путь под ваш проводник) */
+        .btn-back {
+            display: inline-block;
+            text-decoration: none;
+            color: #cbd5e1;
+            background-color: #334155;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #475569;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #475569;
+            color: #ffffff;
+        }
+
+        /* Живой поиск */
+        .search-bar-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 10px 16px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Таблица в темных тонах */
+        .archive-table-container {
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #0f172a;
+        }
+
+        .archive-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .archive-table th, .archive-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #334155;
+            vertical-align: middle;
+        }
+
+        .archive-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .archive-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Строгий ховер строки без размытий */
+        .archive-table tr:hover {
+            background: #1e293b;
+            transition: background 0.15s ease-in-out;
+        }
+
+        /* Визуальный акцент для ID */
+        .id-badge {
+            font-family: 'Courier New', monospace;
+            color: #38bdf8;
+            font-weight: 700;
+            background: #1e293b;
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid #475569;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .batch-text {
+            color: #fbbf24;
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        /* Контекстные кнопки действий */
+        .btn-action {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .btn-view {
+            background-color: #334155;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        .btn-view:hover {
+            background-color: #475569;
+            border-color: #64748b;
+            color: #ffffff;
+        }
+
+        .btn-edit {
+            background-color: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            margin-left: 8px;
+        }
+
+        .btn-edit:hover {
+            background-color: #3b82f6;
+            border-color: #60a5fa;
+            color: #ffffff;
+        }
+
+        .btn-delete-system {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            margin-left: 8px;
+        }
+
+        .btn-delete-system:hover {
+            background-color: #ef4444;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Шапка -->
+        <div class="archive-header">
+            <div>
+                <h2>Реестр архивных документов</h2>
+                <div class="subtitle">Официальный перечень завершенных актов верификации качества</div>
+            </div>
+            <!-- Выходим из /arhiv/ и заходим в соседнюю папку /menu/ -->
+            <a href="/menu/index.html" class="btn-back">Назад в меню</a>
+        </div>
+
+        <!-- Живой поиск -->
+        <div class="search-bar-container">
+            <input type="text" id="archiveSearch" class="search-input" placeholder="Поиск по ID архива, коду батча или фамилии контролера...">
+        </div>
+
+        <!-- Главная таблица архива -->
+        <div class="archive-table-container">
+            <table class="archive-table">
+                <thead>
+                    <tr>
+                        <th>Дата публикации</th>
+                        <th>Архивный ID документа</th>
+                        <th>Тип документа</th>
+                        <th>Контролёр</th>
+                        <th>Код Батча (Лот)</th>
+                        <th style="text-align: center;">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="archive-table-body">
+                    <!-- Строки генерируются автоматически через archive-logic.js -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="archive-logic.js"></script>
+</body>
+</html>
